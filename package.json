@@ -1,0 +1,30 @@
+{
+  "name": "chriswebjs",
+  "version": "0.0.0",
+  "description": "0.0.1",
+  "main": "build/chrisweb.min.js",
+  "scripts": {
+    "test": "grunt"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chrisweb/chriswebjs.git"
+  },
+  "keywords": [
+    "backbone",
+    "console",
+    "colors",
+    "javascript",
+    "chrisweb"
+  ],
+  "author": "chrisweb",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chrisweb/chriswebjs/issues"
+  },
+  "homepage": "https://github.com/chrisweb/chriswebjs",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "mocha": "^1.20.1"
+  }
+}
