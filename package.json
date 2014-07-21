@@ -1,28 +1,27 @@
 {
-  "name": "chriswebjs",
-  "version": "0.0.0",
-  "description": "0.0.1",
-  "main": "build/chrisweb.min.js",
+  "name": "ribs.js",
+  "version": "0.0.1",
+  "description": "ribs.js, built around backbone.js",
+  "main": "build/ribs.min.js",
   "scripts": {
     "test": "grunt"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/chrisweb/chriswebjs.git"
+    "url": "https://github.com/chrisweb/ribs.js.git"
   },
   "keywords": [
     "backbone",
-    "console",
-    "colors",
+    "ribs",
     "javascript",
     "chrisweb"
   ],
   "author": "chrisweb",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/chrisweb/chriswebjs/issues"
+    "url": "https://github.com/chrisweb/ribs.js/issues"
   },
-  "homepage": "https://github.com/chrisweb/chriswebjs",
+  "homepage": "https://github.com/chrisweb/ribs.js",
   "devDependencies": {
     "grunt": "^0.4.5",
     "mocha": "^1.20.1"
