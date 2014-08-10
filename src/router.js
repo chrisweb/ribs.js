@@ -10,20 +10,16 @@
  * 
  * router
  * 
- * @param {type} utilities
  * @param {type} Backbone
  * @param {type} Routes
  * @param {type} eventsManager
- * @param {type} user
- * @returns {_L18.Anonym$8}
+ * @returns {_L16.Anonym$8}
  */
 define([
-    'library.utilities',
     'backbone',
     'routes',
-    'library.eventsManager',
-    'library.user'
-], function (utilities, Backbone, Routes, eventsManager, user) {
+    'ribs.eventsManager'
+], function (Backbone, Routes, eventsManager) {
     
     'use strict';
     
@@ -34,8 +30,6 @@ define([
         var Router = Backbone.Router.extend({
 
             initialize: function() {
-                
-                utilities.log('[ROUTER] initializing...', 'fontColor:green');
 
             },
             routes: Routes,
@@ -60,14 +54,7 @@ define([
                 return this;
             },
             execute: function routerExecute(callback, args, name) {
-                
-                //utilities.log('router on execute');
-                //utilities.log('callback: ', callback);
-                //utilities.log('args: ', args);
-                //utilities.log('name: ', name);
-                
-                utilities.log('[ROUTER] event router:preRoute');
-                
+
                 // pre-route event
                 eventsManager.trigger('router:preRoute', { 'arguments': args, 'name': name });
                 
@@ -84,9 +71,7 @@ define([
                     callback.apply(this, args);
                     
                 }
-                
-                utilities.log('[ROUTER] event router:postRoute');
-                
+
                 // post route event
                 eventsManager.trigger('router:postRoute', { 'arguments': args, 'name': name });
                 

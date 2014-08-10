@@ -10,7 +10,6 @@
  * 
  * base view
  * 
- * @param {type} utilities
  * @param {type} Backbone
  * @param {type} _
  * @param {type} $
@@ -18,20 +17,17 @@
  * @returns {unresolved}
  */
 define([
-    'vendor.chrisweb.utilities',
     'backbone',
     'underscore',
     'jquery',
-    'vendor.chrisweb.container'
-], function(utilities, Backbone, _, $, Container) {
+    'ribs.container'
+], function(Backbone, _, $, Container) {
 
     'use strict';
     
     var View = Backbone.View.extend({
         
         initialize: function(options) {
-            
-            utilities.log('[CHRISWEB VIEW] initializing ...');
 
             this.options = options || {};
             

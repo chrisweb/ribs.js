@@ -1,5 +1,5 @@
 /**
- * https://github.com/chrisweb
+ * https://github.com/ribs
  * 
  * Copyright 2014 weber chris
  * Released under the MIT license
@@ -8,38 +8,32 @@
 
 /**
  * 
- * chrisweb controller
+ * ribs controller
  * 
  * @param {type} _
  * @param {type} Backbone
- * @param {type} utilities
  * @param {type} container
- * @returns {_L17.chrisweb.Controller|chrisweb.Controller}
+ * @returns {_L17.ribs.Controller|ribs.Controller}
  */
 define([
     'underscore',
     'backbone',
-    'library.utilities',
-    'library.container'
-], function (_, Backbone, utilities, container) {
+    'ribs.container'
+], function (_, Backbone, container) {
     
     'use strict';
     
-    var chrisweb = {};
+    var ribs = {};
 
-    chrisweb.Controller = function ControllerFunction() {
-        
-        //utilities.log('arguments: ', arguments);
+    ribs.Controller = function ControllerFunction() {
 
         this.initialize.apply(this, arguments);
 
     };
 
-    _.extend(chrisweb.Controller.prototype, Backbone.Events, {
+    _.extend(ribs.Controller.prototype, Backbone.Events, {
 
         initialize: function controllerInitializeFunction(options, configuration, router) {
-
-            utilities.log('[CHRISWEB CONTROLLER] initializing ...', 'fontColor:blue');
 
             this.options = options || {};
             this.configuration = configuration.get();
@@ -62,8 +56,8 @@ define([
 
     });
     
-    chrisweb.Controller.extend = Backbone.Model.extend;
+    ribs.Controller.extend = Backbone.Model.extend;
     
-    return chrisweb.Controller;
+    return ribs.Controller;
 
 });

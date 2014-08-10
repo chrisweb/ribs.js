@@ -10,18 +10,16 @@
  * 
  * views container (singleton)
  * 
- * @param {type} utilities
  * @param {type} Backbone
  * @param {type} _
  * @param {type} $
  * @returns {_L17.Anonym$2}
  */
 define([
-    'library.utilities',
     'backbone',
     'underscore',
     'jquery'
-], function(utilities, Backbone, _, $) {
+], function(Backbone, _, $) {
 
     'use strict';
 
@@ -42,8 +40,6 @@ define([
     ContainerSingleton.prototype = {
         
         dispatch: function dispatchFunction(containerSelector) {
-
-            utilities.log('[CONTAINER] VIEWS DISPATCH');
 
             if (containerSelector === undefined) {
 
@@ -79,8 +75,6 @@ define([
 
         add: function addFunction(containerSelector, view) {
 
-            utilities.log('[CONTAINER] ADD VIEW');
-
             if (this.containers[containerSelector] === undefined) {
 
                 this.containers[containerSelector] = [];
@@ -92,8 +86,6 @@ define([
         },
         
         remove: function removeFunction(containerSelector, view) {
-
-            utilities.log('[CONTAINER] REMOVE VIEW');
 
             if (this.containers[containerSelector] === undefined) {
 
@@ -130,9 +122,7 @@ define([
     var getInstance = function getInstanceFunction() {
         
         if (instance === null) {
-            
-            utilities.log('[USER PLUGIN] initialized...');
-            
+
             instance = new ContainerSingleton();
             
         }

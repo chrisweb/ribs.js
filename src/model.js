@@ -10,23 +10,19 @@
  * 
  * base model
  * 
- * @param {type} utilities
  * @param {type} Backbone
  * @returns {unresolved}
  */
 define([
-    'library.utilities',
     'backbone'
-], function (utilities, Backbone) {
+], function (Backbone) {
     
     'use strict';
 
     var Model = Backbone.Model.extend({
         
         initialize: function(options) {
-            
-            utilities.log('[CHRISWEB MODEL] (' + this.cid + ') initializing ...', 'fontColor:blue');
-            
+
             this.options = options || {};
             
             // if oninitialize exists
