@@ -1,0 +1,21 @@
+{
+  "name": "ribs.js",
+  "version": "0.0.2",
+  "homepage": "https://github.com/chrisweb/ribs.js",
+  "authors": [
+    "chris weber <chris963@gmail.com>"
+  ],
+  "description": "ribs.js is a library that extends backbone.js",
+  "keywords": [
+    "ribs.js",
+    "backbone"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
