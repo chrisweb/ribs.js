@@ -40,6 +40,8 @@ define([
     ContainerSingleton.prototype = {
         
         dispatch: function dispatchFunction(containerSelector) {
+            
+            var that = this;
 
             if (containerSelector === undefined) {
 
@@ -49,7 +51,7 @@ define([
 
                         var viewHtml = view.create();
 
-                        this.bodyElement.find(containerSelector).append(viewHtml);
+                        that.bodyElement.find(containerSelector).append(viewHtml);
 
                     });
 
@@ -63,7 +65,7 @@ define([
 
                     var viewHtml = view.create();
 
-                    this.bodyElement.find(containerSelector).append(viewHtml);
+                    that.bodyElement.find(containerSelector).append(viewHtml);
 
                 });
 
