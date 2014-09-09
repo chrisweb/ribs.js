@@ -70,8 +70,6 @@ define([
                 });
 
             }
-            
-            this.containers = {};
 
         },
 
