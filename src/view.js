@@ -265,18 +265,11 @@ define([
 
             this.$el.find('.list').append($element);
             
-            Container.add(this.options.listId, modelView);
+            Container.add(this.options.listSelector, modelView);
             
             this.collectionModelViews[model.cid] = modelView;
             
         },
-        /*clear: function() {
-            
-            Container.clear(this.options.listId);
-            
-            this.referenceModelView = {};
-            
-        },*/
         removeModel: function removeModelFunction(model) {
             
             var view = this.referenceModelView[model.cid];
@@ -286,7 +279,7 @@ define([
             }
             
             if (view.container !== undefined) {
-                Container.remove(this.options.listId, view.container);
+                Container.remove(this.options.listSelector, view.container);
                 view.container.close();
                 //close ?
             }
