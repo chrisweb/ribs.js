@@ -113,7 +113,7 @@ define([
 
             });
 
-            delete containers[containerSelector];
+            delete this.containers[containerSelector];
 
         }
         
