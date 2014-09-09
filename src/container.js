@@ -115,7 +115,7 @@ define([
 
             });
 
-            this.containers = {};
+            delete containers[containerSelector];
 
         }
         
