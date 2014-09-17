@@ -21,7 +21,7 @@ define([
 
     var Model = Backbone.Model.extend({
         
-        initialize: function(options) {
+        initialize: function(attributes, options) {
 
             this.options = options || {};
             

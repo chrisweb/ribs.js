@@ -21,7 +21,7 @@ define([
 
     var Collection = Backbone.Collection.extend({
         
-        initialize: function(options) {
+        initialize: function(models, options) {
 
             this.options = options || {};
             
