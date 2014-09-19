@@ -253,6 +253,32 @@ define([
             return this.render().$el;
 
         },
+        clear: function() {
+            
+            Container.clear(this.options.listSelector);
+            
+            this.referenceModelView = {};
+            
+        },
+        empty: function() {
+            
+            //Container.clear(this.options.listId);
+            
+            if (this.collectionModelViews !== null) {
+                
+                _.each(this.collectionModelViews, function closeModelViews(modelView) {
+
+                    modelView.close();
+                    
+                });
+                
+                this.collectionModelViews = {};
+                
+            }
+            
+            this.referenceModelView = {};
+            
+        },
         addModel: function(model) {
             
             var ModelView = this.options.ModelView;
