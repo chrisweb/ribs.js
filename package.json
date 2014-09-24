@@ -1,6 +1,6 @@
 {
   "name": "ribs.js",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "ribs.js, built around backbone.js",
   "main": "build/ribs.min.js",
   "scripts": {

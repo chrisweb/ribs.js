@@ -228,14 +228,14 @@ define([
             
             if (this.model !== undefined) {
                 
-                //this.model.destroy();//sure?? you want destroy model server-side because of view close??
-                //this.model.trigger('destroy', this.model, this.model.collection, {});
+                
                 
             }
             
             if (this.collection !== undefined) {
                 
                 // TODO: ...
+                
                 
             }
             

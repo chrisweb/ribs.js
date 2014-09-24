@@ -12,14 +12,13 @@
  * 
  * @param {type} _
  * @param {type} Backbone
- * @param {type} container
  * @returns {_L17.ribs.Controller|ribs.Controller}
  */
 define([
     'underscore',
-    'backbone',
-    'ribs.container'
-], function (_, Backbone, container) {
+    'backbone'
+    
+], function (_, Backbone) {
     
     'use strict';
     
@@ -47,12 +46,13 @@ define([
 
             }
 
-        },
+        }
+        /*,
         dispatch: function controllerDispatchFunction(containerId) {
 
             container.dispatch(containerId);
 
-        }
+        }*/
 
     });
     
