@@ -24,12 +24,16 @@ define([
 ], function(Backbone, _, $, Container) {
 
     'use strict';
-    
+	
+	var defaultOptions = {
+		removeModelOnClose: true // Boolean:	If true, remove model from its collection on view close.
+	};
+	
     var View = Backbone.View.extend({
         
         initialize: function(options) {
 
-            this.options = options || {};
+            this.options = $.extend(defaultOptions, options || {}) ;
             
             // collection children views, usefull when collection view gets
             // destroyed and we want to take some action on sub views
@@ -228,7 +232,11 @@ define([
             
             if (this.model !== undefined) {
                 
-                
+                if (this.options.removeModelOnClose === true && !!this.model.collection === true) {
+				
+					this.model.collection.remove(this.model);
+				
+				}
                 
             }
             
