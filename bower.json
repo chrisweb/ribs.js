@@ -10,6 +10,16 @@
     "ribs.js",
     "backbone"
   ],
+  "main": [
+    "./src/collection.js",
+    "./src/container.js",
+    "./src/controller.js",
+    "./src/eventsManager.js",
+    "./src/model.js",
+    "./src/router.js",
+    "./src/view.js",
+    "./src/viewsLoader.js"
+  ],
   "license": "MIT",
   "ignore": [
     "**/.*",
