@@ -297,7 +297,12 @@ define([
 
             this.referenceModelView[model.cid] = {$html:$element, container: modelView};
 
-            this.$el.find('.list').append($element);
+            var $container = this.$el.find('.list');
+            if ($container.size() > 0) {
+                $container.append($element);
+            } else if (($container = this.$el.filter('.list')).size()) {
+                $container.append($element);
+            }
             
             Container.add(this.options.listSelector, modelView);
             
