@@ -73,7 +73,7 @@ define([
                 
                 this.listenTo(this.collection, 'add', this.addModel);
                 this.listenTo(this.collection, 'remove', this.removeModel);
-                this.listenTo(this.collection, 'reset', this.clear);
+                this.listenTo(this.collection, 'reset', this.empty);
                 
             }
             
