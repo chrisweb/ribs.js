@@ -73,7 +73,7 @@ define([
                 
                 this.listenTo(this.collection, 'add', this.addModel);
                 this.listenTo(this.collection, 'remove', this.removeModel);
-                this.listenTo(this.collection, 'reset', this.empty);
+                this.listenTo(this.collection, 'reset', this.reset);
                 
             }
             
@@ -230,7 +230,7 @@ define([
             // unbind events triggered from within views using backbone events
             this.unbind();
             
-            if (this.model !== undefined) {
+            if (this.model !== undefined && this.options) {
                 
                 if (this.options.removeModelOnClose === true && !!this.model.collection === true) {
 				
@@ -287,6 +287,14 @@ define([
             this.referenceModelView = {};
             
         },
+        reset: function(collection) {
+            this.empty();
+            
+            _.each(collection.models, (function(newModel) {
+                this.addModel(newModel);
+            }).bind(this));
+                        
+        },     
         addModel: function(model) {
             
             var ModelView = this.options.ModelView;
