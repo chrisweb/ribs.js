@@ -110,7 +110,9 @@ define([
             
             this.on('reset', function(collection, options) {
                 
-                filteredCollection.reset.call(filteredCollection, collection.models, options);
+                var newModels = getFilteredModels(collection.models, onlyDatas, notDatas);
+                
+                filteredCollection.reset.call(filteredCollection, newModels, options);
                 
             });
             
