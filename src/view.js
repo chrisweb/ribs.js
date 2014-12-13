@@ -87,7 +87,7 @@ define([
             if (this.onInitialize) {
                 
                 // execute it now
-                this.onInitialize(options);
+                this.onInitialize(this.options);
                 
             }
             
