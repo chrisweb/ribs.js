@@ -11,10 +11,6 @@ main goal(s):
 * views loader based on requirejs
 * collections batch save for all models at once
 
-sub goal(s):
-* utilites library with console log wrapper that allows colored messages (for browser / nodejs)
-* jquery ui responsive dialog
-
 future:
 * use promises
 https://github.com/jakearchibald/es6-promise
