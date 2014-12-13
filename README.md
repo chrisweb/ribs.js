@@ -20,3 +20,16 @@ future:
 https://github.com/jakearchibald/es6-promise
 * use shadow dom for views (polymer shadow dom polyfill)
 https://github.com/polymer/ShadowDOM
+
+--------------------------
+
+#ribs documentation
+
+##ribs views
+
+###onInitialize hook
+* if you want to do stuff during initialization of the view
+* don't try to append html to this.$el during onIntialize as it would get overwriten, instead use onRender
+
+###onRender hook
+* if you want to add programmatically stuff to the view during the rendering process use onRender
