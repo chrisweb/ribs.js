@@ -46,12 +46,6 @@ define([
             }
 
         }
-        /*,
-        dispatch: function controllerDispatchFunction(containerId) {
-
-            container.dispatch(containerId);
-
-        }*/
 
     });
     
