@@ -35,14 +35,13 @@ define([
         initialize: function controllerInitializeFunction(options, configuration, router) {
 
             this.options = options || {};
-            this.configuration = configuration.get();
             this.router = router;
 
             // if oninitialize exists
             if (this.onInitialize) {
 
                 // execute it now
-                this.onInitialize(this.options, this.configuration, this.router);
+                this.onInitialize(this.options, configuration, this.router);
 
             }
 
