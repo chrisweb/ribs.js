@@ -25,9 +25,9 @@ define([
 
     'use strict';
 	
-	var defaultOptions = {
-		removeModelOnClose: true // Boolean:	If true, remove model from its collection on view close.
-	};
+    var defaultOptions = {
+        removeModelOnClose: true // Boolean: If true, remove model from its collection on view close.
+    };
 	
     var View = Backbone.View.extend({
         
@@ -49,13 +49,28 @@ define([
 
                 renderedTemplate = this.template(this.getModelAsJson());
                 
+            } else if (this.options.variables !== undefined) {
+
+                renderedTemplate = this.template(this.options.variables);
+                
             } else {
                 
                 renderedTemplate = this.template();
                 
             }
             
-            var $renderedTemplate = $(renderedTemplate);
+            // sizzle of jquery will throw an error if the view content is
+            // not encaplsulated in an html element, for example if the
+            // content is just a text
+            try {
+                
+                var $renderedTemplate = $(renderedTemplate);
+                
+            } catch(error) {
+                
+                throw 'The view template should have at least one root element and not more then one';
+                
+            }
             
             if ($renderedTemplate.length === 1) {
 
@@ -65,7 +80,11 @@ define([
                 
             } else {
                 
-                throw 'view can not set element of template with more or less then one root element';
+                // unfortunatly we have to ensure that the view template has
+                // a root html element and that it only has one ... this is
+                // because backbone views by design have an $el attribute
+                // containing an element in which the template will be rendered
+                throw 'The view template should have at least one root element and not more then one';
                 
             }
             
@@ -116,9 +135,13 @@ define([
             
                 // main collection template
                 if (this.model !== undefined) {
+                    
                     renderedTemplate = this.template(this.getModelAsJson());
+                    
                 } else {
+                    
                     renderedTemplate = this.template();
+                    
                 }
 
                 // for each model of the collection append a modelView to collection dom
@@ -172,7 +195,11 @@ define([
 
                 // model template
                 renderedTemplate = this.template(this.getModelAsJson());
+                
+            } else if (this.options.variables !== undefined) {
 
+                renderedTemplate = this.template(this.options.variables);
+                
             } else {
                 
                 // view with either collection nor model
