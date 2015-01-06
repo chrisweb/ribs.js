@@ -65,6 +65,11 @@ define([
             
             return this;
             
+        },
+        getCurrentRoute: function() {
+            
+            return Backbone.history.fragment;
+            
         }
 
     });
