@@ -34,6 +34,14 @@ define([
         initialize: function(options) {
 
             this.options = $.extend(defaultOptions, options || {}) ;
+
+            // if oninitialize exists
+            if (this.onInitializeStart) {
+                
+                // execute it now
+                this.onInitializeStart();
+                
+            }
             
             // collection children views, usefull when collection view gets
             // destroyed and we want to take some action on sub views
@@ -101,17 +109,25 @@ define([
                 this.listenTo(this.model, 'destroy', this.close);
                 
             }
-
+            
             // if oninitialize exists
             if (this.onInitialize) {
                 
                 // execute it now
-                this.onInitialize(this.options);
+                this.onInitialize();
                 
             }
             
         },
         render: function() {
+
+            // if onRender exists
+            if (this.onRenderStart) {
+                
+                // execute it now
+                this.onRenderStart();
+                
+            }
             
             this.htmlize();
 
