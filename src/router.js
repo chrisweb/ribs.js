@@ -80,7 +80,6 @@ define([
             return this;
             
         },
-        
         execute: function routerExecute(callback, routeArguments, routeName, internalCallback) {
             
             // pre-route event
@@ -104,6 +103,10 @@ define([
                 return true;
                 
             }
+        },
+        getCurrentRoute: function() {
+            
+            return Backbone.history.fragment;
             
         }
 
