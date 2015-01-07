@@ -18,15 +18,20 @@ define([
     'backbone',
     'underscore'
 ], function(Backbone, _) {
+    
     'use strict';
     
-    var EventsManager;
-    
-    if (EventsManager === undefined) {
+    var eventsManager = {
+        constants: {
+
+            // router
+            'ROUTER_PREROUTE': 'router:preRoute',
+            'ROUTER_POSTROUTE': 'router:postRoute'
+            
+        }
+    };
         
-        EventsManager = _.extend({}, Backbone.Events);
-        
-    }
+    var EventsManager = _.extend(eventsManager, Backbone.Events);
 
     return EventsManager;
 
