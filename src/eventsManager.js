@@ -12,12 +12,14 @@
  * 
  * @param {type} Backbone
  * @param {type} _
+ * 
  * @returns {unresolved}
  */
 define([
     'backbone',
     'underscore'
 ], function(Backbone, _) {
+    
     'use strict';
     
     var EventsManager;
