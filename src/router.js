@@ -11,11 +11,15 @@
  * router
  * 
  * @param {type} Backbone
+ * @param {type} EventsManager
+ * 
  * @returns {_L16.Anonym$8}
  */
 define([
-    'backbone'
-], function (Backbone) {
+    'backbone',
+    'ribs.eventsManager'
+    
+], function (Backbone, EventsManager) {
     
     'use strict';
     
@@ -48,7 +52,7 @@ define([
                 var args = router._extractParameters(route, fragment);
                 
                 // we use a callback function to allow async calls, the
-                // original backbone code uses an if
+                // original backbone code uses an if (see below)
                 router.execute(callback, args, name, function(executeRoute) {
                     
                     if (executeRoute) {
@@ -61,9 +65,45 @@ define([
                     
                 });
                 
+                /*
+                if (router.execute(callback, args, name) !== false) {
+                
+                    router.trigger.apply(router, ['route:' + name].concat(args));
+                    router.trigger('route', name, args);
+                    Backbone.history.trigger('route', router, name, args);
+                
+                }
+                */
+                
             });
             
             return this;
+            
+        },
+        
+        execute: function routerExecute(callback, routeArguments, routeName, internalCallback) {
+            
+            // pre-route event
+            EventsManager.trigger(EventsManager.constants.ROUTER_PREROUTE, { 'routeArguments': routeArguments, 'routeName': routeName });
+            
+            if (callback) callback.apply(this, routeArguments);
+            
+            // post route event
+            EventsManager.trigger(EventsManager.constants.ROUTER_POSTROUTE, { 'routeArguments': routeArguments, 'routeName': routeName });
+            
+            if (internalCallback !== undefined) {
+                
+                // can return true or false, if false is returned the current
+                // route will get aborted
+                internalCallback(true);
+                
+            } else {
+                
+                // can return true or false, if false is returned the current
+                // route will get aborted
+                return true;
+                
+            }
             
         }
 
