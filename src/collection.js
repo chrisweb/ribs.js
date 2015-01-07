@@ -11,6 +11,8 @@
  * base collection
  * 
  * @param {type} Backbone
+ * @param {type} _
+ * 
  * @returns {unresolved}
  */
 define([
