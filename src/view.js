@@ -30,7 +30,7 @@ define([
     var defaultOptions = {
         removeModelOnClose: true, // Boolean: If true, remove model from its collection on view close.
         listSelector: 'list',
-        variables: {},
+        templateVariables: {},
         ModelView: null
     };
 	
@@ -62,9 +62,9 @@ define([
 
                 renderedTemplate = this.template(this.getModelAsJson());
                 
-            } else if (_.keys(this.options.variables).length > 0) {
+            } else if (_.keys(this.options.templateVariables).length > 0) {
 
-                renderedTemplate = this.template(this.options.variables);
+                renderedTemplate = this.template(this.options.templateVariables);
                 
             } else {
                 
@@ -154,14 +154,14 @@ define([
              // is there a collection?
             if (this.collection !== undefined) {
             
-                // and also a model or variables or nothing?
+                // and also a model or templateVariables or nothing?
                 if (this.model !== undefined) {
                     
                     renderedTemplate = this.template(this.getModelAsJson());
                     
-                } else if (_.keys(this.options.variables).length > 0) {
+                } else if (_.keys(this.options.templateVariables).length > 0) {
 
-                    renderedTemplate = this.template(this.options.variables);
+                    renderedTemplate = this.template(this.options.templateVariables);
                 
                 } else {
                     
@@ -223,10 +223,10 @@ define([
                 // model view
                 renderedTemplate = this.template(this.getModelAsJson());
                 
-            } else if (_.keys(this.options.variables).length > 0) {
+            } else if (_.keys(this.options.templateVariables).length > 0) {
 
-                // variables view
-                renderedTemplate = this.template(this.options.variables);
+                // templateVariables view
+                renderedTemplate = this.template(this.options.templateVariables);
                 
             } else {
                 
