@@ -14,6 +14,7 @@
  * @param {type} _
  * @param {type} $
  * @param {type} Container
+ * 
  * @returns {unresolved}
  */
 define([
@@ -21,12 +22,16 @@ define([
     'underscore',
     'jquery',
     'ribs.container'
+    
 ], function(Backbone, _, $, Container) {
 
     'use strict';
 	
     var defaultOptions = {
-        removeModelOnClose: true // Boolean: If true, remove model from its collection on view close.
+        removeModelOnClose: true, // Boolean: If true, remove model from its collection on view close.
+        listSelector: 'list',
+        variables: {},
+        ModelView: null
     };
 	
     var View = Backbone.View.extend({
@@ -57,7 +62,7 @@ define([
 
                 renderedTemplate = this.template(this.getModelAsJson());
                 
-            } else if (this.options.variables !== undefined) {
+            } else if (_.keys(this.options.variables).length > 0) {
 
                 renderedTemplate = this.template(this.options.variables);
                 
@@ -146,26 +151,31 @@ define([
 
             var renderedTemplate;
 
-             // put the template into the view element
+             // is there a collection?
             if (this.collection !== undefined) {
             
-                // main collection template
+                // and also a model or variables or nothing?
                 if (this.model !== undefined) {
                     
                     renderedTemplate = this.template(this.getModelAsJson());
                     
+                } else if (_.keys(this.options.variables).length > 0) {
+
+                    renderedTemplate = this.template(this.options.variables);
+                
                 } else {
                     
                     renderedTemplate = this.template();
                     
                 }
 
-                // for each model of the collection append a modelView to collection dom
+                // for each model of the collection append a modelView to
+                // collection dom
                 var that = this;
                 
                 if (this.collection.models.length > 0) {
                     
-                    if (that.options.ModelView !== undefined) {
+                    if (that.options.ModelView !== null) {
                 
                         var ModelView = that.options.ModelView;
                         
@@ -193,32 +203,34 @@ define([
 
                     var $renderedTemplateCache = $(renderedTemplate);
 
-                    if ($renderedTemplateCache.hasClass('list')) {
+                    if ($renderedTemplateCache.hasClass(this.options.listSelector)) {
                         
                         $renderedTemplateCache.append(modelViewsAsHtml);
                         
                     } else {
                     
-                        $renderedTemplateCache.find('.list').append(modelViewsAsHtml);
+                        $renderedTemplateCache.find('.' + this.options.listSelector).append(modelViewsAsHtml);
                         
                     }
 
+                    // collection view
                     renderedTemplate = $renderedTemplateCache[0];
                     
                 }
 
             } else if (this.model !== undefined) {
 
-                // model template
+                // model view
                 renderedTemplate = this.template(this.getModelAsJson());
                 
-            } else if (this.options.variables !== undefined) {
+            } else if (_.keys(this.options.variables).length > 0) {
 
+                // variables view
                 renderedTemplate = this.template(this.options.variables);
                 
             } else {
                 
-                // view with either collection nor model
+                // basic view
                 renderedTemplate = this.template();
                 
             }
@@ -273,7 +285,7 @@ define([
             // unbind events triggered from within views using backbone events
             this.unbind();
             
-            if (this.model !== undefined && this.options) {
+            if (this.model !== null && this.options) {
                 
                 if (this.options.removeModelOnClose === true && !!this.model.collection === true) {
 				
@@ -283,7 +295,7 @@ define([
                 
             }
             
-            if (this.collection !== undefined) {
+            if (this.collection !== null) {
                 
                 // TODO: ...
                 
@@ -331,10 +343,13 @@ define([
             
         },
         reset: function(collection) {
+            
             this.empty();
             
             _.each(collection.models, (function(newModel) {
+                
                 this.addModel(newModel);
+                
             }).bind(this));
                         
         },     
@@ -349,10 +364,15 @@ define([
             this.referenceModelView[model.cid] = {$html:$element, container: modelView};
 
             var $container = this.$el.find('.list');
+            
             if ($container.size() > 0) {
+                
                 $container.append($element);
+                
             } else if (($container = this.$el.filter('.list')).size()) {
+                
                 $container.append($element);
+                
             }
             
             Container.add(this.options.listSelector, modelView);
@@ -369,12 +389,19 @@ define([
             }
             
             if (view.container !== undefined) {
+                
                 Container.remove(this.options.listSelector, view.container);
+                
                 view.container.close();
-                //close ?
+                
+                //TODO: close ?
+                
             }
+            
             if (view.$html !== undefined) {
+                
                 view.$html.remove();
+                
             }
             
             delete this.referenceModelView[model.cid];
