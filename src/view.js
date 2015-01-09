@@ -31,7 +31,8 @@ define([
         removeModelOnClose: true, // Boolean: If true, remove model from its collection on view close.
         listClass: 'list',
         templateVariables: {},
-        ModelView: null
+        ModelView: null,
+        ModelViewOptions: {}
     };
 	
     var View = Backbone.View.extend({
@@ -66,8 +67,21 @@ define([
             var renderedTemplate;
             
             if (this.model !== undefined) {
+                
+                var templateKeyValues;
 
-                renderedTemplate = this.template(this.getModelAsJson());
+                // are there also templateVariables
+                if (_.keys(this.options.templateVariables).length > 0) {
+
+                    templateKeyValues = $.extend(this.options.templateVariables, this.getModelAsJson());
+
+                } else {
+
+                    templateKeyValues = this.getModelAsJson();
+
+                }
+
+                renderedTemplate = this.template(templateKeyValues);
                 
             } else if (_.keys(this.options.templateVariables).length > 0) {
 
@@ -164,7 +178,20 @@ define([
                 // and also a model or templateVariables or nothing?
                 if (this.model !== undefined) {
                     
-                    renderedTemplate = this.template(this.getModelAsJson());
+                    var templateKeyValues;
+
+                    // are there also templateVariables
+                    if (_.keys(this.options.templateVariables).length > 0) {
+
+                        templateKeyValues = $.extend(this.options.templateVariables, this.getModelAsJson());
+
+                    } else {
+
+                        templateKeyValues = this.getModelAsJson();
+
+                    }
+                    
+                    renderedTemplate = this.template(templateKeyValues);
                     
                 } else if (_.keys(this.options.templateVariables).length > 0) {
 
@@ -196,7 +223,9 @@ define([
 
                     _.each(this.collection.models, function(model) {
 
-                        var modelView = new ModelView({ model: model, parentView: that });
+                        var mergedModelViewOptions = $.extend(this.options.ModelViewOptions, { model: model, parentView: that });
+
+                        var modelView = new ModelView(mergedModelViewOptions);
                         
                         that.collectionModelViews[model.cid] = modelView;
                         
@@ -226,9 +255,22 @@ define([
                 }
 
             } else if (this.model !== undefined) {
+                
+                var templateKeyValues;
+                
+                // are there also templateVariables
+                if (_.keys(this.options.templateVariables).length > 0) {
+                    
+                    templateKeyValues = $.extend(this.options.templateVariables, this.getModelAsJson());
+                    
+                } else {
+                    
+                    templateKeyValues = this.getModelAsJson();
+                    
+                }
 
                 // model view
-                renderedTemplate = this.template(this.getModelAsJson());
+                renderedTemplate = this.template(templateKeyValues);
                 
             } else if (_.keys(this.options.templateVariables).length > 0) {
 
@@ -362,14 +404,24 @@ define([
         },     
         addModel: function(model) {
             
-            var ModelView = this.options.ModelView;
-
-            var modelView = new ModelView({ model: model, parentView: this });
-
+            if (this.options.ModelView !== null) {
+                
+                var ModelView = this.options.ModelView;
+                
+            } else {
+                
+                throw 'a collection view needs a ModelView passed on instantiation through the options';
+                
+            }
+            
+            var mergedModelViewOptions = $.extend(this.options.ModelViewOptions, { model: model, parentView: this });
+            
+            var modelView = new ModelView(mergedModelViewOptions);
+            
             var $element = modelView.create();
-
+            
             this.referenceModelView[model.cid] = {$html:$element, container: modelView};
-
+            
             var $container = this.$el.find('.' + this.options.listClass);
             
             if ($container.size() > 0) {
