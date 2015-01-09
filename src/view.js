@@ -315,6 +315,12 @@ define([
         },
         close: function() {
 
+            if (this.onCloseStart) {
+                
+                this.onCloseStart();
+                
+            }
+
             if (this.collectionModelViews !== null) {
                 
                 _.each(this.collectionModelViews, function closeModelViews(modelView) {
