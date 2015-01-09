@@ -292,13 +292,13 @@ define([
             // unbind events triggered from within views using backbone events
             this.unbind();
             
-            if (this.model !== null && this.options) {
+            if (this.model !== undefined && this.options) {
                 
                 if (this.options.removeModelOnClose === true && !!this.model.collection === true) {
 				
-					this.model.collection.remove(this.model);
+                    this.model.collection.remove(this.model);
 				
-				}
+                }
                 
             }
             
