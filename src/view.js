@@ -223,7 +223,7 @@ define([
 
                     _.each(this.collection.models, function(model) {
 
-                        var mergedModelViewOptions = $.extend(this.options.ModelViewOptions, { model: model, parentView: that });
+                        var mergedModelViewOptions = $.extend(that.options.ModelViewOptions, { model: model, parentView: that });
 
                         var modelView = new ModelView(mergedModelViewOptions);
                         
