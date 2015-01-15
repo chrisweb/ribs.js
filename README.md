@@ -1,5 +1,5 @@
-ribs.js
-===========
+ribs.js 0.0.9
+=============
 
 This project is not ready for use in production. It's still under heavy development. I wrote this for another project I work on right now, but its still far from being stable. Testing are fixes and comments are welcome.
 
@@ -23,9 +23,11 @@ https://github.com/polymer/ShadowDOM
 
 ##ribs views
 
-###onInitialize hook
+### onInitialize hook
 * if you want to do stuff during initialization of the view
 * don't try to append html to this.$el during onIntialize as it would get overwriten, instead use onRender
 
-###onRender hook
+### onRender hook
 * if you want to add programmatically stuff to the view during the rendering process use onRender
+
+for more check out the documentation.md

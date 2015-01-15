@@ -29,7 +29,7 @@ define([
 	
     var defaultOptions = {
         removeModelOnClose: true, // Boolean: If true, remove model from its collection on view close.
-        listClass: 'list',
+        listSelector: '.list',
         templateVariables: {},
         ModelView: null,
         ModelViewOptions: {}
@@ -239,13 +239,13 @@ define([
 
                     var $renderedTemplateCache = $(renderedTemplate);
 
-                    if ($renderedTemplateCache.hasClass(this.options.listClass)) {
+                    if ($renderedTemplateCache.is(this.options.listSelector)) {
                         
                         $renderedTemplateCache.append(modelViewsAsHtml);
                         
                     } else {
                     
-                        $renderedTemplateCache.find('.' + this.options.listClass).append(modelViewsAsHtml);
+                        $renderedTemplateCache.find(this.options.listSelector).append(modelViewsAsHtml);
                         
                     }
 
@@ -373,14 +373,14 @@ define([
         },
         clear: function() {
             
-            Container.clear(this.options.listClass);
+            Container.clear(this.options.listSelector);
             
             this.referenceModelView = {};
             
         },
         empty: function() {
             
-            //Container.clear(this.options.listClass);
+            //Container.clear(this.options.listSelector);
             
             if (this.collectionModelViews !== null) {
                 
@@ -428,20 +428,20 @@ define([
             
             this.referenceModelView[model.cid] = {$html:$element, container: modelView};
             
-            var $container = this.$el.find('.' + this.options.listClass);
+            var $container = this.$el.find(this.options.listSelector);
             
             if ($container.size() > 0) {
                 
                 $container.append($element);
                 
-            } else if (($container = this.$el.filter('.' + this.options.listClass)).size()) {
+            } else if (($container = this.$el.filter(this.options.listSelector)).size()) {
                 
                 $container.append($element);
                 
             }
             
             // TODO: use the container to manage subviews of a list
-            //Container.add('.' + this.options.listClass, modelView);
+            //Container.add(this.options.listSelector, modelView);
             
             this.collectionModelViews[model.cid] = modelView;
             
@@ -457,7 +457,7 @@ define([
             if (view.container !== undefined) {
                 
                 // TODO: use the container to manage subviews of a list
-                //Container.remove('.' + this.options.listClass, view.container);
+                //Container.remove(this.options.listSelector, view.container);
                 
                 view.container.close();
                 
