@@ -11,29 +11,94 @@
  * base model
  * 
  * @param {type} Backbone
+ * @param {type} _
+ *
  * @returns {unresolved}
  */
 define([
-    'backbone'
-], function (Backbone) {
+    'backbone',
+	'underscore'
+], function (Backbone, _) {
     
     'use strict';
 
     var Model = Backbone.Model.extend({
         
         initialize: function(attributes, options) {
-
-            this.options = options || {};
-            
-            // if oninitialize exists
-            if (this.onInitialize) {
+		
+			var defaultOptions = {
+				virtualAttributes: []
+			};
+		
+			this.options = $.extend(defaultOptions, options || {}) ;
+		
+			// if onInitializeStart exists
+            if (this.onInitializeStart) {
                 
                 // execute it now
-                this.onInitialize(options);
+                this.onInitializeStart();
                 
             }
             
-        }
+            // if onInitialize exists
+            if (this.onInitialize) {
+                
+                // execute it now
+                this.onInitialize();
+                
+            }
+            
+        },
+		get: function (attribute) {
+			
+			if (typeof this[attribute] === 'function') {
+			
+				return this[attribute]();
+				
+			} else {
+			
+				return Backbone.Model.prototype.get.call(this, attribute);
+				
+			}
+			
+		},
+		toJSON: function() {
+			
+			var attributes = Backbone.Model.prototype.toJSON.call(this);
+			
+			if (_.has(this.options, 'virtualAttributes')) {
+			
+				var that = this;
+				
+				_.each(this.options.virtualAttributes, function(virtualAttribute) {
+				
+					if (_.has(virtualAttribute, 'key')) {
+						
+						var virtualAttributeKey = virtualAttribute.key;
+						
+						if (_.isFunction(that[virtualAttributeKey])) {
+						
+							attributes[virtualAttributeKey] = that[virtualAttributeKey].call(that);
+							
+						} else {
+						
+							throw 'virtual attribute function missing';
+						
+						}
+						
+					} else {
+						
+						throw 'virtual attribute "key" missing';
+						
+					}
+				
+				});
+				
+			}
+			
+			return attributes;
+			
+		}
         
     });
 
