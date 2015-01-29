@@ -27,19 +27,19 @@ define([
 
     'use strict';
 	
+    var defaultOptions = {
+        removeModelOnClose: true, // Boolean: If true, remove model from its collection on view close.
+        listSelector: '.list',
+        templateVariables: {},
+        ModelView: null,
+        ModelViewOptions: {}
+    };
+	
     var View = Backbone.View.extend({
         
         initialize: function(options) {
-		
-			var defaultOptions = {
-				removeModelOnClose: true, // Boolean: If true, remove model from its collection on view close.
-				listSelector: '.list',
-				templateVariables: {},
-				ModelView: null,
-				ModelViewOptions: {}
-			};
 
-            this.options = $.extend(defaultOptions, options || {}) ;
+            this.options = $.extend({}, defaultOptions, options || {}) ;
 
             // if oninitialize exists
             if (this.onInitializeStart) {
