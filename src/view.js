@@ -21,9 +21,10 @@ define([
     'backbone',
     'underscore',
     'jquery',
-    'ribs.container'
+    'ribs.container',
+    'ribs.viewHelper'
     
-], function(Backbone, _, $, Container) {
+], function(Backbone, _, $, Container, ViewHelper) {
 
     'use strict';
 	
@@ -73,11 +74,11 @@ define([
                 // are there also templateVariables
                 if (_.keys(this.options.templateVariables).length > 0) {
 
-                    templateKeyValues = $.extend(this.options.templateVariables, this.getModelAsJson());
+                    templateKeyValues = $.extend({}, ViewHelper.get(), this.options.templateVariables, this.getModelAsJson());
 
                 } else {
 
-                    templateKeyValues = this.getModelAsJson();
+                    templateKeyValues = $.extend({}, ViewHelper.get(), this.getModelAsJson());
 
                 }
 
@@ -85,11 +86,11 @@ define([
                 
             } else if (_.keys(this.options.templateVariables).length > 0) {
 
-                renderedTemplate = this.template(this.options.templateVariables);
+                renderedTemplate = this.template($.extend({}, ViewHelper.get(), this.options.templateVariables));
                 
             } else {
                 
-                renderedTemplate = this.template();
+                renderedTemplate = this.template(ViewHelper.get());
                 
             }
             
@@ -183,11 +184,11 @@ define([
                     // are there also templateVariables
                     if (_.keys(this.options.templateVariables).length > 0) {
 
-                        templateKeyValues = $.extend(this.options.templateVariables, this.getModelAsJson());
+                        templateKeyValues = $.extend({}, ViewHelper.get(), this.options.templateVariables, this.getModelAsJson());
 
                     } else {
 
-                        templateKeyValues = this.getModelAsJson();
+                        templateKeyValues = $.extend({}, ViewHelper.get(), this.getModelAsJson());
 
                     }
                     
@@ -195,11 +196,11 @@ define([
                     
                 } else if (_.keys(this.options.templateVariables).length > 0) {
 
-                    renderedTemplate = this.template(this.options.templateVariables);
+                    renderedTemplate = this.template($.extend({}, ViewHelper.get(), this.options.templateVariables));
                 
                 } else {
                     
-                    renderedTemplate = this.template();
+                    renderedTemplate = this.template(ViewHelper.get());
                     
                 }
 
@@ -261,11 +262,11 @@ define([
                 // are there also templateVariables
                 if (_.keys(this.options.templateVariables).length > 0) {
                     
-                    templateKeyValues = $.extend(this.options.templateVariables, this.getModelAsJson());
+                    templateKeyValues = $.extend({}, ViewHelper.get(), this.options.templateVariables, this.getModelAsJson());
                     
                 } else {
                     
-                    templateKeyValues = this.getModelAsJson();
+                    templateKeyValues = $.extend({}, ViewHelper.get(), this.getModelAsJson());
                     
                 }
 
@@ -275,12 +276,12 @@ define([
             } else if (_.keys(this.options.templateVariables).length > 0) {
 
                 // templateVariables view
-                renderedTemplate = this.template(this.options.templateVariables);
+                renderedTemplate = this.template($.extend({}, ViewHelper.get(), this.options.templateVariables));
                 
             } else {
                 
                 // basic view
-                renderedTemplate = this.template();
+                renderedTemplate = this.template(ViewHelper.get());
                 
             }
 
@@ -342,9 +343,10 @@ define([
             
             if (this.model !== undefined && this.options) {
                 
-                if (this.options.removeModelOnClose === true && !!this.model.collection === true) {
+                if (this.options.removeModelOnClose === true && !!this.collection === true) {//!!this.model.collection === true) {
 				
-                    this.model.collection.remove(this.model);
+                    this.collection.remove(this.model);
+                    //this.model.collection.remove(this.model);
 				
                 }
                 
