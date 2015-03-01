@@ -14,6 +14,7 @@
  * @param {type} _
  * @param {type} $
  * @param {type} Container
+ * @param {type} ViewHelper
  * 
  * @returns {unresolved}
  */
@@ -29,7 +30,8 @@ define([
     'use strict';
 	
     var defaultOptions = {
-        removeModelOnClose: true, // Boolean: If true, remove model from its collection on view close.
+        removeModelOnClose: true, // Boolean: If true, remove model from its collection on view close
+        reRenderOnChange: false,
         listSelector: '.list',
         templateVariables: {},
         ModelView: null,
@@ -135,6 +137,12 @@ define([
                 
                 this.listenTo(this.model, 'destroy', this.close);
                 
+                if (this.options.reRenderOnChange) {
+                    
+                    this.listenTo(this.model, 'change', this.reRenderModelView);
+                    
+                }
+                
             }
             
             // if oninitialize exists
@@ -156,7 +164,9 @@ define([
                 
             }
             
-            this.htmlize();
+            var $renderedTemplate = this.htmlize();
+            
+            this.setElement($renderedTemplate);
 
             // if onRender exists
             if (this.onRender) {
@@ -167,6 +177,13 @@ define([
             }
 
             return this;
+            
+        },
+        reRenderModelView: function() {
+            
+            var $renderedTemplate = this.htmlize();
+            
+            $(this.el).replaceWith($renderedTemplate);
             
         },
         htmlize: function() {
@@ -224,7 +241,7 @@ define([
 
                     _.each(this.collection.models, function(model) {
 
-                        var mergedModelViewOptions = $.extend(that.options.ModelViewOptions, { model: model, parentView: that });
+                        var mergedModelViewOptions = $.extend({}, that.options.ModelViewOptions, { model: model, parentView: that });
 
                         var modelView = new ModelView(mergedModelViewOptions);
                         
@@ -284,8 +301,8 @@ define([
                 renderedTemplate = this.template(ViewHelper.get());
                 
             }
-
-            this.setElement($(renderedTemplate));
+            
+            return $(renderedTemplate);
             
         },
         getModelAsJson: function() {
@@ -422,13 +439,16 @@ define([
                 
             }
             
-            var mergedModelViewOptions = $.extend(this.options.ModelViewOptions, { model: model, parentView: this });
+            var mergedModelViewOptions = $.extend({}, this.options.ModelViewOptions, { model: model, parentView: this });
             
             var modelView = new ModelView(mergedModelViewOptions);
             
             var $element = modelView.create();
             
-            this.referenceModelView[model.cid] = {$html:$element, container: modelView};
+            this.referenceModelView[model.cid] = {
+                $html: $element,
+                container: modelView
+            };
             
             var $container = this.$el.find(this.options.listSelector);
             
