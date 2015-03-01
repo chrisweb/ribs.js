@@ -121,32 +121,6 @@ define([
             }
 
         },
-        
-        /**
-         * 
-         * refresh all the container views for a given selector
-         * just rerender the html code and replace the exisitng one with the
-         * newly rendered one, but dont close and then recreate the view
-         * 
-         * @param {type} containerSelector
-         * 
-         * @returns {undefined}
-         */
-        refresh: function emptyFunction(containerSelector) {
-            
-            var views = this.containers[containerSelector];
-            
-            var that = this;
-            
-            _.each(views, function(view) {
-                
-                var viewHtml = view.create();
-                
-                that.bodyElement.find(containerSelector).html(viewHtml);
-                
-            });
-            
-        },
 
         /**
          * 
