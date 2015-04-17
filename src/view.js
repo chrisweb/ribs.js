@@ -22,10 +22,11 @@ define([
     'backbone',
     'underscore',
     'jquery',
+    'ribs',
     'ribs.container',
     'ribs.viewHelper'
     
-], function(Backbone, _, $, Container, ViewHelper) {
+], function(Backbone, _, $, Ribs, Container, ViewHelper) {
 
     'use strict';
 	
@@ -38,7 +39,7 @@ define([
         ModelViewOptions: {}
     };
 	
-    var View = Backbone.View.extend({
+    Ribs.View = Backbone.View.extend({
         
         initialize: function(options) {
 
@@ -176,6 +177,8 @@ define([
                 
             }
 
+            this.isDispatch = true;
+
             return this;
             
         },
@@ -252,6 +255,12 @@ define([
                         that.referenceModelView[model.cid] = {$html:$html};
                         
                         modelViewsAsHtml.push($html);
+
+                        if (that.onModelAdded) {
+
+                            that.onModelAdded(modelView);
+
+                        }
 
                     });
 
@@ -341,11 +350,17 @@ define([
 
             if (this.collectionModelViews !== null) {
                 
-                _.each(this.collectionModelViews, function closeModelViews(modelView) {
+                _.each(this.collectionModelViews, (function closeModelViews(modelView) {
+
+                    if (this.onModelRemoved) {
+
+                        this.onModelRemoved(modelView);
+
+                    }
 
                     modelView.close();
                     
-                });
+                }).bind(this));
                 
                 this.collectionModelViews = {};
                 
@@ -387,6 +402,12 @@ define([
         },
         create: function() {
 
+            if (this.isDispatch === true) {
+
+                return this.$el;
+
+            }
+
             return this.render().$el;
 
         },
@@ -403,11 +424,17 @@ define([
             
             if (this.collectionModelViews !== null) {
                 
-                _.each(this.collectionModelViews, function closeModelViews(modelView) {
+                _.each(this.collectionModelViews, (function closeModelViews(modelView) {
+
+                    if (this.onModelRemoved) {
+
+                        this.onModelRemoved(modelView);
+
+                    }
 
                     modelView.close();
-                    
-                });
+                                        
+                }).bind(this));
                 
                 this.collectionModelViews = {};
                 
@@ -467,6 +494,9 @@ define([
             
             this.collectionModelViews[model.cid] = modelView;
             
+            if (this.onModelAdded) {
+                this.onModelAdded(modelView);
+            }
         },
         removeModel: function removeModelFunction(model) {
             
@@ -497,12 +527,19 @@ define([
             
             delete this.collectionModelViews[model.cid];
             
+            if (this.onModelRemoved) {
+
+                this.onModelRemoved(view);
+
+            }
+
             return view;
             
-        }
+        },
+        isDispatch: false
 
     });
 
-    return View;
+    return Ribs.View;
 
 });

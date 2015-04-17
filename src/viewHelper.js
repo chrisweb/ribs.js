@@ -13,8 +13,8 @@
  * @returns {unresolved}
  */
 define([
-    
-], function() {
+    'ribs'
+], function(Ribs) {
 
     'use strict';
 	
@@ -38,7 +38,7 @@ define([
         
     }
     
-    return {
+    return Ribs.ViewHelpers = {
         add:add,
         remove:remove,
         get:get

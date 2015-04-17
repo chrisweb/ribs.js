@@ -17,8 +17,9 @@
  */
 define([
     'backbone',
-    'underscore'
-], function (Backbone, _) {
+    'underscore',
+    'ribs'
+], function (Backbone, _, Ribs) {
     
     'use strict';
     
@@ -61,7 +62,7 @@ define([
         });
     }
     
-    var Collection = Backbone.Collection.extend({
+    Ribs.Collection = Backbone.Collection.extend({
         
         initialize: function(models, options) {
 
@@ -82,7 +83,7 @@ define([
             
         },
         getFilteredCollection: function(onlyDatas, notDatas) {
-            var filteredCollection = new Collection();
+            var filteredCollection = new Ribs.Collection();
             
             if (this.collectionSource === null) {
                 
@@ -136,6 +137,6 @@ define([
         
     });
 
-    return Collection;
+    return Ribs.Collection;
     
 });

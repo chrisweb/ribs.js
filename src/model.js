@@ -17,12 +17,13 @@
  */
 define([
     'backbone',
-	'underscore'
-], function (Backbone, _) {
+	'underscore',
+    'ribs'
+], function (Backbone, _, Ribs) {
     
     'use strict';
 
-    var Model = Backbone.Model.extend({
+    Ribs.Model = Backbone.Model.extend({
         
         initialize: function(attributes, options) {
 		
@@ -102,6 +103,6 @@ define([
         
     });
 
-    return Model;
+    return Ribs.Model;
     
 });
