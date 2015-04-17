@@ -1,3 +1,4 @@
+﻿// Type definitions for Ribs
 // Project: https://github.com/chrisweb/ribs.js
 // Definitions by: Norbert TRAN PHAT <https://github.com/MasGaNo>
 // Definitions: https://github.com/borisyankov/DefinitelyTyped
@@ -25,6 +26,16 @@ declare module Ribs {
     class Model extends Backbone.Model {
         protected onInitializeStart(): void;
         protected onInitialize(): void;
+        /**
+         * Get a projection of the model. The model return will be sync with this current model.
+         * @param keepAlive If true, when this model will be destroy, the projection will not be destroyed.
+         **/
+        public getModelProjection(keepAlive?: boolean = false): Model;
+
+        /**
+         * Original Model source
+         */
+        public modelSource: Ribs.Model;
     }
 
     class Collection extends Backbone.Collection<Backbone.Model> {
@@ -70,4 +81,3 @@ declare module 'ribs.container' {
     function remove(containerSelector: string, view: any): void;
     function clear(containerSelector: string): void;
 }
-

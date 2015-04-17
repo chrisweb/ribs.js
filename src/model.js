@@ -99,8 +99,48 @@ define([
 			
 			return attributes;
 			
-		}
+		},
+        /**
+         * Get a projection of the model. The model return will be sync with this current model.
+         * @param keepAlive If true, when this model will be destroy, the projection will not be destroyed.
+         **/
+		getModelProjection: function getModelProjection(keepAlive) {
+
+		    var model = new Ribs.Model(this.attributes);
+
+		    this.listenTo(this, 'change', function () {
+
+		        model.set(this.changed);
+
+		    });
+
+		    if (keepAlive !== true) {
+
+		        this.listenTo(this, 'destroy', function () {
+
+		            model.destroy();
+
+		        });
+
+		    }
+
+		    if (this.modelSource === null) {
+
+		        model.modelSource = this;
+
+		    } else {
+
+		        model.modelSource = this.modelSource;
+
+		    }
+
+		    return model;
+
+		},
         
+        modelSource: null
+
+
     });
 
     return Ribs.Model;
