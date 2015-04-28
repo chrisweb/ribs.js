@@ -31,7 +31,10 @@ define([
 				virtualAttributes: []
 			};
 		
-			this.options = $.extend(defaultOptions, options || {}) ;
+			this.options = $.extend(defaultOptions, options || {});
+
+            // on projection two way, get model of the action to avoid stackoverflow
+			this.lastModelTriggered = null;
 		
 			// if onInitializeStart exists
             if (this.onInitializeStart) {
@@ -100,19 +103,54 @@ define([
 			return attributes;
 			
 		},
+
         /**
          * Get a projection of the model. The model return will be sync with this current model.
          * @param keepAlive If true, when this model will be destroy, the projection will not be destroyed.
+         * @param twoWay If true, this model will be sync with its own attribute. So if a projection change one of these attributes, this model will be affected.
          **/
-		getModelProjection: function getModelProjection(keepAlive) {
+		getModelProjection: function getModelProjection(keepAlive, twoWay) {
 
 		    var model = new Ribs.Model(this.attributes);
 
+		    model.id = model.cid;//we do that to avoid same model with same id of the model (as long as Collection doesn't accept two model with same id)
+
 		    this.listenTo(this, 'change', function () {
+
+                // No trigger on the model of the action in two way
+		        if (this.lastModelTriggered === model) {
+		            return;
+		        }
 
 		        model.set(this.changed);
 
 		    });
+
+		    if (twoWay === true) {
+
+		        this.listenTo(model, 'change', function () {
+
+		            var newValue = {};
+
+		            _.each(model.changed, (function(value, key) {
+
+		                if (key in this.attributes) {
+
+		                    newValue[key] = value;
+
+		                }
+
+		            }).bind(this))
+                    
+		            this.lastModelTriggered = model;
+
+		            this.set(newValue);
+
+		            this.lastModelTriggered = null;
+
+		        });
+
+		    }
 
 		    if (keepAlive !== true) {
 
@@ -138,8 +176,8 @@ define([
 
 		},
         
-        modelSource: null
-
+        modelSource: null,
+        lastModelTriggered: null
 
     });
 

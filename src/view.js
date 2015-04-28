@@ -185,8 +185,10 @@ define([
         reRenderModelView: function() {
             
             var $renderedTemplate = this.htmlize();
-            
+
             $(this.el).replaceWith($renderedTemplate);
+
+            this.setElement($renderedTemplate);
             
         },
         htmlize: function() {

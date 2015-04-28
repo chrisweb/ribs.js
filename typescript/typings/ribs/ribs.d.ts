@@ -9,18 +9,49 @@
 
 declare module Ribs {
 
+    interface ViewOptions extends Backbone.ViewOptions<Backbone.Model> {
+        /** 
+         * If true, remove model from its collection on view close
+         **/
+        removeModelOnClose?: boolean;
+        reRenderOnChange?: boolean;
+        listSelector?: string;
+        templateVariables?: Object;
+        ModelView?: View|any;//hack...
+        ModelViewOptions?: ViewOptions;
+    }
+
+    interface ViewReference {
+        $html: JQuery;
+        container: Backbone.View<Backbone.Model>;
+    }
+
     class View extends Backbone.View<Backbone.Model> {
+
+        public constructor(options?: ViewOptions);
         protected onInitializeStart(): void;
         protected onInitialize(): void;
+        public create(): void;
         protected onRenderStart(): void;
         protected onRender(): void;
+        protected reRenderModelView(): void;
+        public htmlize(): JQuery;
+        protected getModelAsJson(): JSON;
+        protected getCollectionAsJson(): JSON;
+        public clear(): void;
+        public empty(): void;
+        protected reset(): void;
+        public close(): void;
         protected onCloseStart(): void;
         protected onClose(): void;
+        protected addModel(model: Backbone.Model): void;
+        protected removeModel(model: Backbone.Model): void;
         protected onModelAdded(modelView: View): void;
         protected onModelRemoved(modelView: View): void;
 
         public isDispatch: boolean;
         protected template: Function;
+        protected referenceModelView: { [cid: string]: ViewReference };
     }
 
     class Model extends Backbone.Model {
@@ -29,8 +60,9 @@ declare module Ribs {
         /**
          * Get a projection of the model. The model return will be sync with this current model.
          * @param keepAlive If true, when this model will be destroy, the projection will not be destroyed.
+         * @param twoWay If true, this model will be sync with its own attribute. So if a projection change one of these attributes, this model will be affected.
          **/
-        public getModelProjection(keepAlive?: boolean = false): Model;
+        public getModelProjection(keepAlive?: boolean, twoWay?: boolean): Model;
 
         /**
          * Original Model source
@@ -41,7 +73,12 @@ declare module Ribs {
     class Collection extends Backbone.Collection<Backbone.Model> {
         onInitialize(options?: any): void;
         batchSave(): void;
-        getFilteredCollection(onlyData?: any, notDatas?: any): void;
+        getFilteredCollection(onlyData?: any, notDatas?: any): Collection;
+        getRange(start: number, length: number): Collection;
+        rangeNextPage(): Collection;
+        rangeNext(): Collection;
+        rangeGoTo(index: number): Collection;
+
         collectionSource: Collection;
     }
 

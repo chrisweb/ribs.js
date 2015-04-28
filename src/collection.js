@@ -61,6 +61,31 @@ define([
             
         });
     }
+
+    function getRangeOfCollection(collection, start, length) {
+
+        if (collection.length < start) {
+
+            return [];
+
+        }
+        
+        return collection.models.slice(start, start + length);
+
+    }
+
+    function nextRange() {
+        
+        var models = getRangeOfCollection(this.collectionSource, this._currentRange, this._lengthRange);
+
+        if (this._currentRange + this._lengthRange >= this.collectionSource.length) {
+
+            models = models.concat(getRangeOfCollection(this.collectionSource, 0, this._lengthRange - (this.collectionSource.length - this._currentRange)));
+
+        }
+
+        this.reset(models);
+    }
     
     Ribs.Collection = Backbone.Collection.extend({
         
@@ -133,7 +158,108 @@ define([
             
             return filteredCollection;
         },
-        collectionSource: null
+
+        getRange: function(start, length) {
+
+            var rangeCollection = new Ribs.Collection();
+
+            if (this.collectionSource === null) {
+
+                rangeCollection.collectionSource = this;
+
+            } else {
+
+                rangeCollection.collectionSource = this.collectionSource; //Should be the root or the parent ?... that is the question.
+
+            }
+
+            rangeCollection._isRange = true;
+            rangeCollection.isCircularRange = this.isCircularRange;
+            rangeCollection._currentRange = start;
+            rangeCollection._lengthRange = length;
+            rangeCollection.set(getRangeOfCollection(this, start, length));
+
+            this.on('add remove sync reset sort', (function () {
+                rangeCollection.set(getRangeOfCollection(this, start, length));
+            }).bind(this));
+
+            return rangeCollection;
+
+        },
+
+        setIsCircularRange: function setIsCircularRangeFunction(isCircularRange) {
+            this.isCircularRange = true;
+            return this;
+        },
+
+        rangeNext: function rangeNextFunction() {
+            
+            if (!this._isRange) {
+
+                return this;
+
+            }
+
+            if (++this._currentRange >= this.collectionSource.length) {
+
+                this._currentRange = 0;
+
+            }
+
+            nextRange.call(this);
+
+            return this;
+        },
+
+        rangeNextPage: function rangeNextPageFunction() {
+
+            if (!this._isRange) {
+
+                return this;
+
+            }
+
+            if ((this._currentRange += 20) >= this.collectionSource.length) {
+
+                this._currentRange = 0;
+
+            }
+
+            nextRange.call(this);
+
+            return this;
+
+        },
+
+        rangeGoTo: function rangeGoToFunction(index) {
+
+            if (!this._isRange) {
+
+                return this;
+
+            }
+
+            if ((this._currentRange = index) >= this.collectionSource.length) {
+
+                this._currentRange = 0;
+
+            } else if (this._currentRange < 0) {
+
+                this._currentRange += this.collectionSource.length;
+
+            }
+
+            nextRange.call(this);
+
+            return this;
+
+        },
+
+        collectionSource: null,
+        _isRange: false,
+        _currentRange: 0,
+        _lengthRange: 5,
+        isCircularRange: false
         
     });
 
