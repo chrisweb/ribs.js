@@ -131,6 +131,7 @@ define([
                 this.listenTo(this.collection, 'add', this.addModel);
                 this.listenTo(this.collection, 'remove', this.removeModel);
                 this.listenTo(this.collection, 'reset', this.reset);
+                this.listenTo(this.collection, 'sort', this.sortModel);
                 
             }
             
@@ -537,6 +538,32 @@ define([
 
             return view;
             
+        },
+        sortModel: function sortModelFunction() {
+
+            var $container = this.$el.find(this.options.listSelector);
+
+            if ($container.size() === 0) {
+
+                $container = this.$el.filter(this.options.listSelector);
+
+                if ($container.size() === 0) {
+
+                    return;
+
+                }
+
+            }
+
+            _.each(this.collection.models, (function (model) {
+
+                var modelView = this.collectionModelViews[model.cid];
+
+                $container.append(modelView.$el);
+
+
+            }).bind(this));
+
         },
         isDispatch: false
 
