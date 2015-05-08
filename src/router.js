@@ -85,11 +85,7 @@ define([
             // pre-route event
             EventsManager.trigger(EventsManager.constants.ROUTER_PREROUTE, { 'routeArguments': routeArguments, 'routeName': routeName });
             
-            if (callback) {
-                
-                callback.apply(this, routeArguments);
-                
-            }
+            if (callback) callback.apply(this, routeArguments);
             
             // post route event
             EventsManager.trigger(EventsManager.constants.ROUTER_POSTROUTE, { 'routeArguments': routeArguments, 'routeName': routeName });

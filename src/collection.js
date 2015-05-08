@@ -219,9 +219,9 @@ define([
 
             }
 
-            if ((this._currentRange += 20) >= this.collectionSource.length) {
+            if ((this._currentRange += this._lengthRange) >= this.collectionSource.length) {
 
-                this._currentRange = 0;
+                this._currentRange = 0;//Really a circular pagination???
 
             }
 
@@ -231,11 +231,17 @@ define([
 
         },
 
-        rangeGoTo: function rangeGoToFunction(index) {
+        rangeGoTo: function rangeGoToFunction(index, newLength) {
 
             if (!this._isRange) {
 
                 return this;
+
+            }
+
+            if (newLength !== undefined) {
+
+                this._lengthRange = newLength;
 
             }
 
@@ -244,10 +250,28 @@ define([
                 this._currentRange = 0;
 
             } else if (this._currentRange < 0) {
+                if (this.isCircularRange) {
+                    this._currentRange += this.collectionSource.length;
+                } else {
+                    this._currentRange = 0;
+                }
+            }
 
-                this._currentRange += this.collectionSource.length;
+            nextRange.call(this);
+
+            return this;
+
+        },
+
+        setRangeLength: function setRangeLengthFunction(length) {
+            
+            if (!this._isRange) {
+
+                return this;
 
             }
+
+            this._lengthRange = Math.max(length, 0);
 
             nextRange.call(this);
 

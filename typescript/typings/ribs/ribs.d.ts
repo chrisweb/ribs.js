@@ -77,7 +77,8 @@ declare module Ribs {
         getRange(start: number, length: number): Collection;
         rangeNextPage(): Collection;
         rangeNext(): Collection;
-        rangeGoTo(index: number): Collection;
+        rangeGoTo(index: number, newLength?: number): Collection;
+        setRangeLength(length: number): Collection;
 
         collectionSource: Collection;
     }

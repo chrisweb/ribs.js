@@ -448,7 +448,7 @@ define([
         },
         reset: function(collection) {
             
-            this.empty();
+            this.removeUnusedModelView(collection);
             
             _.each(collection.models, (function(newModel) {
                 
@@ -456,9 +456,47 @@ define([
                 
             }).bind(this));
                         
-        },     
+        },
+        removeUnusedModelView: function(collection) {
+
+            collection = collection || this.collection;
+
+            _.each(this.collectionModelViews, (function (viewModel, cid) {
+
+                if (!collection.get(cid)) {
+
+                    viewModel.close();
+                    
+                    delete this.collectionModelViews[cid];
+                    delete this.referenceModelView[cid];
+
+                }
+
+            }).bind(this));
+
+        },
         addModel: function(model) {
             
+            if (model.cid in this.collectionModelViews) {
+                
+                var $element = this.collectionModelViews[model.cid].$el;
+
+                var $container = this.$el.find(this.options.listSelector);
+
+                if ($container.size() > 0) {
+
+                    $container.append($element);
+
+                } else if (($container = this.$el.filter(this.options.listSelector)).size()) {
+
+                    $container.append($element);
+
+                }
+
+                return;
+
+            }
+
             if (this.options.ModelView !== null) {
                 
                 var ModelView = this.options.ModelView;
