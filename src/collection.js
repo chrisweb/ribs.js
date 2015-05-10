@@ -8,10 +8,11 @@
 
 /**
  * 
- * base collection
+ * ribs base collection
  * 
  * @param {type} Backbone
  * @param {type} _
+ * @param {type} Ribs
  * 
  * @returns {unresolved}
  */
@@ -19,6 +20,7 @@ define([
     'backbone',
     'underscore',
     'ribs'
+    
 ], function (Backbone, _, Ribs) {
     
     'use strict';

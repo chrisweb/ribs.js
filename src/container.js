@@ -8,18 +8,23 @@
 
 /**
  * 
- * views container (singleton)
+ * ribs views container (singleton)
  * 
  * @param {type} Backbone
  * @param {type} _
  * @param {type} $
+ * @param {type} Ribs
+ * 
  * @returns {_L17.Anonym$2}
+ * 
  */
 define([
     'backbone',
     'underscore',
-    'jquery'
-], function(Backbone, _, $) {
+    'jquery',
+    'ribs'
+    
+], function(Backbone, _, $, Ribs) {
 
     'use strict';
 
@@ -199,6 +204,6 @@ define([
         
     };
 
-    return getInstance();
+    return Ribs.Container = getInstance();
 
 });

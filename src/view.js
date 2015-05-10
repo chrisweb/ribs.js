@@ -8,15 +8,17 @@
 
 /**
  * 
- * base view
+ * ribs base view
  * 
  * @param {type} Backbone
  * @param {type} _
  * @param {type} $
+ * @param {type} Ribs
  * @param {type} Container
  * @param {type} ViewHelper
  * 
  * @returns {unresolved}
+ * 
  */
 define([
     'backbone',

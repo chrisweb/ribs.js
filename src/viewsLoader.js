@@ -8,17 +8,21 @@
 
 /**
  * 
- * views loader
+ * ribs views loader
+ * 
+ * @param {type} Ribs
  * 
  * @returns {_L14.ViewsLoader}
+ * 
  */
 define([
-
-], function () {
+    'ribs'
+    
+], function (Ribs) {
     
     'use strict';
 
-    var ViewsLoader = function(views, callback) {
+    Ribs.ViewsLoader = function(views, callback) {
 
         // improve views loader using promises?
         // http://www.joezimjs.com/javascript/lazy-loading-javascript-with-requirejs/
@@ -36,6 +40,6 @@ define([
         
     };
 
-    return ViewsLoader;
+    return Ribs.ViewsLoader;
     
 });

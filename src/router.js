@@ -8,24 +8,24 @@
 
 /**
  * 
- * router
+ * ribs router
  * 
  * @param {type} Backbone
  * @param {type} EventsManager
+ * @param {type} Ribs
  * 
  * @returns {_L16.Anonym$8}
  */
 define([
     'backbone',
-    'ribs.eventsManager'
+    'ribs.eventsManager',
+    'ribs'
     
-], function (Backbone, EventsManager) {
+], function (Backbone, EventsManager, Ribs) {
     
     'use strict';
     
-    var ribs = {};
-    
-    ribs.Router = Backbone.Router.extend({
+    Ribs.Router = Backbone.Router.extend({
 
         initialize: function() {
 
@@ -112,6 +112,6 @@ define([
 
     });
 
-    return ribs.Router;
+    return Ribs.Router;
     
 });

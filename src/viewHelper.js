@@ -8,12 +8,16 @@
 
 /**
  * 
- * view helper management
+ * ribs view helpers manager
+ * 
+ * @param {type} Ribs
  * 
  * @returns {unresolved}
+ * 
  */
 define([
     'ribs'
+    
 ], function(Ribs) {
 
     'use strict';

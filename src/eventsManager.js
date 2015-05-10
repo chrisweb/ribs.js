@@ -8,17 +8,21 @@
 
 /**
  * 
- * events manager
+ * ribs events manager
  * 
  * @param {type} Backbone
  * @param {type} _
+ * @param {type} Ribs
  * 
  * @returns {unresolved}
+ * 
  */
 define([
     'backbone',
-    'underscore'
-], function(Backbone, _) {
+    'underscore',
+    'ribs'
+    
+], function(Backbone, _, Ribs) {
     
     'use strict';
     
@@ -32,8 +36,8 @@ define([
         }
     };
         
-    var EventsManager = _.extend(eventsManager, Backbone.Events);
+    Ribs.EventsManager = _.extend(eventsManager, Backbone.Events);
 
-    return EventsManager;
+    return Ribs.EventsManager;
 
 });

@@ -12,45 +12,47 @@
  * 
  * @param {type} _
  * @param {type} Backbone
+ * @param {type} Ribs
+ * 
  * @returns {_L17.ribs.Controller|ribs.Controller}
+ * 
  */
 define([
     'underscore',
-    'backbone'
+    'backbone',
+    'ribs'
     
-], function (_, Backbone) {
+], function (_, Backbone, Ribs) {
     
     'use strict';
     
-    var ribs = {};
-
-    ribs.Controller = function ControllerFunction() {
-
+    Ribs.Controller = function ControllerFunction() {
+        
         this.initialize.apply(this, arguments);
-
+        
     };
-
-    _.extend(ribs.Controller.prototype, Backbone.Events, {
-
+    
+    _.extend(Ribs.Controller.prototype, Backbone.Events, {
+        
         initialize: function controllerInitializeFunction(options, configuration, router) {
-
+            
             this.options = options || {};
             this.router = router;
-
+            
             // if oninitialize exists
             if (this.onInitialize) {
-
+                
                 // execute it now
                 this.onInitialize(this.options, configuration, this.router);
-
+                
             }
-
+            
         }
-
+        
     });
     
-    ribs.Controller.extend = Backbone.Model.extend;
+    Ribs.Controller.extend = Backbone.Model.extend;
     
-    return ribs.Controller;
-
+    return Ribs.Controller;
+    
 });
