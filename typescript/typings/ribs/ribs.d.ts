@@ -1,4 +1,4 @@
-﻿// Type definitions for Ribs
+// Type definitions for Ribs
 // Project: https://github.com/chrisweb/ribs.js
 // Definitions by: Norbert TRAN PHAT <https://github.com/MasGaNo>
 // Definitions: https://github.com/borisyankov/DefinitelyTyped
@@ -50,7 +50,7 @@ declare module Ribs {
         protected onModelRemoved(modelView: View): void;
 
         public isDispatch: boolean;
-        protected template: Function;
+        //protected template: Function;
         protected referenceModelView: { [cid: string]: ViewReference };
     }
 
@@ -83,10 +83,31 @@ declare module Ribs {
         collectionSource: Collection;
     }
 
-    module ViewHelpers {
-        function add(helperName: string, helperCallback: Function): void;
-        function remove(helperName: string): void;
-        function get(): { [s: string]: Function };
+    class Controller {
+        
+    }
+
+    module Container {
+        function dispatch(containerSelector: string, options?: Object): void;
+        function add(containerSelector: string, view: any): void;
+        function remove(containerSelector: string, view: any): void;
+        function clear(containerSelector: string): void;
+    }
+
+    class Router {
+        public initialize: void;
+        public routes: Object;
+        public route: Object;
+        public execute: boolean;
+        public getCurrentRoute: string;
+    }
+
+    function ViewsLoader(views: string, callback: Function);
+
+    class ViewHelpers {
+        add(helperName: string, helperCallback: Function): void;
+        remove(helperName: string): void;
+        get(): { [s: string]: Function };
     }
 
 }
@@ -107,10 +128,22 @@ declare module 'ribs.view' {
     function extend(extendData?:Object): any;
 }
 
+declare module 'ribs.controller' {
+    export class Controller { }
+}
+
+declare module 'ribs.router' {
+    export class Router { }
+}
+
 declare module 'ribs.viewHelper' {
     function add(helperName: string, helperCallback: Function): any;
     function remove(helperName: string): any;
     function get(): Object;
+}
+
+declare module 'ribs.viewsLoader' {
+    
 }
 
 declare module 'ribs.container' {
