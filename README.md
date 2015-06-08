@@ -1,6 +1,12 @@
 ribs.js 0.0.9
 =============
 
+# typescript build command
+
+tsc --target ES5 --module umd --outDir ../build --sourceMap ribs.ts collection.ts container.ts controller.ts eventsManager.ts model.ts router.ts view.ts viewHelper.ts
+
+## ribs project details
+
 This project is not ready for use in production. It's still under heavy development. I wrote this for another project I work on right now, but its still far from being stable. Testing are fixes and comments are welcome.
 
 main goal(s):
