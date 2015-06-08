@@ -1,7 +1,7 @@
 {
-  "name": "ribs.js",
+  "name": "ribsjs",
   "version": "0.0.9",
-  "description": "ribs.js, built around backbone.js",
+  "description": "ribsjs, built around backbone.js",
   "main": "build/ribs.min.js",
   "scripts": {
     "test": "grunt"
