@@ -1,3 +1,5 @@
+import Backbone = require('backbone');
+
 module Collection {
 
     'use strict';
