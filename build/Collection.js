@@ -5,7 +5,8 @@
     else if (typeof define === 'function' && define.amd) {
         define(deps, factory);
     }
-})(["require", "exports"], function (require, exports) {
+})(["require", "exports", 'backbone'], function (require, exports) {
+    var Backbone = require('backbone');
     var Collection;
     (function (Collection_1) {
         'use strict';

@@ -6,15 +6,15 @@
     else if (typeof define === 'function' && define.amd) {
         define(deps, factory);
     }
-})(["require", "exports", 'Collection', 'Container', 'Controller', 'EventsManager', 'Model', 'Router', 'View', 'ViewHelper'], function (require, exports) {
-    var ModuleCollection = require('Collection');
-    var ModuleContainer = require('Container');
-    var ModuleController = require('Controller');
-    var ModuleEventsManager = require('EventsManager');
-    var ModuleModel = require('Model');
-    var ModuleRouter = require('Router');
-    var ModuleView = require('View');
-    var ModuleViewHelper = require('ViewHelper');
+})(["require", "exports", './Collection', './Container', './Controller', './EventsManager', './Model', './Router', './View', './ViewHelper'], function (require, exports) {
+    var ModuleCollection = require('./Collection');
+    var ModuleContainer = require('./Container');
+    var ModuleController = require('./Controller');
+    var ModuleEventsManager = require('./EventsManager');
+    var ModuleModel = require('./Model');
+    var ModuleRouter = require('./Router');
+    var ModuleView = require('./View');
+    var ModuleViewHelper = require('./ViewHelper');
     var Ribs;
     (function (Ribs) {
         Ribs.Collection = ModuleCollection;
