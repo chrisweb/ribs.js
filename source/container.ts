@@ -106,9 +106,9 @@ module Container {
          */
         clear: function clearFunction(containerSelector) {
 
-            var views = this.containers[containerSelector];
+            var views: Ribs.View[] = this.containers[containerSelector];
 
-            _.each(views, function(view) {
+            _.each<Ribs.View>(views, function (view) {
 
                 view.close();
 
@@ -130,7 +130,7 @@ module Container {
      * 
      * @returns {undefined}
      */
-    var dispatchViews = function(views, containerSelector, options) {
+    var dispatchViews = function (views: Ribs.View[], containerSelector, options) {
         
         var that = this;
         

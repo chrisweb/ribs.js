@@ -2,7 +2,7 @@
 
 module Model {
 
-    export var Model = Backbone.Model.extend({
+    export var Model = (<any>Backbone.Model).extend({
         
         initialize: function(attributes, options) {
 		
@@ -57,7 +57,7 @@ module Model {
 				
 					if (_.has(virtualAttribute, 'key')) {
 						
-						var virtualAttributeKey = virtualAttribute.key;
+						var virtualAttributeKey = (<any>virtualAttribute).key;
 						
 						if (_.isFunction(that[virtualAttributeKey])) {
 						

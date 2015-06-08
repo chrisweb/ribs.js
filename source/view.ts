@@ -1,5 +1,8 @@
 'use strict';
 
+import ViewHelper = require('ViewHelper');
+import Container = require('Container');
+
 module View {
 	
     var defaultOptions = {
@@ -11,7 +14,7 @@ module View {
         ModelViewOptions: {}
     };
 	
-    export var View = Backbone.View.extend({
+    export var View = (<any>Backbone.View).extend({
         
         initialize: function(options) {
 
@@ -217,7 +220,7 @@ module View {
                     
                     var modelViewsAsHtml = [];
 
-                    _.each(this.collection.models, function(model) {
+                    _.each<Backbone.Model>(this.collection.models, function(model) {
 
                         var mergedModelViewOptions = $.extend({}, that.options.ModelViewOptions, { model: model, parentView: that });
 

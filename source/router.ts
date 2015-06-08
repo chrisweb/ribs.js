@@ -1,8 +1,10 @@
 'use strict';
 
+import EventsManager = require('EventsManager');
+
 module Router {
     
-    export var Router = Backbone.Router.extend({
+    export var Router = (<any>Backbone.Router).extend({
 
         initialize: function() {
 
@@ -83,7 +85,7 @@ module Router {
         },
         getCurrentRoute: function() {
             
-            return Backbone.history.fragment;
+            return (<any>Backbone).history.fragment;
             
         }
 

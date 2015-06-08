@@ -24,7 +24,6 @@
     <Content Include="documentation.md" />
     <Content Include="README.md" />
     <Compile Include="Gruntfile.js" />
-    <Content Include="typescript\typings\jquery\jquery-tests.ts.tscparams" />
     <TypeScriptCompile Include="source\collection.ts" />
     <TypeScriptCompile Include="source\container.ts" />
     <TypeScriptCompile Include="source\controller.ts" />
@@ -34,27 +33,20 @@
     <TypeScriptCompile Include="source\router.ts" />
     <TypeScriptCompile Include="source\view.ts" />
     <TypeScriptCompile Include="source\viewHelper.ts" />
-    <TypeScriptCompile Include="source\viewsLoader.ts" />
-    <TypeScriptCompile Include="typescript\typings\backbone\backbone-tests.ts" />
-    <TypeScriptCompile Include="typescript\typings\backbone\backbone.d.ts" />
-    <TypeScriptCompile Include="typescript\typings\jquery\jquery-tests.ts" />
-    <TypeScriptCompile Include="typescript\typings\jquery\jquery.d.ts" />
-    <TypeScriptCompile Include="typescript\typings\ribs\ribs.d.ts" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="build" />
     <Folder Include="source\" />
-    <Folder Include="typescript" />
-    <Folder Include="typescript\typings" />
-    <Folder Include="typescript\typings\backbone\" />
-    <Folder Include="typescript\typings\jquery\" />
-    <Folder Include="typescript\typings\ribs" />
+    <Folder Include="scripts" />
+    <Folder Include="scripts\typings" />
+    <Folder Include="scripts\typings\backbone\" />
+    <Folder Include="scripts\typings\jquery\" />
+    <Folder Include="scripts\typings\ribs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <!--Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them.-->
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-    <TypeScriptOutFile>ribs.js</TypeScriptOutFile>
-    <TypeScriptOutDir>build</TypeScriptOutDir>
+    <TypeScriptOutFile>build/ribs.js</TypeScriptOutFile>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsTools.targets" />

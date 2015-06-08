@@ -1,33 +1,27 @@
 'use strict';
 
-module viewHelper {
+module ViewHelper {
 	
     var viewHelpers = {};
     
-    function add(helperName, helperCallback) {
+    export function add(helperName, helperCallback) {
         
         viewHelpers[helperName] = helperCallback;
         
     }
     
-    function remove(helperName) {
+    export function remove(helperName) {
         
         delete viewHelpers[helperName];
         
     }
     
-    function get() {
+    export function get() {
         
         return viewHelpers;
         
     }
-    
-    export var ViewHelpers = {
-        add:add,
-        remove:remove,
-        get:get
-    };
 
 }
 
-export = viewHelper.ViewHelpers;
+export = ViewHelper;

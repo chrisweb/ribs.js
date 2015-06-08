@@ -2,7 +2,7 @@ module Collection {
 
     'use strict';
     
-    function getFilteredModels(models, onlyDatas, notDatas) {
+    function getFilteredModels(models, onlyDatas, notDatas): Backbone.Model[] {
         
         if (!(models instanceof Array)) {
             
@@ -33,8 +33,8 @@ module Collection {
             notModels = [];
             
         }
-        
-        return _.filter(onlyModels, function(model) {
+
+        return _.filter<Backbone.Model>(onlyModels, function (model) {
             
             return notModels.indexOf(model) === -1;
             
@@ -99,7 +99,7 @@ module Collection {
                 
             }
             
-            filteredCollection.add(getFilteredModels(this.models, onlyDatas, notDatas));
+            filteredCollection.add(this.getFilteredModels(this.models, onlyDatas, notDatas));
             
             this.on('add', function(models, collection, options) {
                 
