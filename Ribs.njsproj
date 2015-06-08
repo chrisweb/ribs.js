@@ -19,6 +19,8 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
   <ItemGroup>
+    <Content Include=".gitattributes" />
+    <Content Include=".gitignore" />
     <Content Include="bower.json" />
     <Content Include="build\.gitignore" />
     <Content Include="build\Collection.js.map" />
@@ -30,6 +32,7 @@
     <Content Include="build\Router.js.map" />
     <Content Include="build\View.js.map" />
     <Content Include="build\ViewHelper.js.map" />
+    <Content Include="LICENSE" />
     <Content Include="package.json" />
     <Content Include="documentation.md" />
     <Content Include="README.md" />
@@ -43,6 +46,9 @@
     <Compile Include="build\View.js" />
     <Compile Include="build\ViewHelper.js" />
     <Compile Include="Gruntfile.js" />
+    <Content Include="scripts\typings\underscore\underscore-tests.ts.tscparams" />
+    <TypeScriptCompile Include="scripts\typings\underscore\underscore-tests.ts" />
+    <TypeScriptCompile Include="scripts\typings\underscore\underscore.d.ts" />
     <TypeScriptCompile Include="source\collection.ts" />
     <TypeScriptCompile Include="source\container.ts" />
     <TypeScriptCompile Include="source\controller.ts" />
@@ -55,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="build" />
+    <Folder Include="scripts\typings\underscore\" />
     <Folder Include="source\" />
     <Folder Include="scripts" />
     <Folder Include="scripts\typings" />
