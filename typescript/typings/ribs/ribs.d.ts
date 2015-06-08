@@ -6,6 +6,7 @@
 // Library documentation : https://github.com/chrisweb/ribs.js/blob/master/README.md
 
 /// <reference path="../backbone/backbone.d.ts" />
+/// <reference path="../jquery/jquery.d.ts" />
 
 declare module Ribs {
 
@@ -80,11 +81,16 @@ declare module Ribs {
         rangeGoTo(index: number, newLength?: number): Collection;
         setRangeLength(length: number): Collection;
 
+        _isRange: boolean;
+        isCircularRange: boolean;
+        _currentRange: number;
+        _lengthRange: number;
+
         collectionSource: Collection;
     }
 
     class Controller {
-        
+        extend(): void;
     }
 
     module Container {
@@ -109,46 +115,9 @@ declare module Ribs {
         remove(helperName: string): void;
         get(): { [s: string]: Function };
     }
-
-}
-
-declare module 'ribs' {
-    export = Ribs;
-}
-
-declare module 'ribs.collection' {
-    export class Collection { }
-}
-
-declare module 'ribs.model' {
-    export class Model { }
-}
-
-declare module 'ribs.view' {
-    function extend(extendData?:Object): any;
-}
-
-declare module 'ribs.controller' {
-    export class Controller { }
-}
-
-declare module 'ribs.router' {
-    export class Router { }
-}
-
-declare module 'ribs.viewHelper' {
-    function add(helperName: string, helperCallback: Function): any;
-    function remove(helperName: string): any;
-    function get(): Object;
-}
-
-declare module 'ribs.viewsLoader' {
     
 }
 
-declare module 'ribs.container' {
-    function dispatch(containerSelector: string, options?: Object): void;
-    function add(containerSelector: string, view: any): void;
-    function remove(containerSelector: string, view: any): void;
-    function clear(containerSelector: string): void;
+declare module 'ribsjs' {
+    export = Ribs;
 }

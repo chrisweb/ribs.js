@@ -1,28 +1,8 @@
-/**
- * https://github.com/chrisweb
- * 
- * Copyright 2014 weber chris
- * Released under the MIT license
- * https://chris.lu
- */
+'use strict';
 
-/**
- * 
- * ribs views loader
- * 
- * @param {type} Ribs
- * 
- * @returns {_L14.ViewsLoader}
- * 
- */
-define([
-    'ribs'
-    
-], function (Ribs) {
-    
-    'use strict';
+module ViewsLoader {
 
-    Ribs.ViewsLoader = function(views, callback) {
+    export var ViewsLoader = function(views, callback) {
 
         // improve views loader using promises?
         // http://www.joezimjs.com/javascript/lazy-loading-javascript-with-requirejs/
@@ -39,7 +19,7 @@ define([
         });
         
     };
-
-    return Ribs.ViewsLoader;
     
-});
+}
+
+export = ViewsLoader.ViewsLoader;

@@ -1,34 +1,6 @@
-/**
- * https://github.com/chrisweb
- * 
- * Copyright 2014 weber chris
- * Released under the MIT license
- * https://chris.lu
- */
+'use strict';
 
-/**
- * 
- * ribs views container (singleton)
- * 
- * @param {type} Backbone
- * @param {type} _
- * @param {type} $
- * @param {type} Ribs
- * 
- * @returns {_L17.Anonym$2}
- * 
- */
-define([
-    'backbone',
-    'underscore',
-    'jquery',
-    'ribs'
-    
-], function(Backbone, _, $, Ribs) {
-
-    'use strict';
-
-    var instance = null;
+module Container {
 
     /**
      * 
@@ -36,11 +8,7 @@ define([
      * 
      * @returns {container_L22.ContainerSingleton}
      */
-    var ContainerSingleton = function ContainerSingletonFunction() {
-        
-        if (instance !== null) {
-            throw new Error('singleton has already been instantiated, use getInstance()');
-        }
+    export var ContainerSingleton = function ContainerSingletonFunction() {
         
         this.containers = {};
         
@@ -185,25 +153,7 @@ define([
         });
         
     };
-    
-    /**
-     * 
-     * get a container instance
-     * 
-     * @returns {container_L22.ContainerSingleton}
-     */
-    var getInstance = function () {
-        
-        if (instance === null) {
 
-            instance = new ContainerSingleton();
-            
-        }
-        
-        return instance;
-        
-    };
+}
 
-    return Ribs.Container = getInstance();
-
-});
+export = new Container.ContainerSingleton();

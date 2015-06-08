@@ -1,28 +1,5 @@
-/**
- * https://github.com/chrisweb
- * 
- * Copyright 2014 weber chris
- * Released under the MIT license
- * https://chris.lu
- */
+module Collection {
 
-/**
- * 
- * ribs base collection
- * 
- * @param {type} Backbone
- * @param {type} _
- * @param {type} Ribs
- * 
- * @returns {unresolved}
- */
-define([
-    'backbone',
-    'underscore',
-    'ribs'
-    
-], function (Backbone, _, Ribs) {
-    
     'use strict';
     
     function getFilteredModels(models, onlyDatas, notDatas) {
@@ -89,7 +66,7 @@ define([
         this.reset(models);
     }
     
-    Ribs.Collection = Backbone.Collection.extend({
+    export var Collection = (<any>Backbone.Collection).extend({
         
         initialize: function(models, options) {
 
@@ -288,7 +265,7 @@ define([
         isCircularRange: false
         
     });
-
-    return Ribs.Collection;
     
-});
+}
+
+export = Collection.Collection;

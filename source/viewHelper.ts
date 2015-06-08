@@ -1,26 +1,6 @@
-/**
- * https://github.com/chrisweb
- * 
- * Copyright 2014 weber chris
- * Released under the MIT license
- * https://chris.lu
- */
+'use strict';
 
-/**
- * 
- * ribs view helpers manager
- * 
- * @param {type} Ribs
- * 
- * @returns {unresolved}
- * 
- */
-define([
-    'ribs'
-    
-], function(Ribs) {
-
-    'use strict';
+module viewHelper {
 	
     var viewHelpers = {};
     
@@ -42,10 +22,12 @@ define([
         
     }
     
-    return Ribs.ViewHelpers = {
+    export var ViewHelpers = {
         add:add,
         remove:remove,
         get:get
     };
 
-});
+}
+
+export = viewHelper.ViewHelpers;

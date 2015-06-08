@@ -1,31 +1,8 @@
-/**
- * https://github.com/chrisweb
- * 
- * Copyright 2014 weber chris
- * Released under the MIT license
- * https://chris.lu
- */
+'use strict';
 
-/**
- * 
- * ribs router
- * 
- * @param {type} Backbone
- * @param {type} EventsManager
- * @param {type} Ribs
- * 
- * @returns {_L16.Anonym$8}
- */
-define([
-    'backbone',
-    'ribs.eventsManager',
-    'ribs'
+module Router {
     
-], function (Backbone, EventsManager, Ribs) {
-    
-    'use strict';
-    
-    Ribs.Router = Backbone.Router.extend({
+    export var Router = Backbone.Router.extend({
 
         initialize: function() {
 
@@ -111,7 +88,7 @@ define([
         }
 
     });
-
-    return Ribs.Router;
     
-});
+}
+
+export = Router.Router;

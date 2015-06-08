@@ -1,32 +1,8 @@
-/**
- * https://github.com/chrisweb
- * 
- * Copyright 2014 weber chris
- * Released under the MIT license
- * https://chris.lu
- */
+'use strict';
 
-/**
- * 
- * ribs base model
- * 
- * @param {type} Backbone
- * @param {type} _
- * @param {type} Ribs
- *
- * @returns {unresolved}
- * 
- */
-define([
-    'backbone',
-	'underscore',
-    'ribs'
-    
-], function (Backbone, _, Ribs) {
-    
-    'use strict';
+module Model {
 
-    Ribs.Model = Backbone.Model.extend({
+    export var Model = Backbone.Model.extend({
         
         initialize: function(attributes, options) {
 		
@@ -183,7 +159,7 @@ define([
         lastModelTriggered: null
 
     });
-
-    return Ribs.Model;
     
-});
+}
+
+export = Model.Model;

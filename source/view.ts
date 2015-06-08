@@ -1,36 +1,6 @@
-/**
- * https://github.com/chrisweb
- * 
- * Copyright 2014 weber chris
- * Released under the MIT license
- * https://chris.lu
- */
+'use strict';
 
-/**
- * 
- * ribs base view
- * 
- * @param {type} Backbone
- * @param {type} _
- * @param {type} $
- * @param {type} Ribs
- * @param {type} Container
- * @param {type} ViewHelper
- * 
- * @returns {unresolved}
- * 
- */
-define([
-    'backbone',
-    'underscore',
-    'jquery',
-    'ribs',
-    'ribs.container',
-    'ribs.viewHelper'
-    
-], function(Backbone, _, $, Ribs, Container, ViewHelper) {
-
-    'use strict';
+module View {
 	
     var defaultOptions = {
         removeModelOnClose: true, // Boolean: If true, remove model from its collection on view close
@@ -41,7 +11,7 @@ define([
         ModelViewOptions: {}
     };
 	
-    Ribs.View = Backbone.View.extend({
+    export var View = Backbone.View.extend({
         
         initialize: function(options) {
 
@@ -609,6 +579,6 @@ define([
 
     });
 
-    return Ribs.View;
+}
 
-});
+export = View.View;
