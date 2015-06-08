@@ -20,9 +20,28 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
   <ItemGroup>
     <Content Include="bower.json" />
+    <Content Include="build\.gitignore" />
+    <Content Include="build\Collection.js.map" />
+    <Content Include="build\Container.js.map" />
+    <Content Include="build\Controller.js.map" />
+    <Content Include="build\EventsManager.js.map" />
+    <Content Include="build\Model.js.map" />
+    <Content Include="build\ribs.js.map" />
+    <Content Include="build\Router.js.map" />
+    <Content Include="build\View.js.map" />
+    <Content Include="build\ViewHelper.js.map" />
     <Content Include="package.json" />
     <Content Include="documentation.md" />
     <Content Include="README.md" />
+    <Compile Include="build\Collection.js" />
+    <Compile Include="build\Container.js" />
+    <Compile Include="build\Controller.js" />
+    <Compile Include="build\EventsManager.js" />
+    <Compile Include="build\Model.js" />
+    <Compile Include="build\ribs.js" />
+    <Compile Include="build\Router.js" />
+    <Compile Include="build\View.js" />
+    <Compile Include="build\ViewHelper.js" />
     <Compile Include="Gruntfile.js" />
     <TypeScriptCompile Include="source\collection.ts" />
     <TypeScriptCompile Include="source\container.ts" />
