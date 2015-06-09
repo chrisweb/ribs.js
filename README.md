@@ -1,4 +1,4 @@
-ribs.js 0.0.9
+ribs.js 0.1.0
 =============
 
 # typescript build command
