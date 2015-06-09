@@ -1,4 +1,4 @@
-ribs.js 0.0.9
+ribs.js 0.1.0
 =============
 
 This project is not ready for use in production. It's still under heavy development. I wrote this for another project I work on right now, but its still far from being stable. Testing are fixes and comments are welcome.
