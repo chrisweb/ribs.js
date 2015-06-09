@@ -1,34 +1,35 @@
 'use strict';
 
-module Controller {
+export class Controller extends Backbone.Events {
+
+    options: any;
+    router: Backbone.Router;
+    onInitialize;
     
-    export var Controller = function ControllerFunction() {
+    constructor () {
         
+        super();
         this.initialize.apply(this, arguments);
         
-    };
+    }
     
-    _.extend(Ribs.Controller.prototype, Backbone.Events, {
-        
-        initialize: function controllerInitializeFunction(options, configuration, router) {
+    initialize (options, configuration, router) {
             
-            this.options = options || {};
-            this.router = router;
+        this.options = options || {};
+        this.router = router;
             
-            // if oninitialize exists
-            if (this.onInitialize) {
+        // if oninitialize exists
+        if (this.onInitialize) {
                 
-                // execute it now
-                this.onInitialize(this.options, configuration, this.router);
+            // execute it now
+            this.onInitialize(this.options, configuration, this.router);
                 
-            }
-            
         }
         
-    });
-    
-    (<any>Controller).extend = (<any>Backbone.Model).extend;
+    }
+
+    static extend() {
+        return (<any>Backbone.Model).extend.apply(this, arguments);
+    }
     
 }
-
-export = Controller.Controller;

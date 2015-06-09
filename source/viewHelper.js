@@ -1,27 +1,21 @@
 'use strict';
-(function (deps, factory) {
-    if (typeof module === 'object' && typeof module.exports === 'object') {
-        var v = factory(require, exports); if (v !== undefined) module.exports = v;
+var ViewHelper;
+(function (ViewHelper) {
+    var viewHelpers = {};
+    function add(helperName, helperCallback) {
+        viewHelpers[helperName] = helperCallback;
     }
-    else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+    ViewHelper.add = add;
+    function remove(helperName) {
+        delete viewHelpers[helperName];
     }
-})(["require", "exports"], function (require, exports) {
-    var ViewHelper;
-    (function (ViewHelper) {
-        var viewHelpers = {};
-        function add(helperName, helperCallback) {
-            viewHelpers[helperName] = helperCallback;
-        }
-        ViewHelper.add = add;
-        function remove(helperName) {
-            delete viewHelpers[helperName];
-        }
-        ViewHelper.remove = remove;
-        function get() {
-            return viewHelpers;
-        }
-        ViewHelper.get = get;
-    })(ViewHelper || (ViewHelper = {}));
-    return ViewHelper;
-});
+    ViewHelper.remove = remove;
+    ;
+    function get() {
+        return viewHelpers;
+    }
+    ViewHelper.get = get;
+    ;
+})(ViewHelper || (ViewHelper = {}));
+module.exports = ViewHelper;
+//# sourceMappingURL=ViewHelper.js.map
