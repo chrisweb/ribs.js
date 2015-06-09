@@ -1,5 +1,7 @@
 'use strict';
 
+import _ = require('underscore');
+
 export class Container {
 
     containers: any = {};

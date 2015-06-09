@@ -1,5 +1,7 @@
 'use strict';
 
+import Backbone = require('backbone');
+
 class EventsManager extends Backbone.Events {
 
     constants = {

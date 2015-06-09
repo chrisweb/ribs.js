@@ -79,4 +79,4 @@ var __extends = (this && this.__extends) || function (d, b) {
     })(Backbone.Router);
     exports.Router = Router;
 });
-//# sourceMappingURL=Router.js.map
+//# sourceMappingURL=router.js.map

@@ -178,4 +178,4 @@ var __extends = (this && this.__extends) || function (d, b) {
     })(Backbone.Collection);
     exports.Collection = Collection;
 });
-//# sourceMappingURL=Collection.js.map
+//# sourceMappingURL=collection.js.map

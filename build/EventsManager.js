@@ -27,4 +27,4 @@ var __extends = (this && this.__extends) || function (d, b) {
     })(Backbone.Events);
     return new EventsManager();
 });
-//# sourceMappingURL=EventsManager.js.map
+//# sourceMappingURL=eventsManager.js.map

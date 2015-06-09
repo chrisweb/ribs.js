@@ -20,27 +20,9 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
   <ItemGroup>
     <Content Include="bower.json" />
-    <Content Include="build\Collection.js.map" />
-    <Content Include="build\Container.js.map" />
-    <Content Include="build\Controller.js.map" />
-    <Content Include="build\EventsManager.js.map" />
-    <Content Include="build\Model.js.map" />
-    <Content Include="build\ribs.js.map" />
-    <Content Include="build\Router.js.map" />
-    <Content Include="build\View.js.map" />
-    <Content Include="build\ViewHelper.js.map" />
     <Content Include="package.json" />
     <Content Include="documentation.md" />
     <Content Include="README.md" />
-    <Compile Include="build\Collection.js" />
-    <Compile Include="build\Container.js" />
-    <Compile Include="build\Controller.js" />
-    <Compile Include="build\EventsManager.js" />
-    <Compile Include="build\Model.js" />
-    <Compile Include="build\ribs.js" />
-    <Compile Include="build\Router.js" />
-    <Compile Include="build\View.js" />
-    <Compile Include="build\ViewHelper.js" />
     <Compile Include="Gruntfile.js" />
     <TypeScriptCompile Include="source\collection.ts" />
     <TypeScriptCompile Include="source\container.ts" />
@@ -65,6 +47,7 @@
   <!--Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them.-->
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <TypeScriptOutFile>build/ribs.js</TypeScriptOutFile>
+    <TypeScriptCompileOnSaveEnabled>False</TypeScriptCompileOnSaveEnabled>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsTools.targets" />

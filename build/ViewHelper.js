@@ -27,4 +27,4 @@
     })(ViewHelper || (ViewHelper = {}));
     return ViewHelper;
 });
-//# sourceMappingURL=ViewHelper.js.map
+//# sourceMappingURL=viewHelper.js.map

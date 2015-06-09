@@ -1,6 +1,8 @@
 'use strict';
 
 import EventsManager = require('EventsManager');
+import Backbone = require('backbone');
+import _ = require('underscore');
 
 export class Router extends Backbone.Router {
 

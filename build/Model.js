@@ -112,4 +112,4 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.Model = Model;
     ;
 });
-//# sourceMappingURL=Model.js.map
+//# sourceMappingURL=model.js.map

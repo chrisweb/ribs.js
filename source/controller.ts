@@ -1,5 +1,7 @@
 'use strict';
 
+import Backbone = require('backbone');
+
 export class Controller extends Backbone.Events {
 
     options: any;

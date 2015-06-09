@@ -1,5 +1,8 @@
 'use strict';
 
+import Backbone = require('backbone');
+import _ = require('underscore');
+
 export class Collection extends Backbone.Collection<Backbone.Model> {
 
     options: any;

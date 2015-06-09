@@ -1,7 +1,10 @@
 'use strict';
 
-import ViewHelper = require('ViewHelper');
-import Container = require('Container');
+import ViewHelper = require('./viewHelper');
+import Container = require('./container');
+import Backbone = require('backbone');
+import $ = require('jquery');
+import _ = require('underscore');
 
 export class View extends Backbone.View<Backbone.Model> {
 	

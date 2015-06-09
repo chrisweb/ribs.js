@@ -12,8 +12,10 @@ var __extends = (this && this.__extends) || function (d, b) {
     else if (typeof define === 'function' && define.amd) {
         define(deps, factory);
     }
-})(["require", "exports", 'ViewHelper'], function (require, exports) {
-    var ViewHelper = require('ViewHelper');
+})(["require", "exports", './viewHelper', 'backbone', 'jquery'], function (require, exports) {
+    var ViewHelper = require('./viewHelper');
+    var Backbone = require('backbone');
+    var $ = require('jquery');
     var View = (function (_super) {
         __extends(View, _super);
         function View() {
@@ -363,4 +365,4 @@ var __extends = (this && this.__extends) || function (d, b) {
     })(Backbone.View);
     exports.View = View;
 });
-//# sourceMappingURL=View.js.map
+//# sourceMappingURL=view.js.map

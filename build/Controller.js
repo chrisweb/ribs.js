@@ -35,4 +35,4 @@ var __extends = (this && this.__extends) || function (d, b) {
     })(Backbone.Events);
     exports.Controller = Controller;
 });
-//# sourceMappingURL=Controller.js.map
+//# sourceMappingURL=controller.js.map

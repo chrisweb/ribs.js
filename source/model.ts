@@ -1,5 +1,9 @@
 'use strict';
 
+import Backbone = require('backbone');
+import $ = require('jquery');
+import _ = require('underscore');
+
 export class Model extends Backbone.Model {
 
     initialize (attributes, options) {
