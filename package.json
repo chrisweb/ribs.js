@@ -1,30 +1,30 @@
 {
-  "name": "ribsjs",
-  "version": "0.1.0",
+  "author": "chrisweb",
+  "bugs": {
+    "url": "https://github.com/chrisweb/ribs.js/issues"
+  },
   "description": "ribs.js, built around backbone.js",
-  "main": "build/ribs.js",
-  "scripts": {
-    "test": "grunt"
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-requirejs": "^0.4.4",
+    "mocha": "^1.20.1"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/chrisweb/ribs.js.git"
-  },
+  "homepage": "https://github.com/chrisweb/ribs.js",
   "keywords": [
     "backbone",
     "ribs",
     "javascript",
     "chrisweb"
   ],
-  "author": "chrisweb",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/chrisweb/ribs.js/issues"
+  "main": "build/ribs.js",
+  "name": "ribsjs",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chrisweb/ribs.js.git"
   },
-  "homepage": "https://github.com/chrisweb/ribs.js",
-  "devDependencies": {
-    "grunt": "^0.4.5",
-    "grunt-contrib-requirejs": "^0.4.4",
-    "mocha": "^1.20.1"
-  }
+  "scripts": {
+    "test": "grunt"
+  },
+  "version": "0.1.0"
 }
