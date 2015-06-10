@@ -1,6 +1,6 @@
 'use strict';
 
-import EventsManager = require('eventsManager');
+import EventsManager = require('./eventsManager');
 import Backbone = require('backbone');
 import _ = require('underscore');
 
