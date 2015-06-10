@@ -1,15 +1,11 @@
 {
-  "author": {
-    "name": "chrisweb"
-  },
+  "author": "chrisweb <chris963@gmail.com> (https://chris.lu)",
   "bugs": {
     "url": "https://github.com/chrisweb/ribs.js/issues"
   },
   "description": "ribs.js, built around backbone.js",
   "devDependencies": {
-    "grunt": "^0.4.5",
-    "grunt-contrib-requirejs": "^0.4.4",
-    "mocha": "^1.20.1"
+    "grunt": "^0.4.5"
   },
   "homepage": "https://github.com/chrisweb/ribs.js",
   "keywords": [
@@ -21,6 +17,8 @@
   "license": "MIT",
   "main": "build/ribs.js",
   "name": "ribsjs",
+  "readme": "ribs.js 0.1.0\r\n=============\r\n\r\nThis project is not ready for use in production. It's still under heavy development. I wrote this for another project I work on right now, but its still far from being stable. Testing are fixes and comments are welcome.\r\n\r\nmain goal(s):\r\n* extend backbone view to automate some tasks\r\n* a must have is that views code should not contain any html markup, every bit of html should be in the template so that designers only have to touch that file\r\n* new collection view to build lists and when destroyed auto close children\r\n* new controller\r\n* views loader based on requirejs\r\n* collections batch save for all models at once\r\n\r\nfuture:\r\n* use promises\r\nhttps://github.com/jakearchibald/es6-promise\r\n* use shadow dom for views (polymer shadow dom polyfill)\r\nhttps://github.com/polymer/ShadowDOM\r\n\r\n--------------------------\r\n\r\n#ribs documentation\r\n\r\n##ribs views\r\n\r\n### onInitialize hook\r\n* if you want to do stuff during initialization of the view\r\n* don't try to append html to this.$el during onIntialize as it would get overwriten, instead use onRender\r\n\r\n### onRender hook\r\n* if you want to add programmatically stuff to the view during the rendering process use onRender\r\n\r\nfor more check out the documentation.md\r\n",
+  "readmeFilename": "README.md",
   "repository": {
     "type": "git",
     "url": "https://github.com/chrisweb/ribs.js.git"
@@ -28,11 +26,5 @@
   "scripts": {
     "test": "grunt"
   },
-  "version": "0.1.0",
-  "readme": "ribs.js 0.1.0\r\n=============\r\n\r\nThis project is not ready for use in production. It's still under heavy development. I wrote this for another project I work on right now, but its still far from being stable. Testing are fixes and comments are welcome.\r\n\r\nmain goal(s):\r\n* extend backbone view to automate some tasks\r\n* a must have is that views code should not contain any html markup, every bit of html should be in the template so that designers only have to touch that file\r\n* new collection view to build lists and when destroyed auto close children\r\n* new controller\r\n* views loader based on requirejs\r\n* collections batch save for all models at once\r\n\r\nfuture:\r\n* use promises\r\nhttps://github.com/jakearchibald/es6-promise\r\n* use shadow dom for views (polymer shadow dom polyfill)\r\nhttps://github.com/polymer/ShadowDOM\r\n\r\n--------------------------\r\n\r\n#ribs documentation\r\n\r\n##ribs views\r\n\r\n### onInitialize hook\r\n* if you want to do stuff during initialization of the view\r\n* don't try to append html to this.$el during onIntialize as it would get overwriten, instead use onRender\r\n\r\n### onRender hook\r\n* if you want to add programmatically stuff to the view during the rendering process use onRender\r\n\r\nfor more check out the documentation.md\r\n",
-  "readmeFilename": "README.md",
-  "_id": "ribsjs@0.1.0",
-  "_shasum": "e4b20da77819416014f9f16c75f6b11257defc0f",
-  "_resolved": "git+https://github.com/chrisweb/ribs.js#ccfaf9388061ace625b0b298798c15557bab0d1d",
-  "_from": "ribsjs@git+https://github.com/chrisweb/ribs.js"
+  "version": "0.1.0"
 }

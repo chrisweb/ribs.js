@@ -20,9 +20,27 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
   <ItemGroup>
     <Content Include="bower.json" />
+    <Content Include="build\collection.js.map" />
+    <Content Include="build\container.js.map" />
+    <Content Include="build\controller.js.map" />
+    <Content Include="build\eventsManager.js.map" />
+    <Content Include="build\model.js.map" />
+    <Content Include="build\ribs.js.map" />
+    <Content Include="build\router.js.map" />
+    <Content Include="build\view.js.map" />
+    <Content Include="build\viewHelper.js.map" />
     <Content Include="package.json" />
     <Content Include="documentation.md" />
     <Content Include="README.md" />
+    <Compile Include="build\collection.js" />
+    <Compile Include="build\container.js" />
+    <Compile Include="build\controller.js" />
+    <Compile Include="build\eventsManager.js" />
+    <Compile Include="build\model.js" />
+    <Compile Include="build\ribs.js" />
+    <Compile Include="build\router.js" />
+    <Compile Include="build\view.js" />
+    <Compile Include="build\viewHelper.js" />
     <Compile Include="Gruntfile.js" />
     <TypeScriptCompile Include="source\collection.ts" />
     <TypeScriptCompile Include="source\container.ts" />
@@ -42,7 +60,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <!--Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them.-->
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptCompileOnSaveEnabled>False</TypeScriptCompileOnSaveEnabled>
     <TypeScriptOutDir>build</TypeScriptOutDir>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />
