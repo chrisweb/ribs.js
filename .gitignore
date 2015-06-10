@@ -17,7 +17,7 @@ coverage
 .grunt
 
 # Compiled binary addons (http://nodejs.org/api/addons.html)
-build/Rlease
+build/Release
 
 # Dependency directory
 # Deployed apps should consider commenting this line out:
@@ -25,4 +25,12 @@ build/Rlease
 node_modules
 
 # netbeans
-/nbproject
+nbproject
+
+# visual studio
+.ntvs_analysis.dat
+
+.vs
+
+bin
+obj

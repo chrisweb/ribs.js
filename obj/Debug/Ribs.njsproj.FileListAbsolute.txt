@@ -1,0 +1,2 @@
+C:\Users\chris\Documents\GitHubVisualStudio\ribs.js\obj\Debug\Ribs.njsprojResolveAssemblyReference.cache
+C:\Users\chris\Documents\GitHubVisualStudio\ribs.js\bin\Microsoft.NodejsTools.WebRole.dll
