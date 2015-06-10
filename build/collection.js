@@ -12,11 +12,13 @@ var __extends = (this && this.__extends) || function (d, b) {
     else if (typeof define === 'function' && define.amd) {
         define(deps, factory);
     }
-})(["require", "exports"], function (require, exports) {
+})(["require", "exports", 'backbone', 'underscore'], function (require, exports) {
+    var Backbone = require('backbone');
+    var _ = require('underscore');
     var Collection = (function (_super) {
         __extends(Collection, _super);
-        function Collection() {
-            _super.apply(this, arguments);
+        function Collection(models, options) {
+            _super.call(this, models, options);
             this.collectionSource = null;
             this._isRange = false;
             this._currentRange = 0;
@@ -176,6 +178,6 @@ var __extends = (this && this.__extends) || function (d, b) {
         };
         return Collection;
     })(Backbone.Collection);
-    exports.Collection = Collection;
+    return Collection;
 });
 //# sourceMappingURL=collection.js.map

@@ -12,14 +12,15 @@ var __extends = (this && this.__extends) || function (d, b) {
     else if (typeof define === 'function' && define.amd) {
         define(deps, factory);
     }
-})(["require", "exports", './viewHelper', 'backbone', 'jquery'], function (require, exports) {
+})(["require", "exports", './viewHelper', 'backbone', 'jquery', 'underscore'], function (require, exports) {
     var ViewHelper = require('./viewHelper');
     var Backbone = require('backbone');
     var $ = require('jquery');
+    var _ = require('underscore');
     var View = (function (_super) {
         __extends(View, _super);
-        function View() {
-            _super.apply(this, arguments);
+        function View(options) {
+            _super.call(this, options);
             this.defaultOptions = {
                 removeModelOnClose: true,
                 reRenderOnChange: false,
@@ -363,6 +364,6 @@ var __extends = (this && this.__extends) || function (d, b) {
         };
         return View;
     })(Backbone.View);
-    exports.View = View;
+    return View;
 });
 //# sourceMappingURL=view.js.map

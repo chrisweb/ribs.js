@@ -7,25 +7,13 @@
         define(deps, factory);
     }
 })(["require", "exports", './collection', './container', './controller', './eventsManager', './model', './router', './view', './viewHelper'], function (require, exports) {
-    var ModuleCollection = require('./collection');
-    var ModuleContainer = require('./container');
-    var ModuleController = require('./controller');
-    var ModuleEventsManager = require('./eventsManager');
-    var ModuleModel = require('./model');
-    var ModuleRouter = require('./router');
-    var ModuleView = require('./view');
-    var ModuleViewHelper = require('./viewHelper');
-    var Ribs;
-    (function (Ribs) {
-        Ribs.Collection = ModuleCollection;
-        Ribs.Container = ModuleContainer;
-        Ribs.Controller = ModuleController;
-        Ribs.EventsManager = ModuleEventsManager;
-        Ribs.Model = ModuleModel;
-        Ribs.Router = ModuleRouter;
-        Ribs.View = ModuleView;
-        Ribs.ViewHelper = ModuleViewHelper;
-    })(Ribs || (Ribs = {}));
-    return Ribs;
+    exports.Collection = require('./collection');
+    exports.Container = require('./container');
+    exports.Controller = require('./controller');
+    exports.EventsManager = require('./eventsManager');
+    exports.Model = require('./model');
+    exports.Router = require('./router');
+    exports.View = require('./view');
+    exports.ViewHelper = require('./viewHelper');
 });
 //# sourceMappingURL=ribs.js.map

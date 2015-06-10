@@ -12,12 +12,14 @@ var __extends = (this && this.__extends) || function (d, b) {
     else if (typeof define === 'function' && define.amd) {
         define(deps, factory);
     }
-})(["require", "exports", 'EventsManager'], function (require, exports) {
-    var EventsManager = require('EventsManager');
+})(["require", "exports", 'eventsManager', 'backbone', 'underscore'], function (require, exports) {
+    var EventsManager = require('eventsManager');
+    var Backbone = require('backbone');
+    var _ = require('underscore');
     var Router = (function (_super) {
         __extends(Router, _super);
         function Router() {
-            _super.apply(this, arguments);
+            _super.call(this);
         }
         Router.prototype.initialize = function () {
         };
@@ -77,6 +79,6 @@ var __extends = (this && this.__extends) || function (d, b) {
         };
         return Router;
     })(Backbone.Router);
-    exports.Router = Router;
+    return Router;
 });
 //# sourceMappingURL=router.js.map

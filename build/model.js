@@ -12,11 +12,14 @@ var __extends = (this && this.__extends) || function (d, b) {
     else if (typeof define === 'function' && define.amd) {
         define(deps, factory);
     }
-})(["require", "exports"], function (require, exports) {
+})(["require", "exports", 'backbone', 'jquery', 'underscore'], function (require, exports) {
+    var Backbone = require('backbone');
+    var $ = require('jquery');
+    var _ = require('underscore');
     var Model = (function (_super) {
         __extends(Model, _super);
-        function Model() {
-            _super.apply(this, arguments);
+        function Model(attributes, options) {
+            _super.call(this, attributes, options);
         }
         Model.prototype.initialize = function (attributes, options) {
             var defaultOptions = {
@@ -109,7 +112,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         };
         return Model;
     })(Backbone.Model);
-    exports.Model = Model;
     ;
+    return Model;
 });
 //# sourceMappingURL=model.js.map

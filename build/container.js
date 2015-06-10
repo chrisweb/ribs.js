@@ -6,7 +6,9 @@
     else if (typeof define === 'function' && define.amd) {
         define(deps, factory);
     }
-})(["require", "exports"], function (require, exports) {
+})(["require", "exports", 'underscore', 'jquery'], function (require, exports) {
+    var _ = require('underscore');
+    var $ = require('jquery');
     var Container = (function () {
         function Container() {
             this.containers = {};
@@ -107,6 +109,6 @@
         };
         return Container;
     })();
-    exports.Container = Container;
+    return new Container();
 });
 //# sourceMappingURL=container.js.map
