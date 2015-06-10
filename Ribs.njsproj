@@ -19,6 +19,8 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
   <ItemGroup>
+    <Content Include=".gitattributes" />
+    <Content Include=".gitignore" />
     <Content Include="bower.json" />
     <Content Include="build\collection.js.map" />
     <Content Include="build\container.js.map" />
@@ -29,6 +31,7 @@
     <Content Include="build\router.js.map" />
     <Content Include="build\view.js.map" />
     <Content Include="build\viewHelper.js.map" />
+    <Content Include="LICENSE" />
     <Content Include="package.json" />
     <Content Include="documentation.md" />
     <Content Include="README.md" />
@@ -51,6 +54,7 @@
     <TypeScriptCompile Include="source\router.ts" />
     <TypeScriptCompile Include="source\view.ts" />
     <TypeScriptCompile Include="source\viewHelper.ts" />
+    <TypeScriptCompile Include="source\_viewsLoader.ts" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="build" />
