@@ -4,7 +4,11 @@ import Backbone = require('backbone');
 import $ = require('jquery');
 import _ = require('underscore');
 
-export class Model extends Backbone.Model {
+class Model extends Backbone.Model {
+
+    constructor(attributes, options?) {
+        super(attributes, options);
+    }
 
     initialize (attributes, options) {
 
@@ -163,3 +167,5 @@ export class Model extends Backbone.Model {
     onInitialize;
     onInitializeStart;
 };
+
+export = Model;

@@ -2,7 +2,7 @@
 
 import Backbone = require('backbone');
 
-export class Controller extends Backbone.Events {
+class Controller extends Backbone.Events {
 
     options: any;
     router: Backbone.Router;
@@ -35,3 +35,5 @@ export class Controller extends Backbone.Events {
     }
     
 }
+
+export = Controller;

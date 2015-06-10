@@ -1,8 +1,11 @@
 'use strict';
 
 import Backbone = require('backbone');
+import _ = require('underscore');
 
-class EventsManager extends Backbone.Events {
+class EventsManager {
+
+    constructor() { }
 
     constants = {
 
@@ -14,4 +17,4 @@ class EventsManager extends Backbone.Events {
 
 }
 
-export = new EventsManager();
+export = _.extend(new EventsManager(), Backbone.Events);

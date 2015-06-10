@@ -1,11 +1,14 @@
 'use strict';
 
 import _ = require('underscore');
+import $ = require('jquery');
 
-export class Container {
+class Container {
 
     containers: any = {};
     bodyElement = $('body');
+
+    constructor() { }
         
     /**
      * 
@@ -140,3 +143,5 @@ export class Container {
     }
 
 }
+
+export = new Container();

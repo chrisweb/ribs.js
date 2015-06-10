@@ -6,7 +6,7 @@ import Backbone = require('backbone');
 import $ = require('jquery');
 import _ = require('underscore');
 
-export class View extends Backbone.View<Backbone.Model> {
+class View extends Backbone.View<Backbone.Model> {
 	
     defaultOptions = {
         removeModelOnClose: true, // Boolean: If true, remove model from its collection on view close
@@ -30,6 +30,10 @@ export class View extends Backbone.View<Backbone.Model> {
     isDispatch: boolean = false;
     template;
 	
+    constructor(options?) {
+        super(options);
+    }
+
     initialize (options) {
 
         this.options = $.extend({}, this.defaultOptions, options || {});
@@ -607,3 +611,5 @@ export class View extends Backbone.View<Backbone.Model> {
     }
 
 }
+
+export = View;

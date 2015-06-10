@@ -3,7 +3,7 @@
 import Backbone = require('backbone');
 import _ = require('underscore');
 
-export class Collection extends Backbone.Collection<Backbone.Model> {
+class Collection extends Backbone.Collection<Backbone.Model> {
 
     options: any;
     onInitialize;
@@ -12,6 +12,10 @@ export class Collection extends Backbone.Collection<Backbone.Model> {
     _currentRange: number = 0;
     _lengthRange: number = 5;
     isCircularRange: boolean = false;
+
+    constructor(models?, options?) {
+        super(models, options);
+    }
     
     initialize (models, options) {
 
@@ -268,3 +272,5 @@ export class Collection extends Backbone.Collection<Backbone.Model> {
     }
         
 }
+
+export = Collection;

@@ -1,10 +1,14 @@
 'use strict';
 
-import EventsManager = require('EventsManager');
+import EventsManager = require('eventsManager');
 import Backbone = require('backbone');
 import _ = require('underscore');
 
-export class Router extends Backbone.Router {
+class Router extends Backbone.Router {
+
+    constructor() {
+        super();
+    }
 
     initialize () {
 
@@ -91,3 +95,5 @@ export class Router extends Backbone.Router {
     }
 
 }
+
+export = Router;

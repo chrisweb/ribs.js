@@ -100,6 +100,12 @@ declare module Ribs {
         function clear(containerSelector: string): void;
     }
 
+    class EventsManager extends Backbone.Events {
+        
+        public constants: { [index: string]: string};
+
+    }
+
     class Router {
         public initialize: void;
         public routes: Object;
