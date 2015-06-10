@@ -1,10 +1,4 @@
 'use strict';
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-};
 (function (deps, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -12,13 +6,13 @@ var __extends = (this && this.__extends) || function (d, b) {
     else if (typeof define === 'function' && define.amd) {
         define(deps, factory);
     }
-})(["require", "exports", 'backbone'], function (require, exports) {
+})(["require", "exports", 'backbone', 'underscore'], function (require, exports) {
     var Backbone = require('backbone');
-    var Controller = (function (_super) {
-        __extends(Controller, _super);
+    var _ = require('underscore');
+    var Controller = (function () {
         function Controller() {
-            _super.call(this);
             this.initialize.apply(this, arguments);
+            _.extend(this, Backbone.Events);
         }
         Controller.prototype.initialize = function (options, configuration, router) {
             this.options = options || {};
@@ -33,7 +27,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             return Backbone.Model.extend.apply(this, arguments);
         };
         return Controller;
-    })(Backbone.Events);
+    })();
     return Controller;
 });
 //# sourceMappingURL=controller.js.map

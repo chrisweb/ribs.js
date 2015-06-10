@@ -1,8 +1,9 @@
 'use strict';
 
 import Backbone = require('backbone');
+import _ = require('underscore');
 
-class Controller extends Backbone.Events {
+class Controller {
 
     options: any;
     router: Backbone.Router;
@@ -10,8 +11,8 @@ class Controller extends Backbone.Events {
     
     constructor () {
         
-        super();
         this.initialize.apply(this, arguments);
+        _.extend(this, Backbone.Events);
         
     }
     
