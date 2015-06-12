@@ -90,7 +90,13 @@ declare module Ribs {
     }
 
     class Controller {
+        public constructor(options: any, configuration: any, router: any);
         extend(): void;
+        initialize(): void;
+        create;
+        clear(): void;
+        off;
+        promise;
     }
 
     module Container {
