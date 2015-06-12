@@ -9,7 +9,15 @@ class Controller {
     router: Backbone.Router;
     onInitialize;
     create;
-    promise;
+    _promise;
+
+    get promise() {
+        return this._promise;
+    }
+
+    set promise(value) {
+        this._promise = value;
+    }
 
     clear(): void { }
 

@@ -14,6 +14,16 @@
             this.initialize(options, configuration, router);
             _.extend(this, Backbone.Events);
         }
+        Object.defineProperty(Controller.prototype, "promise", {
+            get: function () {
+                return this._promise;
+            },
+            set: function (value) {
+                this._promise = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
         Controller.prototype.clear = function () { };
         Controller.prototype.initialize = function (options, configuration, router) {
             this.options = options || {};
