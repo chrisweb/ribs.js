@@ -10,8 +10,8 @@
     var Backbone = require('backbone');
     var _ = require('underscore');
     var Controller = (function () {
-        function Controller() {
-            this.initialize.apply(this, arguments);
+        function Controller(options, configuration, router) {
+            this.initialize(options, configuration, router);
             _.extend(this, Backbone.Events);
         }
         Controller.prototype.initialize = function (options, configuration, router) {
@@ -22,6 +22,9 @@
                 // execute it now
                 this.onInitialize(this.options, configuration, this.router);
             }
+        };
+        Controller.prototype.clear = function () {
+            this.off();
         };
         Controller.extend = function () {
             return Backbone.Model.extend.apply(this, arguments);
