@@ -1,3 +1,4 @@
+/// <reference path="../scripts/typings/es6-promise/es6-promise.d.ts" />
 'use strict';
 
 import ViewHelper = require('./viewHelper');
@@ -29,12 +30,18 @@ class View extends Backbone.View<Backbone.Model> {
     referenceModelView;
     isDispatch: boolean = false;
     template;
+
+    private pendingViewModel: JQuery[];
+    private waitingForSort: boolean;
 	
     constructor(options?) {
         super(options);
     }
 
     initialize (options) {
+
+        this.pendingViewModel = [];
+        this.waitingForSort = false;
 
         this.options = $.extend({}, View.defaultOptions, options || {});
 
@@ -125,6 +132,7 @@ class View extends Backbone.View<Backbone.Model> {
             this.listenTo(this.collection, 'remove', this.removeModel);
             this.listenTo(this.collection, 'reset', this.reset);
             this.listenTo(this.collection, 'sort', this.sortModel);
+            this.listenTo(this.collection, 'update', this.updateCollection);
 
         }
 
@@ -160,129 +168,61 @@ class View extends Backbone.View<Backbone.Model> {
 
         }
 
-        var $renderedTemplate = this.htmlize();
+        let htmlizeObject = this.htmlize();
 
-        this.setElement($renderedTemplate);
+        let doRender = ($renderedTemplate: JQuery) => {
 
-        // if onRender exists
-        if (this.onRender) {
+            this.setElement($renderedTemplate);
+
+            // if onRender exists
+            if (this.onRender) {
                 
-            // execute it now
-            this.onRender();
+                // execute it now
+                this.onRender();
+
+            }
+
+            this.isDispatch = true;
+
+            return this;
+        }
+
+        if (htmlizeObject instanceof Promise) {
+
+            return <any>htmlizeObject.then(doRender);
 
         }
 
-        this.isDispatch = true;
-
-        return this;
+        return doRender(<JQuery>htmlizeObject);
 
     }
 
-    reRenderModelView () {
+    reRenderModelView() {
 
-        var $renderedTemplate = this.htmlize();
+        let htmlizeObject = this.htmlize();
 
-        $(this.el).replaceWith($renderedTemplate);
+        let doRerender = ($renderedTemplate: JQuery) => {
 
-        this.setElement($renderedTemplate);
+            $(this.el).replaceWith($renderedTemplate);
+
+            this.setElement($renderedTemplate);
+        }
+
+        if (htmlizeObject instanceof Promise) {
+            htmlizeObject.then(doRerender);
+        } else {
+            doRerender(<JQuery>htmlizeObject);
+        }
 
     }
 
-    htmlize () {
+    private htmlizeView(): JQuery|Promise<JQuery> {
 
-        var renderedTemplate;
+        let templateKeyValues;
 
-        // is there a collection?
-        if (this.collection !== undefined) {
+        if (this.model !== undefined) {
             
-            // and also a model or templateVariables or nothing?
-            if (this.model !== undefined) {
-
-                var templateKeyValues;
-
-                // are there also templateVariables
-                if (_.keys(this.options.templateVariables).length > 0) {
-
-                    templateKeyValues = $.extend({}, ViewHelper.get(), this.options.templateVariables, this.getModelAsJson());
-
-                } else {
-
-                    templateKeyValues = $.extend({}, ViewHelper.get(), this.getModelAsJson());
-
-                }
-
-                renderedTemplate = this.template(templateKeyValues);
-
-            } else if (_.keys(this.options.templateVariables).length > 0) {
-
-                renderedTemplate = this.template($.extend({}, ViewHelper.get(), this.options.templateVariables));
-
-            } else {
-
-                renderedTemplate = this.template(ViewHelper.get());
-
-            }
-
-            // for each model of the collection append a modelView to
-            // collection dom
-
-            if (this.collection.models.length > 0) {
-
-                if (this.options.ModelView !== null) {
-
-                    var ModelView = this.options.ModelView;
-
-                } else {
-
-                    throw 'a collection view needs a ModelView passed on instantiation through the options';
-
-                }
-
-                var modelViewsAsHtml = [];
-
-                _.each<Backbone.Model>(this.collection.models, (model) => {
-
-                    var mergedModelViewOptions = $.extend({}, this.options.ModelViewOptions, { model: model, parentView: this });
-
-                    var modelView = new ModelView(mergedModelViewOptions);
-
-                    this.collectionModelViews[model.cid] = modelView;
-
-                    var $html = modelView.create();
-
-                    this.referenceModelView[model.cid] = { $html: $html };
-
-                    modelViewsAsHtml.push($html);
-
-                    if (this.onModelAdded) {
-
-                        this.onModelAdded(modelView);
-
-                    }
-
-                });
-
-                var $renderedTemplateCache = $(renderedTemplate);
-
-                if ($renderedTemplateCache.is(this.options.listSelector)) {
-
-                    $renderedTemplateCache.append(modelViewsAsHtml);
-
-                } else {
-
-                    $renderedTemplateCache.find(this.options.listSelector).append(modelViewsAsHtml);
-
-                }
-
-                // collection view
-                renderedTemplate = $renderedTemplateCache[0];
-
-            }
-
-        } else if (this.model !== undefined) {
-
-            var templateKeyValues;
-                
+            // model view
             // are there also templateVariables
             if (_.keys(this.options.templateVariables).length > 0) {
 
@@ -294,22 +234,57 @@ class View extends Backbone.View<Backbone.Model> {
 
             }
 
-            // model view
-            renderedTemplate = this.template(templateKeyValues);
 
         } else if (_.keys(this.options.templateVariables).length > 0) {
 
             // templateVariables view
-            renderedTemplate = this.template($.extend({}, ViewHelper.get(), this.options.templateVariables));
+            templateKeyValues = $.extend({}, ViewHelper.get(), this.options.templateVariables);
 
         } else {
                 
             // basic view
-            renderedTemplate = this.template(ViewHelper.get());
+            templateKeyValues = ViewHelper.get();
 
         }
 
-        return $(renderedTemplate);
+        return $(this.template(templateKeyValues));
+
+    }
+
+    htmlize(): JQuery|Promise<JQuery> {
+
+        // is there a model or templateVariables or nothing?
+        let viewHtml: JQuery|Promise<JQuery> = this.htmlizeView();
+
+        let doCollection = ($renderedTemplate: JQuery): JQuery => {
+            // and also a collection?
+            if (this.collection !== undefined) {
+            
+                // for each model of the collection append a modelView to
+                // collection dom
+
+                if (this.collection.models.length > 0) {
+
+                    this.collection.models.forEach((model) => {
+
+                        this.addModel(model);
+
+                    });
+
+                    this.updateCollection($renderedTemplate);
+
+                }
+
+            }
+
+            return $renderedTemplate;
+        };
+
+        if (viewHtml instanceof Promise) {
+            return (<Promise<JQuery>>viewHtml).then(doCollection);
+        }
+
+        return doCollection(<JQuery>viewHtml);
 
     }
 
@@ -402,7 +377,7 @@ class View extends Backbone.View<Backbone.Model> {
 
     }
 
-    create (): JQuery {
+    create(): JQuery|Promise<JQuery> {
 
         if (this.isDispatch === true) {
 
@@ -410,7 +385,17 @@ class View extends Backbone.View<Backbone.Model> {
 
         }
 
-        return this.render().$el;
+        let renderObject = this.render();
+
+        if (renderObject instanceof Promise) {
+
+            return (<Promise<View>>renderObject).then((view: View) => {
+                return this.$el;
+            });
+
+        }
+
+        return this.$el;
 
     }
 
@@ -479,7 +464,7 @@ class View extends Backbone.View<Backbone.Model> {
 
     }
 
-    addModel (model) {
+    private addModel (model) {
 
         if (model.cid in this.collectionModelViews) {
 
@@ -501,15 +486,13 @@ class View extends Backbone.View<Backbone.Model> {
 
         }
 
-        if (this.options.ModelView !== null) {
-
-            var ModelView = this.options.ModelView;
-
-        } else {
+        if (this.options.ModelView === null) {
 
             throw 'a collection view needs a ModelView passed on instantiation through the options';
 
         }
+
+        let ModelView = this.options.ModelView;
 
         var mergedModelViewOptions = $.extend({}, this.options.ModelViewOptions, { model: model, parentView: this });
 
@@ -522,18 +505,8 @@ class View extends Backbone.View<Backbone.Model> {
             container: modelView
         };
 
-        var $container = this.$el.find(this.options.listSelector);
+        this.pendingViewModel.push($element);
 
-        if ($container.length > 0) {
-
-            $container.append($element);
-
-        } else if (($container = this.$el.filter(this.options.listSelector)).length) {
-
-            $container.append($element);
-
-        }
-            
         // TODO: use the container to manage subviews of a list
         //Container.add(this.options.listSelector, modelView);
             
@@ -544,7 +517,7 @@ class View extends Backbone.View<Backbone.Model> {
         }
     }
 
-    removeModel (model) {
+    private removeModel (model) {
 
         var view = this.referenceModelView[model.cid];
 
@@ -583,21 +556,32 @@ class View extends Backbone.View<Backbone.Model> {
 
     }
 
-    sortModel () {
+    private sortModel($container: JQuery = null) {
 
-        var $container = this.$el.find(this.options.listSelector);
+        if (this.pendingViewModel.length) {
+            this.waitingForSort = true;
+            return;
+        }
 
-        if ($container.length === 0) {
-
-            $container = this.$el.filter(this.options.listSelector);
+        if (!($container instanceof jQuery) || $container === null) {
+            $container = this.$el.find(this.options.listSelector);
 
             if ($container.length === 0) {
 
-                return;
+                $container = this.$el.filter(this.options.listSelector);
+
+                if ($container.length === 0) {
+
+                    return;
+
+                }
 
             }
-
         }
+
+        // avoid lot of reflow and repaint.
+        let displayCss = $container.css('display');
+        $container.css('display', 'none');
 
         _.each(this.collection.models, (model) => {
 
@@ -607,6 +591,44 @@ class View extends Backbone.View<Backbone.Model> {
 
 
         });
+
+        $container.css('display', displayCss);
+
+    }
+
+    private updateCollection($container: JQuery = null) {
+
+        if (!($container instanceof jQuery) || $container === null) {
+
+            $container = this.$el.find(this.options.listSelector);
+
+            if ($container.length === 0) {
+
+                if (($container = this.$el.filter(this.options.listSelector)).length === 0) {
+
+                    $container = $();
+
+                }
+
+            }
+
+        }
+
+        // avoid lot of reflow and repaint.
+        let displayCss = $container.css('display');
+        $container.css('display', 'none');
+
+        $container.append(this.pendingViewModel);
+        
+        this.pendingViewModel.splice(0, this.pendingViewModel.length);
+
+        if (this.waitingForSort) {
+            this.sortModel($container);
+
+            this.waitingForSort = false;
+        }
+
+        $container.css('display', displayCss);
 
     }
 

@@ -32,11 +32,11 @@ declare module Ribs {
         public constructor(options?: ViewOptions);
         protected onInitializeStart(): void;
         protected onInitialize(): void;
-        public create(): void;
+        public create(): JQuery|Promise<JQuery>;
         protected onRenderStart(): void;
         protected onRender(): void;
         protected reRenderModelView(): void;
-        public htmlize(): JQuery;
+        public htmlize(): JQuery|Promise<JQuery>;
         protected getModelAsJson(): JSON;
         protected getCollectionAsJson(): JSON;
         public clear(): void;
