@@ -7,8 +7,8 @@ import $ = require('jquery');
 import _ = require('underscore');
 
 class View extends Backbone.View<Backbone.Model> {
-	
-    defaultOptions = {
+
+    static defaultOptions: Ribs.ViewOptions = {
         removeModelOnClose: true, // Boolean: If true, remove model from its collection on view close
         reRenderOnChange: false,
         listSelector: '.list',
@@ -16,7 +16,7 @@ class View extends Backbone.View<Backbone.Model> {
         ModelView: null,
         ModelViewOptions: {}
     };
-    options: any = {};
+    options: Ribs.ViewOptions = {};
     onInitialize;
     onInitializeStart;
     onRender;
@@ -36,7 +36,7 @@ class View extends Backbone.View<Backbone.Model> {
 
     initialize (options) {
 
-        this.options = $.extend({}, this.defaultOptions, options || {});
+        this.options = $.extend({}, View.defaultOptions, options || {});
 
         // if oninitialize exists
         if (this.onInitializeStart) {
