@@ -9,7 +9,9 @@ class Controller {
     router: Backbone.Router;
     onInitialize;
     create;
-    private createPromise;
+    promise;
+
+    clear(): void { }
 
     constructor(options, configuration, router) {
 
@@ -32,12 +34,7 @@ class Controller {
         }
 
     }
-
-    clear() {
-        (<any>this).off();
-        this.createPromise = null;
-    }
-
+    
     static extend() {
         return (<any>Backbone.Model).extend.apply(this, arguments);
     }

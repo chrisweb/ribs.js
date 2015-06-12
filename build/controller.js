@@ -14,6 +14,7 @@
             this.initialize(options, configuration, router);
             _.extend(this, Backbone.Events);
         }
+        Controller.prototype.clear = function () { };
         Controller.prototype.initialize = function (options, configuration, router) {
             this.options = options || {};
             this.router = router;
@@ -22,10 +23,6 @@
                 // execute it now
                 this.onInitialize(this.options, configuration, this.router);
             }
-        };
-        Controller.prototype.clear = function () {
-            this.off();
-            this.createPromise = null;
         };
         Controller.extend = function () {
             return Backbone.Model.extend.apply(this, arguments);
