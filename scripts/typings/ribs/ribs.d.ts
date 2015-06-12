@@ -91,6 +91,9 @@ declare module Ribs {
 
     class Controller {
         extend(): void;
+        initialize(): void;
+        create;
+        clear(): void;
     }
 
     module Container {
