@@ -9,6 +9,7 @@ class Controller {
     router: Backbone.Router;
     onInitialize;
     create;
+    private createPromise;
 
     constructor(options, configuration, router) {
 
@@ -34,6 +35,7 @@ class Controller {
 
     clear() {
         (<any>this).off();
+        this.createPromise = null;
     }
 
     static extend() {

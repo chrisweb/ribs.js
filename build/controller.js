@@ -25,6 +25,7 @@
         };
         Controller.prototype.clear = function () {
             this.off();
+            this.createPromise = null;
         };
         Controller.extend = function () {
             return Backbone.Model.extend.apply(this, arguments);
