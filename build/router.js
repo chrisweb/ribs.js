@@ -12,8 +12,8 @@ var __extends = (this && this.__extends) || function (d, b) {
     else if (typeof define === 'function' && define.amd) {
         define(deps, factory);
     }
-})(["require", "exports", 'eventsManager', 'backbone', 'underscore'], function (require, exports) {
-    var EventsManager = require('eventsManager');
+})(["require", "exports", './eventsManager', 'backbone', 'underscore'], function (require, exports) {
+    var EventsManager = require('./eventsManager');
     var Backbone = require('backbone');
     var _ = require('underscore');
     var Router = (function (_super) {
