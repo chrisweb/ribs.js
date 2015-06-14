@@ -15,6 +15,8 @@
     <EnableTypeScript>true</EnableTypeScript>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <ToolsVersionPromptShown>1.5</ToolsVersionPromptShown>
+    <TypeScriptToolsVersion>1.5</TypeScriptToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
@@ -45,6 +47,18 @@
     <Compile Include="build\view.js" />
     <Compile Include="build\viewHelper.js" />
     <Compile Include="Gruntfile.js" />
+    <Content Include="scripts\typings\jquery\jquery-tests.ts.tscparams" />
+    <Content Include="scripts\typings\underscore\underscore-tests.ts.tscparams" />
+    <TypeScriptCompile Include="scripts\typings\backbone\backbone-tests.ts" />
+    <TypeScriptCompile Include="scripts\typings\backbone\backbone.d.ts" />
+    <TypeScriptCompile Include="scripts\typings\es6-promise\es6-promise-commonjs-tests.ts" />
+    <TypeScriptCompile Include="scripts\typings\es6-promise\es6-promise-tests.ts" />
+    <TypeScriptCompile Include="scripts\typings\es6-promise\es6-promise.d.ts" />
+    <TypeScriptCompile Include="scripts\typings\jquery\jquery-tests.ts" />
+    <TypeScriptCompile Include="scripts\typings\jquery\jquery.d.ts" />
+    <TypeScriptCompile Include="scripts\typings\ribs\ribs.d.ts" />
+    <TypeScriptCompile Include="scripts\typings\underscore\underscore-tests.ts" />
+    <TypeScriptCompile Include="scripts\typings\underscore\underscore.d.ts" />
     <TypeScriptCompile Include="source\collection.ts" />
     <TypeScriptCompile Include="source\container.ts" />
     <TypeScriptCompile Include="source\controller.ts" />
@@ -58,6 +72,12 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="build" />
+    <Folder Include="scripts\typings\" />
+    <Folder Include="scripts\typings\backbone\" />
+    <Folder Include="scripts\typings\es6-promise\" />
+    <Folder Include="scripts\typings\jquery\" />
+    <Folder Include="scripts\typings\ribs\" />
+    <Folder Include="scripts\typings\underscore\" />
     <Folder Include="source\" />
     <Folder Include="scripts" />
   </ItemGroup>

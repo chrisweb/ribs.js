@@ -1,3 +1,4 @@
+/// <reference path="../scripts/typings/es6-promise/es6-promise.d.ts" />
 'use strict';
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -21,19 +22,13 @@ var __extends = (this && this.__extends) || function (d, b) {
         __extends(View, _super);
         function View(options) {
             _super.call(this, options);
-            this.defaultOptions = {
-                removeModelOnClose: true,
-                reRenderOnChange: false,
-                listSelector: '.list',
-                templateVariables: {},
-                ModelView: null,
-                ModelViewOptions: {}
-            };
             this.options = {};
             this.isDispatch = false;
         }
         View.prototype.initialize = function (options) {
-            this.options = $.extend({}, this.defaultOptions, options || {});
+            this.pendingViewModel = [];
+            this.waitingForSort = false;
+            this.options = $.extend({}, View.defaultOptions, options || {});
             // if oninitialize exists
             if (this.onInitializeStart) {
                 // execute it now
@@ -94,6 +89,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                 this.listenTo(this.collection, 'remove', this.removeModel);
                 this.listenTo(this.collection, 'reset', this.reset);
                 this.listenTo(this.collection, 'sort', this.sortModel);
+                this.listenTo(this.collection, 'update', this.updateCollection);
             }
             if (this.model !== undefined) {
                 this.listenTo(this.model, 'destroy', this.close);
@@ -108,83 +104,46 @@ var __extends = (this && this.__extends) || function (d, b) {
             }
         };
         View.prototype.render = function () {
+            var _this = this;
             // if onRender exists
             if (this.onRenderStart) {
                 // execute it now
                 this.onRenderStart();
             }
-            var $renderedTemplate = this.htmlize();
-            this.setElement($renderedTemplate);
-            // if onRender exists
-            if (this.onRender) {
-                // execute it now
-                this.onRender();
+            var htmlizeObject = this.htmlize();
+            var doRender = function ($renderedTemplate) {
+                _this.setElement($renderedTemplate);
+                // if onRender exists
+                if (_this.onRender) {
+                    // execute it now
+                    _this.onRender();
+                }
+                _this.isDispatch = true;
+                return _this;
+            };
+            if (htmlizeObject instanceof Promise) {
+                return htmlizeObject.then(doRender);
             }
-            this.isDispatch = true;
-            return this;
+            return doRender(htmlizeObject);
         };
         View.prototype.reRenderModelView = function () {
-            var $renderedTemplate = this.htmlize();
-            $(this.el).replaceWith($renderedTemplate);
-            this.setElement($renderedTemplate);
-        };
-        View.prototype.htmlize = function () {
             var _this = this;
-            var renderedTemplate;
-            // is there a collection?
-            if (this.collection !== undefined) {
-                // and also a model or templateVariables or nothing?
-                if (this.model !== undefined) {
-                    var templateKeyValues;
-                    // are there also templateVariables
-                    if (_.keys(this.options.templateVariables).length > 0) {
-                        templateKeyValues = $.extend({}, ViewHelper.get(), this.options.templateVariables, this.getModelAsJson());
-                    }
-                    else {
-                        templateKeyValues = $.extend({}, ViewHelper.get(), this.getModelAsJson());
-                    }
-                    renderedTemplate = this.template(templateKeyValues);
-                }
-                else if (_.keys(this.options.templateVariables).length > 0) {
-                    renderedTemplate = this.template($.extend({}, ViewHelper.get(), this.options.templateVariables));
-                }
-                else {
-                    renderedTemplate = this.template(ViewHelper.get());
-                }
-                // for each model of the collection append a modelView to
-                // collection dom
-                if (this.collection.models.length > 0) {
-                    if (this.options.ModelView !== null) {
-                        var ModelView = this.options.ModelView;
-                    }
-                    else {
-                        throw 'a collection view needs a ModelView passed on instantiation through the options';
-                    }
-                    var modelViewsAsHtml = [];
-                    _.each(this.collection.models, function (model) {
-                        var mergedModelViewOptions = $.extend({}, _this.options.ModelViewOptions, { model: model, parentView: _this });
-                        var modelView = new ModelView(mergedModelViewOptions);
-                        _this.collectionModelViews[model.cid] = modelView;
-                        var $html = modelView.create();
-                        _this.referenceModelView[model.cid] = { $html: $html };
-                        modelViewsAsHtml.push($html);
-                        if (_this.onModelAdded) {
-                            _this.onModelAdded(modelView);
-                        }
-                    });
-                    var $renderedTemplateCache = $(renderedTemplate);
-                    if ($renderedTemplateCache.is(this.options.listSelector)) {
-                        $renderedTemplateCache.append(modelViewsAsHtml);
-                    }
-                    else {
-                        $renderedTemplateCache.find(this.options.listSelector).append(modelViewsAsHtml);
-                    }
-                    // collection view
-                    renderedTemplate = $renderedTemplateCache[0];
-                }
+            var htmlizeObject = this.htmlize();
+            var doRerender = function ($renderedTemplate) {
+                $(_this.el).replaceWith($renderedTemplate);
+                _this.setElement($renderedTemplate);
+            };
+            if (htmlizeObject instanceof Promise) {
+                htmlizeObject.then(doRerender);
             }
-            else if (this.model !== undefined) {
-                var templateKeyValues;
+            else {
+                doRerender(htmlizeObject);
+            }
+        };
+        View.prototype.htmlizeView = function () {
+            var templateKeyValues;
+            if (this.model !== undefined) {
+                // model view
                 // are there also templateVariables
                 if (_.keys(this.options.templateVariables).length > 0) {
                     templateKeyValues = $.extend({}, ViewHelper.get(), this.options.templateVariables, this.getModelAsJson());
@@ -192,18 +151,39 @@ var __extends = (this && this.__extends) || function (d, b) {
                 else {
                     templateKeyValues = $.extend({}, ViewHelper.get(), this.getModelAsJson());
                 }
-                // model view
-                renderedTemplate = this.template(templateKeyValues);
             }
             else if (_.keys(this.options.templateVariables).length > 0) {
                 // templateVariables view
-                renderedTemplate = this.template($.extend({}, ViewHelper.get(), this.options.templateVariables));
+                templateKeyValues = $.extend({}, ViewHelper.get(), this.options.templateVariables);
             }
             else {
                 // basic view
-                renderedTemplate = this.template(ViewHelper.get());
+                templateKeyValues = ViewHelper.get();
             }
-            return $(renderedTemplate);
+            return $(this.template(templateKeyValues));
+        };
+        View.prototype.htmlize = function () {
+            var _this = this;
+            // is there a model or templateVariables or nothing?
+            var viewHtml = this.htmlizeView();
+            var doCollection = function ($renderedTemplate) {
+                // and also a collection?
+                if (_this.collection !== undefined) {
+                    // for each model of the collection append a modelView to
+                    // collection dom
+                    if (_this.collection.models.length > 0) {
+                        _this.collection.models.forEach(function (model) {
+                            _this.addModel(model);
+                        });
+                        _this.updateCollection($renderedTemplate);
+                    }
+                }
+                return $renderedTemplate;
+            };
+            if (viewHtml instanceof Promise) {
+                return viewHtml.then(doCollection);
+            }
+            return doCollection(viewHtml);
         };
         View.prototype.getModelAsJson = function () {
             var data;
@@ -251,10 +231,17 @@ var __extends = (this && this.__extends) || function (d, b) {
             }
         };
         View.prototype.create = function () {
+            var _this = this;
             if (this.isDispatch === true) {
                 return this.$el;
             }
-            return this.render().$el;
+            var renderObject = this.render();
+            if (renderObject instanceof Promise) {
+                return renderObject.then(function (view) {
+                    return _this.$el;
+                });
+            }
+            return this.$el;
         };
         View.prototype.clear = function () {
             Ribs.Container.clear(this.options.listSelector);
@@ -301,12 +288,10 @@ var __extends = (this && this.__extends) || function (d, b) {
                 }
                 return;
             }
-            if (this.options.ModelView !== null) {
-                var ModelView = this.options.ModelView;
-            }
-            else {
+            if (this.options.ModelView === null) {
                 throw 'a collection view needs a ModelView passed on instantiation through the options';
             }
+            var ModelView = this.options.ModelView;
             var mergedModelViewOptions = $.extend({}, this.options.ModelViewOptions, { model: model, parentView: this });
             var modelView = new ModelView(mergedModelViewOptions);
             var $element = modelView.create();
@@ -314,13 +299,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                 $html: $element,
                 container: modelView
             };
-            var $container = this.$el.find(this.options.listSelector);
-            if ($container.length > 0) {
-                $container.append($element);
-            }
-            else if (($container = this.$el.filter(this.options.listSelector)).length) {
-                $container.append($element);
-            }
+            this.pendingViewModel.push($element);
             // TODO: use the container to manage subviews of a list
             //Container.add(this.options.listSelector, modelView);
             this.collectionModelViews[model.cid] = modelView;
@@ -348,19 +327,59 @@ var __extends = (this && this.__extends) || function (d, b) {
             }
             return view;
         };
-        View.prototype.sortModel = function () {
+        View.prototype.sortModel = function ($container) {
             var _this = this;
-            var $container = this.$el.find(this.options.listSelector);
-            if ($container.length === 0) {
-                $container = this.$el.filter(this.options.listSelector);
+            if ($container === void 0) { $container = null; }
+            if (this.pendingViewModel.length) {
+                this.waitingForSort = true;
+                return;
+            }
+            if (!($container instanceof jQuery) || $container === null) {
+                $container = this.$el.find(this.options.listSelector);
                 if ($container.length === 0) {
-                    return;
+                    $container = this.$el.filter(this.options.listSelector);
+                    if ($container.length === 0) {
+                        return;
+                    }
                 }
             }
+            // avoid lot of reflow and repaint.
+            var displayCss = $container.css('display');
+            $container.css('display', 'none');
             _.each(this.collection.models, function (model) {
                 var modelView = _this.collectionModelViews[model.cid];
                 $container.append(modelView.$el);
             });
+            $container.css('display', displayCss);
+        };
+        View.prototype.updateCollection = function ($container) {
+            if ($container === void 0) { $container = null; }
+            if (!($container instanceof jQuery) || $container === null) {
+                $container = this.$el.find(this.options.listSelector);
+                if ($container.length === 0) {
+                    if (($container = this.$el.filter(this.options.listSelector)).length === 0) {
+                        $container = $();
+                    }
+                }
+            }
+            // avoid lot of reflow and repaint.
+            var displayCss = $container.css('display');
+            $container.css('display', 'none');
+            $container.append(this.pendingViewModel);
+            this.pendingViewModel.splice(0, this.pendingViewModel.length);
+            if (this.waitingForSort) {
+                this.sortModel($container);
+                this.waitingForSort = false;
+            }
+            $container.css('display', displayCss);
+        };
+        View.defaultOptions = {
+            removeModelOnClose: true,
+            reRenderOnChange: false,
+            listSelector: '.list',
+            templateVariables: {},
+            ModelView: null,
+            ModelViewOptions: {}
         };
         return View;
     })(Backbone.View);
