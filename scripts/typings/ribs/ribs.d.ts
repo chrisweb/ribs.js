@@ -6,7 +6,7 @@
 // Library documentation : https://github.com/chrisweb/ribs.js/blob/master/README.md
 
 /// <reference path="../backbone/backbone.d.ts" />
-/// <reference path="../jquery/jquery.d.ts" />
+/// <reference path="../es6-promise/es6-promise.d.ts" />
 
 declare module Ribs {
 
@@ -122,10 +122,10 @@ declare module Ribs {
 
     function ViewsLoader(views: string, callback: Function);
 
-    class ViewHelpers {
-        add(helperName: string, helperCallback: Function): void;
-        remove(helperName: string): void;
-        get(): { [s: string]: Function };
+    module ViewHelpers {
+        function add(helperName: string, helperCallback: Function): void;
+        function remove(helperName: string): void;
+        function get(): { [s: string]: Function };
     }
     
 }

@@ -1,4 +1,3 @@
-/// <reference path="../scripts/typings/es6-promise/es6-promise.d.ts" />
 'use strict';
 
 import ViewHelper = require('./viewHelper');
