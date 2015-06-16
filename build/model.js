@@ -70,12 +70,16 @@ var __extends = (this && this.__extends) || function (d, b) {
         };
         /**
             * Get a projection of the model. The model return will be sync with this current model.
+            * @param modelClass Class of model projection.
             * @param keepAlive If true, when this model will be destroy, the projection will not be destroyed.
             * @param twoWay If true, this model will be sync with its own attribute. So if a projection change one of these attributes, this model will be affected.
             **/
-        Model.prototype.getModelProjection = function (keepAlive, twoWay) {
+        Model.prototype.getModelProjection = function (modelClass, keepAlive, twoWay) {
             var _this = this;
-            var model = new Model(this.attributes);
+            if (modelClass === void 0) { modelClass = Model; }
+            if (keepAlive === void 0) { keepAlive = false; }
+            if (twoWay === void 0) { twoWay = false; }
+            var model = new modelClass(this.attributes);
             model.id = model.cid; //we do that to avoid same model with same id of the model (as long as Collection doesn't accept two model with same id)
             this.listenTo(this, 'change', function () {
                 // No trigger on the model of the action in two way

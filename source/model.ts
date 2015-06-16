@@ -91,12 +91,13 @@ class Model extends Backbone.Model {
 
     /**
         * Get a projection of the model. The model return will be sync with this current model.
+        * @param modelClass Class of model projection.
         * @param keepAlive If true, when this model will be destroy, the projection will not be destroyed.
         * @param twoWay If true, this model will be sync with its own attribute. So if a projection change one of these attributes, this model will be affected.
         **/
-    getModelProjection (keepAlive, twoWay) {
+    getModelProjection(modelClass: typeof Model = Model, keepAlive: boolean = false, twoWay: boolean = false) {
 
-        var model = new Model(this.attributes);
+        var model = new modelClass(this.attributes);
 
         model.id = model.cid;//we do that to avoid same model with same id of the model (as long as Collection doesn't accept two model with same id)
 

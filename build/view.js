@@ -1,4 +1,3 @@
-/// <reference path="../scripts/typings/es6-promise/es6-promise.d.ts" />
 'use strict';
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
