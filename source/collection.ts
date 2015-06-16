@@ -65,12 +65,18 @@ class Collection extends Backbone.Collection<Backbone.Model> {
         });
         
         this.on('reset', (collection, options) => {
-                
+
             var newModels = this.getFilteredModels(collection.models, onlyDatas, notDatas);
-                
+
             filteredCollection.reset.call(filteredCollection, newModels, options);
-                
+
         });
+        /*
+        this.on('update', (collection, options) => {
+
+            filteredCollection.trigger('update', filteredCollection, options);
+
+        });*/
             
         /**
             * Now, I don't find the utility to listen sync event... Uncomment if you find it ;)

@@ -6,6 +6,8 @@ import Container = require('./container');
 import Backbone = require('backbone');
 import $ = require('jquery');
 import _ = require('underscore');
+import ES6Promise = require('es6-promise');
+import Promise = ES6Promise.Promise;
 
 class View extends Backbone.View<Backbone.Model> {
 
@@ -17,7 +19,7 @@ class View extends Backbone.View<Backbone.Model> {
         ModelView: null,
         ModelViewOptions: {}
     };
-    options: Ribs.ViewOptions = {};
+    options: Ribs.ViewOptions;
     onInitialize;
     onInitializeStart;
     onRender;
@@ -106,7 +108,7 @@ class View extends Backbone.View<Backbone.Model> {
 
         } catch (error) {
 
-            throw 'The view template should have at least one root element and not more then one';
+            throw new Error('The view template should have at least one root element and not more then one');
 
         }
 
@@ -122,7 +124,7 @@ class View extends Backbone.View<Backbone.Model> {
             // a root html element and that it only has one ... this is
             // because backbone views by design have an $el attribute
             // containing an element in which the template will be rendered
-            throw 'The view template should have at least one root element and not more then one';
+            throw new Error('The view template should have at least one root element and not more then one');
 
         }
 
@@ -271,7 +273,19 @@ class View extends Backbone.View<Backbone.Model> {
 
                     });
 
-                    this.updateCollection($renderedTemplate);
+                    var $container = $renderedTemplate.find(this.options.listSelector);
+
+                    if ($container.length === 0) {
+
+                        if (($container = $renderedTemplate.filter(this.options.listSelector)).length === 0) {
+
+                            $container = $();
+
+                        }
+
+                    }
+
+                    this.updateCollection($container);
 
                 }
 
@@ -443,6 +457,8 @@ class View extends Backbone.View<Backbone.Model> {
 
         }).bind(this));
 
+        this.updateCollection();
+
     }
 
     removeUnusedModelView (collection) {
@@ -470,7 +486,7 @@ class View extends Backbone.View<Backbone.Model> {
 
             var $element = this.collectionModelViews[model.cid].$el;
 
-            var $container = this.$el.find(this.options.listSelector);
+            /*var $container = this.$el.find(this.options.listSelector);
 
             if ($container.length > 0) {
 
@@ -480,7 +496,9 @@ class View extends Backbone.View<Backbone.Model> {
 
                 $container.append($element);
 
-            }
+            }*/
+
+            this.pendingViewModel.push($element);
 
             return;
 

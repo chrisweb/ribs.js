@@ -56,6 +56,12 @@ var __extends = (this && this.__extends) || function (d, b) {
                 var newModels = _this.getFilteredModels(collection.models, onlyDatas, notDatas);
                 filteredCollection.reset.call(filteredCollection, newModels, options);
             });
+            /*
+            this.on('update', (collection, options) => {
+    
+                filteredCollection.trigger('update', filteredCollection, options);
+    
+            });*/
             /**
                 * Now, I don't find the utility to listen sync event... Uncomment if you find it ;)
             var that = this;

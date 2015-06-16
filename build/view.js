@@ -13,16 +13,17 @@ var __extends = (this && this.__extends) || function (d, b) {
     else if (typeof define === 'function' && define.amd) {
         define(deps, factory);
     }
-})(["require", "exports", './viewHelper', 'backbone', 'jquery', 'underscore'], function (require, exports) {
+})(["require", "exports", './viewHelper', 'backbone', 'jquery', 'underscore', 'es6-promise'], function (require, exports) {
     var ViewHelper = require('./viewHelper');
     var Backbone = require('backbone');
     var $ = require('jquery');
     var _ = require('underscore');
+    var ES6Promise = require('es6-promise');
+    var Promise = ES6Promise.Promise;
     var View = (function (_super) {
         __extends(View, _super);
         function View(options) {
             _super.call(this, options);
-            this.options = {};
             this.isDispatch = false;
         }
         View.prototype.initialize = function (options) {
@@ -71,7 +72,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                 var $renderedTemplate = $(renderedTemplate);
             }
             catch (error) {
-                throw 'The view template should have at least one root element and not more then one';
+                throw new Error('The view template should have at least one root element and not more then one');
             }
             if ($renderedTemplate.length === 1) {
                 var rootElement = $renderedTemplate.first().html('');
@@ -82,7 +83,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                 // a root html element and that it only has one ... this is
                 // because backbone views by design have an $el attribute
                 // containing an element in which the template will be rendered
-                throw 'The view template should have at least one root element and not more then one';
+                throw new Error('The view template should have at least one root element and not more then one');
             }
             if (this.collection !== undefined) {
                 this.listenTo(this.collection, 'add', this.addModel);
@@ -175,7 +176,13 @@ var __extends = (this && this.__extends) || function (d, b) {
                         _this.collection.models.forEach(function (model) {
                             _this.addModel(model);
                         });
-                        _this.updateCollection($renderedTemplate);
+                        var $container = $renderedTemplate.find(_this.options.listSelector);
+                        if ($container.length === 0) {
+                            if (($container = $renderedTemplate.filter(_this.options.listSelector)).length === 0) {
+                                $container = $();
+                            }
+                        }
+                        _this.updateCollection($container);
                     }
                 }
                 return $renderedTemplate;
@@ -265,6 +272,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             _.each(collection.models, (function (newModel) {
                 this.addModel(newModel);
             }).bind(this));
+            this.updateCollection();
         };
         View.prototype.removeUnusedModelView = function (collection) {
             collection = collection || this.collection;
@@ -279,13 +287,18 @@ var __extends = (this && this.__extends) || function (d, b) {
         View.prototype.addModel = function (model) {
             if (model.cid in this.collectionModelViews) {
                 var $element = this.collectionModelViews[model.cid].$el;
-                var $container = this.$el.find(this.options.listSelector);
+                /*var $container = this.$el.find(this.options.listSelector);
+    
                 if ($container.length > 0) {
+    
                     $container.append($element);
-                }
-                else if (($container = this.$el.filter(this.options.listSelector)).length) {
+    
+                } else if (($container = this.$el.filter(this.options.listSelector)).length) {
+    
                     $container.append($element);
-                }
+    
+                }*/
+                this.pendingViewModel.push($element);
                 return;
             }
             if (this.options.ModelView === null) {
