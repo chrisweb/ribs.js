@@ -27,8 +27,8 @@
         function dispatch(containerSelector, options) {
             if (containerSelector === undefined) {
                 var promises = [];
-                _.each(this.containers, function (views, containerSelector) {
-                    var dispatchViewResult = this.dispatchViews.call(this, views, containerSelector, options);
+                _.each(containers, function (views, containerSelector) {
+                    var dispatchViewResult = dispatchViews(views, containerSelector, options);
                     if (dispatchViewResult instanceof Promise) {
                         promises.push(dispatchViewResult);
                     }
@@ -38,8 +38,8 @@
                 }
             }
             else {
-                var views = this.containers[containerSelector];
-                return this.dispatchViews.call(this, views, containerSelector, options);
+                var views = containers[containerSelector];
+                return dispatchViews(views, containerSelector, options);
             }
         }
         Container.dispatch = dispatch;
@@ -52,10 +52,10 @@
          * @returns {undefined}
          */
         function add(containerSelector, view) {
-            if (this.containers[containerSelector] === undefined) {
-                this.containers[containerSelector] = [];
+            if (containers[containerSelector] === undefined) {
+                containers[containerSelector] = [];
             }
-            this.containers[containerSelector].push(view);
+            containers[containerSelector].push(view);
         }
         Container.add = add;
         /**
@@ -69,12 +69,12 @@
          * @returns {undefined}
          */
         function remove(containerSelector, view) {
-            if (this.containers[containerSelector] === undefined) {
+            if (containers[containerSelector] === undefined) {
                 return;
             }
-            var indexOf = this.containers[containerSelector].indexOf(view);
+            var indexOf = containers[containerSelector].indexOf(view);
             if (indexOf > -1) {
-                this.containers[containerSelector].splice(indexOf, 1);
+                containers[containerSelector].splice(indexOf, 1);
             }
         }
         Container.remove = remove;
@@ -88,11 +88,11 @@
          * @returns {undefined}
          */
         function clear(containerSelector) {
-            var views = this.containers[containerSelector];
+            var views = containers[containerSelector];
             _.each(views, function (view) {
                 view.close();
             });
-            delete this.containers[containerSelector];
+            delete containers[containerSelector];
         }
         Container.clear = clear;
         /**
@@ -106,17 +106,23 @@
          * @returns {undefined}
          */
         function dispatchViews(views, containerSelector, options) {
-            var _this = this;
             var promises = [];
+            var $container = bodyElement.find(containerSelector);
+            if ($container.length === 0) {
+                $container = bodyElement.filter(containerSelector);
+                if ($container.length === 0) {
+                    $container = $();
+                }
+            }
             _.each(views, function (view) {
                 var doAppend = function (viewHtml) {
                     if (options !== undefined
                         && _.has(options, 'insertMode')
                         && options.insertMode === 'prepend') {
-                        _this.bodyElement.find(containerSelector).prepend(viewHtml);
+                        $container.prepend(viewHtml);
                     }
                     else {
-                        _this.bodyElement.find(containerSelector).append(viewHtml);
+                        $container.append(viewHtml);
                     }
                 };
                 var viewCreate = view.create();

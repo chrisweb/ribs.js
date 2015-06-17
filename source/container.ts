@@ -7,7 +7,7 @@ import Promise = ES6Promise.Promise;
 
 module Container {
 
-    var containers: any = {};
+    var containers: { [selector: string]: Ribs.View[] } = {};
     var bodyElement: JQuery = $('body');
         
     /**
@@ -25,9 +25,9 @@ module Container {
 
             let promises: Promise<any>[] = [];
 
-            _.each(this.containers, function(views, containerSelector) {
+            _.each(containers, function(views, containerSelector) {
 
-                let dispatchViewResult = this.dispatchViews.call(this, views, containerSelector, options);
+                let dispatchViewResult = dispatchViews(views, containerSelector, options);
 
                 if (dispatchViewResult instanceof Promise) {
                     promises.push(dispatchViewResult);
@@ -41,9 +41,9 @@ module Container {
 
         } else {
 
-            var views = this.containers[containerSelector];
+            var views = containers[containerSelector];
 
-            return this.dispatchViews.call(this, views, containerSelector, options);
+            return dispatchViews(views, containerSelector, options);
 
         }
 
@@ -59,13 +59,13 @@ module Container {
      */
     export function add(containerSelector: string, view: Ribs.View) {
 
-        if (this.containers[containerSelector] === undefined) {
+        if (containers[containerSelector] === undefined) {
 
-            this.containers[containerSelector] = [];
+            containers[containerSelector] = [];
 
         }
 
-        this.containers[containerSelector].push(view);
+        containers[containerSelector].push(view);
 
     }
         
@@ -81,17 +81,17 @@ module Container {
      */
     export function remove(containerSelector: string, view: Ribs.View) {
 
-        if (this.containers[containerSelector] === undefined) {
+        if (containers[containerSelector] === undefined) {
 
             return;
 
         }
             
-        var indexOf = this.containers[containerSelector].indexOf(view);
+        var indexOf = containers[containerSelector].indexOf(view);
             
         if (indexOf > -1) {
                 
-            this.containers[containerSelector].splice(indexOf, 1);
+            containers[containerSelector].splice(indexOf, 1);
                 
         }
 
@@ -108,7 +108,7 @@ module Container {
      */
     export function clear(containerSelector: string) {
 
-        let views: Ribs.View[] = this.containers[containerSelector];
+        let views: Ribs.View[] = containers[containerSelector];
 
         _.each<Ribs.View>(views, function (view) {
 
@@ -116,7 +116,7 @@ module Container {
 
         });
 
-        delete this.containers[containerSelector];
+        delete containers[containerSelector];
 
     }
     
@@ -134,6 +134,14 @@ module Container {
 
         let promises: Promise<any>[] = [];
 
+        let $container = bodyElement.find(containerSelector);
+        if ($container.length === 0) {
+            $container = bodyElement.filter(containerSelector);
+            if ($container.length === 0) {
+                $container = $();
+            }
+        }
+
         _.each(views, (view) => {
 
             let doAppend = (viewHtml: JQuery) => {
@@ -141,11 +149,11 @@ module Container {
                     && _.has(options, 'insertMode')
                     && options.insertMode === 'prepend') {
 
-                    this.bodyElement.find(containerSelector).prepend(viewHtml);
+                    $container.prepend(viewHtml);
 
                 } else {
 
-                    this.bodyElement.find(containerSelector).append(viewHtml);
+                    $container.append(viewHtml);
 
                 }
             };
