@@ -248,7 +248,13 @@ class View extends Backbone.View<Backbone.Model> {
 
         }
 
-        return $(this.template(templateKeyValues));
+        let templateResult = this.template(templateKeyValues);
+
+        if (templateResult instanceof Promise) {
+            return templateResult;
+        }
+
+        return $(templateResult);
 
     }
 

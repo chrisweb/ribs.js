@@ -27,6 +27,10 @@ declare module Ribs {
         container: Backbone.View<Backbone.Model>;
     }
 
+    interface ContainerOptions {
+        insertMode?: string
+    }
+
     class View extends Backbone.View<Backbone.Model> {
 
         public constructor(options?: ViewOptions);
@@ -101,7 +105,7 @@ declare module Ribs {
     }
 
     module Container {
-        function dispatch(containerSelector: string, options?: Object): void;
+        function dispatch(containerSelector?: string, options?: Ribs.ContainerOptions): Promise<any>|void;
         function add(containerSelector: string, view: any): void;
         function remove(containerSelector: string, view: any): void;
         function clear(containerSelector: string): void;
@@ -123,7 +127,7 @@ declare module Ribs {
 
     function ViewsLoader(views: string, callback: Function);
 
-    module ViewHelpers {
+    module ViewHelper {
         function add(helperName: string, helperCallback: Function): void;
         function remove(helperName: string): void;
         function get(): { [s: string]: Function };

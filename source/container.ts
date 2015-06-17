@@ -2,13 +2,13 @@
 
 import _ = require('underscore');
 import $ = require('jquery');
+import ES6Promise = require('es6-promise');
+import Promise = ES6Promise.Promise;
 
-class Container {
+module Container {
 
-    containers: any = {};
-    bodyElement = $('body');
-
-    constructor() { }
+    var containers: any = {};
+    var bodyElement: JQuery = $('body');
         
     /**
      * 
@@ -17,23 +17,33 @@ class Container {
      * @param {type} containerSelector
      * @param {type} options
      * 
-     * @returns {undefined}
+     * @returns Promise<void>
      */
-    dispatch (containerSelector, options) {
-            
+    export function dispatch(containerSelector?: string, options?: Ribs.ContainerOptions): Promise<any>|void {
+
         if (containerSelector === undefined) {
+
+            let promises: Promise<any>[] = [];
 
             _.each(this.containers, function(views, containerSelector) {
 
-                this.dispatchViews.call(this, views, containerSelector, options);
+                let dispatchViewResult = this.dispatchViews.call(this, views, containerSelector, options);
+
+                if (dispatchViewResult instanceof Promise) {
+                    promises.push(dispatchViewResult);
+                }
 
             });
+
+            if (promises.length) {
+                return Promise.all(promises);
+            }
 
         } else {
 
             var views = this.containers[containerSelector];
 
-            this.dispatchViews.call(this, views, containerSelector, options);
+            return this.dispatchViews.call(this, views, containerSelector, options);
 
         }
 
@@ -47,7 +57,7 @@ class Container {
      * @param {type} view
      * @returns {undefined}
      */
-    add (containerSelector, view) {
+    export function add(containerSelector: string, view: Ribs.View) {
 
         if (this.containers[containerSelector] === undefined) {
 
@@ -69,7 +79,7 @@ class Container {
      * 
      * @returns {undefined}
      */
-    remove (containerSelector, view) {
+    export function remove(containerSelector: string, view: Ribs.View) {
 
         if (this.containers[containerSelector] === undefined) {
 
@@ -96,9 +106,9 @@ class Container {
      * 
      * @returns {undefined}
      */
-    clear (containerSelector) {
+    export function clear(containerSelector: string) {
 
-        var views: Ribs.View[] = this.containers[containerSelector];
+        let views: Ribs.View[] = this.containers[containerSelector];
 
         _.each<Ribs.View>(views, function (view) {
 
@@ -120,28 +130,47 @@ class Container {
      * 
      * @returns {undefined}
      */
-    private dispatchViews (views: Ribs.View[], containerSelector, options) {
-        
+    function dispatchViews(views: Ribs.View[], containerSelector: string, options: Ribs.ContainerOptions): Promise<any>|void {
+
+        let promises: Promise<any>[] = [];
+
         _.each(views, (view) => {
 
-            var viewHtml = view.create();
+            let doAppend = (viewHtml: JQuery) => {
+                if (options !== undefined
+                    && _.has(options, 'insertMode')
+                    && options.insertMode === 'prepend') {
 
-            if (options !== undefined
-                && _.has(options, 'insertMode')
-                && options.insertMode === 'prepend') {
+                    this.bodyElement.find(containerSelector).prepend(viewHtml);
 
-                this.bodyElement.find(containerSelector).prepend(<any>viewHtml);
+                } else {
+
+                    this.bodyElement.find(containerSelector).append(viewHtml);
+
+                }
+            };
+
+            var viewCreate = view.create();
+
+            if (viewCreate instanceof Promise) {
+
+                promises.push(viewCreate.then(doAppend));
 
             } else {
 
-                this.bodyElement.find(containerSelector).append(<any>viewHtml);
+                doAppend(<JQuery>viewCreate);
 
             }
 
+
         });
+
+        if (promises.length) {
+            return Promise.all(promises);
+        }
         
     }
 
 }
 
-export = new Container();
+export = Container;
