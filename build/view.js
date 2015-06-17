@@ -160,7 +160,11 @@ var __extends = (this && this.__extends) || function (d, b) {
                 // basic view
                 templateKeyValues = ViewHelper.get();
             }
-            return $(this.template(templateKeyValues));
+            var templateResult = this.template(templateKeyValues);
+            if (templateResult instanceof Promise) {
+                return templateResult;
+            }
+            return $(templateResult);
         };
         View.prototype.htmlize = function () {
             var _this = this;

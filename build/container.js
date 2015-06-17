@@ -6,14 +6,15 @@
     else if (typeof define === 'function' && define.amd) {
         define(deps, factory);
     }
-})(["require", "exports", 'underscore', 'jquery'], function (require, exports) {
+})(["require", "exports", 'underscore', 'jquery', 'es6-promise'], function (require, exports) {
     var _ = require('underscore');
     var $ = require('jquery');
-    var Container = (function () {
-        function Container() {
-            this.containers = {};
-            this.bodyElement = $('body');
-        }
+    var ES6Promise = require('es6-promise');
+    var Promise = ES6Promise.Promise;
+    var Container;
+    (function (Container) {
+        var containers = {};
+        var bodyElement = $('body');
         /**
          *
          * dispatch the views of all the container or by a container selector
@@ -21,19 +22,27 @@
          * @param {type} containerSelector
          * @param {type} options
          *
-         * @returns {undefined}
+         * @returns Promise<void>
          */
-        Container.prototype.dispatch = function (containerSelector, options) {
+        function dispatch(containerSelector, options) {
             if (containerSelector === undefined) {
+                var promises = [];
                 _.each(this.containers, function (views, containerSelector) {
-                    this.dispatchViews.call(this, views, containerSelector, options);
+                    var dispatchViewResult = this.dispatchViews.call(this, views, containerSelector, options);
+                    if (dispatchViewResult instanceof Promise) {
+                        promises.push(dispatchViewResult);
+                    }
                 });
+                if (promises.length) {
+                    return Promise.all(promises);
+                }
             }
             else {
                 var views = this.containers[containerSelector];
-                this.dispatchViews.call(this, views, containerSelector, options);
+                return this.dispatchViews.call(this, views, containerSelector, options);
             }
-        };
+        }
+        Container.dispatch = dispatch;
         /**
          *
          * add a view to a container
@@ -42,12 +51,13 @@
          * @param {type} view
          * @returns {undefined}
          */
-        Container.prototype.add = function (containerSelector, view) {
+        function add(containerSelector, view) {
             if (this.containers[containerSelector] === undefined) {
                 this.containers[containerSelector] = [];
             }
             this.containers[containerSelector].push(view);
-        };
+        }
+        Container.add = add;
         /**
          *
          * remove a view from the list, for a given selector
@@ -58,7 +68,7 @@
          *
          * @returns {undefined}
          */
-        Container.prototype.remove = function (containerSelector, view) {
+        function remove(containerSelector, view) {
             if (this.containers[containerSelector] === undefined) {
                 return;
             }
@@ -66,7 +76,8 @@
             if (indexOf > -1) {
                 this.containers[containerSelector].splice(indexOf, 1);
             }
-        };
+        }
+        Container.remove = remove;
         /**
          *
          * clear the view for a given selector
@@ -76,13 +87,14 @@
          *
          * @returns {undefined}
          */
-        Container.prototype.clear = function (containerSelector) {
+        function clear(containerSelector) {
             var views = this.containers[containerSelector];
             _.each(views, function (view) {
                 view.close();
             });
             delete this.containers[containerSelector];
-        };
+        }
+        Container.clear = clear;
         /**
          *
          * (private) dispatch the views
@@ -93,22 +105,33 @@
          *
          * @returns {undefined}
          */
-        Container.prototype.dispatchViews = function (views, containerSelector, options) {
+        function dispatchViews(views, containerSelector, options) {
             var _this = this;
+            var promises = [];
             _.each(views, function (view) {
-                var viewHtml = view.create();
-                if (options !== undefined
-                    && _.has(options, 'insertMode')
-                    && options.insertMode === 'prepend') {
-                    _this.bodyElement.find(containerSelector).prepend(viewHtml);
+                var doAppend = function (viewHtml) {
+                    if (options !== undefined
+                        && _.has(options, 'insertMode')
+                        && options.insertMode === 'prepend') {
+                        _this.bodyElement.find(containerSelector).prepend(viewHtml);
+                    }
+                    else {
+                        _this.bodyElement.find(containerSelector).append(viewHtml);
+                    }
+                };
+                var viewCreate = view.create();
+                if (viewCreate instanceof Promise) {
+                    promises.push(viewCreate.then(doAppend));
                 }
                 else {
-                    _this.bodyElement.find(containerSelector).append(viewHtml);
+                    doAppend(viewCreate);
                 }
             });
-        };
-        return Container;
-    })();
-    return new Container();
+            if (promises.length) {
+                return Promise.all(promises);
+            }
+        }
+    })(Container || (Container = {}));
+    return Container;
 });
 //# sourceMappingURL=container.js.map
