@@ -1,0 +1,20 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "umd",
+        "outDir": "build",
+        "sourceMap": true,
+        "declaration": false
+    },
+    "files": [
+        "source/collection.ts",
+        "source/container.ts",
+        "source/controller.ts",
+        "source/eventsManager.ts",
+        "source/model.ts",
+        "source/ribs.ts",
+        "source/router.ts",
+        "source/view.ts",
+		"source/viewHelper.ts"
+    ]
+}
