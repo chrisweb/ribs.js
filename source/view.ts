@@ -69,7 +69,7 @@ class View extends Backbone.View<Backbone.Model> {
                 
         }*/
 
-        var renderedTemplate;
+        /*var renderedTemplate;
 
         if (this.model !== undefined) {
 
@@ -125,7 +125,7 @@ class View extends Backbone.View<Backbone.Model> {
             // containing an element in which the template will be rendered
             throw new Error('The view template should have at least one root element and not more then one');
 
-        }
+        }*/
 
         if (this.collection !== undefined) {
 
