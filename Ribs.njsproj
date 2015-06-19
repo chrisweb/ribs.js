@@ -68,7 +68,6 @@
     <TypeScriptCompile Include="source\router.ts" />
     <TypeScriptCompile Include="source\view.ts" />
     <TypeScriptCompile Include="source\viewHelper.ts" />
-    <TypeScriptCompile Include="source\_viewsLoader.ts" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="build" />

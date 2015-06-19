@@ -90,11 +90,11 @@ class Model extends Backbone.Model {
     }
 
     /**
-        * Get a projection of the model. The model return will be sync with this current model.
-        * @param modelClass Class of model projection.
-        * @param keepAlive If true, when this model will be destroy, the projection will not be destroyed.
-        * @param twoWay If true, this model will be sync with its own attribute. So if a projection change one of these attributes, this model will be affected.
-        **/
+     * Get a projection of the model. The model return will be sync with this current model.
+     * @param modelClass Class of model projection.
+     * @param keepAlive If true, when this model will be destroy, the projection will not be destroyed.
+     * @param twoWay If true, this model will be sync with its own attribute. So if a projection change one of these attributes, this model will be affected.
+     **/
     getModelProjection(modelClass: typeof Model = Model, keepAlive: boolean = false, twoWay: boolean = false) {
 
         var model = new modelClass(this.attributes);
@@ -167,6 +167,7 @@ class Model extends Backbone.Model {
     options: any;
     onInitialize;
     onInitializeStart;
+
 };
 
 export = Model;
