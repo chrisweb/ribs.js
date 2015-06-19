@@ -62,71 +62,6 @@ class View extends Backbone.View<Backbone.Model> {
         // reference when a model is remove from the collection
         this.referenceModelView = {};
             
-        // check if a template has been defined
-        /*if (typeof this.template === 'undefined') {
-                
-            throw 'missing template, you need to define a template in your view';
-                
-        }*/
-
-        /*var renderedTemplate;
-
-        if (this.model !== undefined) {
-
-            var templateKeyValues;
-
-            // are there also templateVariables
-            if (_.keys(this.options.templateVariables).length > 0) {
-
-                templateKeyValues = $.extend({}, ViewHelper.get(), this.options.templateVariables, this.getModelAsJson());
-
-            } else {
-
-                templateKeyValues = $.extend({}, ViewHelper.get(), this.getModelAsJson());
-
-            }
-
-            renderedTemplate = this.template(templateKeyValues);
-
-        } else if (_.keys(this.options.templateVariables).length > 0) {
-
-            renderedTemplate = this.template($.extend({}, ViewHelper.get(), this.options.templateVariables));
-
-        } else {
-
-            renderedTemplate = this.template(ViewHelper.get());
-
-        }
-            
-        // sizzle of jquery will throw an error if the view content is
-        // not encaplsulated in an html element, for example if the
-        // content is just a text
-        try {
-
-            var $renderedTemplate = $(renderedTemplate);
-
-        } catch (error) {
-
-            throw new Error('The view template should have at least one root element and not more then one');
-
-        }
-
-        if ($renderedTemplate.length === 1) {
-
-            var rootElement = $renderedTemplate.first().html('');
-
-            this.setElement(rootElement);
-
-        } else {
-                
-            // unfortunatly we have to ensure that the view template has
-            // a root html element and that it only has one ... this is
-            // because backbone views by design have an $el attribute
-            // containing an element in which the template will be rendered
-            throw new Error('The view template should have at least one root element and not more then one');
-
-        }*/
-
         if (this.collection !== undefined) {
 
             this.listenTo(this.collection, 'add', this.addModel);
@@ -221,17 +156,19 @@ class View extends Backbone.View<Backbone.Model> {
 
         let templateKeyValues;
 
+        let templateData = { _view: this };
+
         if (this.model !== undefined) {
             
             // model view
             // are there also templateVariables
             if (_.keys(this.options.templateVariables).length > 0) {
 
-                templateKeyValues = $.extend({}, ViewHelper.get(), this.options.templateVariables, this.getModelAsJson());
+                templateKeyValues = $.extend(templateData, ViewHelper.get(), this.options.templateVariables, this.getModelAsJson());
 
             } else {
 
-                templateKeyValues = $.extend({}, ViewHelper.get(), this.getModelAsJson());
+                templateKeyValues = $.extend(templateData, ViewHelper.get(), this.getModelAsJson());
 
             }
 
@@ -239,12 +176,12 @@ class View extends Backbone.View<Backbone.Model> {
         } else if (_.keys(this.options.templateVariables).length > 0) {
 
             // templateVariables view
-            templateKeyValues = $.extend({}, ViewHelper.get(), this.options.templateVariables);
+            templateKeyValues = $.extend(templateData, ViewHelper.get(), this.options.templateVariables);
 
         } else {
                 
             // basic view
-            templateKeyValues = ViewHelper.get();
+            templateKeyValues = $.extend(templateData, ViewHelper.get());
 
         }
 

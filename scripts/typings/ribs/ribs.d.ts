@@ -60,6 +60,7 @@ declare module Ribs {
     }
 
     class Model extends Backbone.Model {
+        constructor(attributes, options?);
         protected onInitializeStart(): void;
         protected onInitialize(): void;
         /**
@@ -77,6 +78,7 @@ declare module Ribs {
     }
 
     class Collection extends Backbone.Collection<Backbone.Model> {
+        constructor(models?, options?);
         onInitialize(options?: any): void;
         batchSave(): void;
         getFilteredCollection(onlyData?: any, notDatas?: any): Collection;
