@@ -148,6 +148,11 @@ declare module Ribs {
     
     module Adapter {
 
+        interface RequestAdapterOptions {
+            success?: (response: string|JSON) => any;
+            error?: (xhr: Adapter.Request, textStatus: string, errorThrown: string) => any;
+        }
+
         /**
          * Class of Adapter to allow sync method to connect to different kind of connection.
          **/
@@ -164,7 +169,7 @@ declare module Ribs {
              * @param Options of the request adapter
              * @return The Request adapter instance
              **/
-            protected getRequestInstance(options?: {}): Request;
+            protected getRequestInstance(options?: RequestAdapterOptions): Request;
         }
 
         /**
@@ -194,7 +199,7 @@ declare module Ribs {
              * @param options Options for Backbone request.
              * @return Default Request Adapter: JQueryXHR.
              **/
-            protected getRequestInstance(options?: {}): Request;
+            protected getRequestInstance(options?: RequestAdapterOptions): Request;
         }
 
     }
