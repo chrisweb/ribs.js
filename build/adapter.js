@@ -17,7 +17,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     var $ = require('jquery');
     var Request = (function () {
         function Request(options) {
-            if (options === void 0) { options = {}; }
+            if (options === void 0) { options = { data: null }; }
             this.options = options;
         }
         Request.prototype.setRequestHeader = function (headerName, headerValue) {
@@ -35,7 +35,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             Backbone.ajax = this.getRequestInstance;
         };
         Adapter.prototype.getRequestInstance = function (options) {
-            if (options === void 0) { options = {}; }
+            if (options === void 0) { options = { data: null }; }
             return new Request(options);
         };
         return Adapter;
@@ -47,7 +47,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             _super.apply(this, arguments);
         }
         DefaultAdapter.prototype.getRequestInstance = function (options) {
-            if (options === void 0) { options = {}; }
+            if (options === void 0) { options = { data: null }; }
             return $.ajax(options);
         };
         return DefaultAdapter;

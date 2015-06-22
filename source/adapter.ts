@@ -7,7 +7,7 @@ export class Request {
 
     public options: Ribs.Adapter.RequestAdapterOptions;
 
-    public constructor(options: Ribs.Adapter.RequestAdapterOptions = {}) {
+    public constructor(options: Ribs.Adapter.RequestAdapterOptions = { data: null }) {
         this.options = options;
     }
 
@@ -29,7 +29,7 @@ export class Adapter {
         (<any>Backbone).ajax = this.getRequestInstance;
     }
 
-    protected getRequestInstance(options: Ribs.Adapter.RequestAdapterOptions = {}): Request {
+    protected getRequestInstance(options: Ribs.Adapter.RequestAdapterOptions = { data: null }): Request {
 
         return new Request(options);
 
@@ -38,7 +38,7 @@ export class Adapter {
 }
 
 export class DefaultAdapter extends Adapter {
-    protected getRequestInstance(options: Ribs.Adapter.RequestAdapterOptions = {}): Request {
+    protected getRequestInstance(options: Ribs.Adapter.RequestAdapterOptions = { data: null }): Request {
 
         return (<any>$).ajax(options);
 
