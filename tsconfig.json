@@ -7,6 +7,7 @@
         "declaration": false
     },
     "files": [
+        "source/adapter.ts",
         "source/collection.ts",
         "source/container.ts",
         "source/controller.ts",
@@ -15,6 +16,6 @@
         "source/ribs.ts",
         "source/router.ts",
         "source/view.ts",
-		"source/viewHelper.ts"
+		    "source/viewHelper.ts"
     ]
 }

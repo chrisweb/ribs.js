@@ -27,6 +27,14 @@ declare module Ribs {
         container: Backbone.View<Backbone.Model>;
     }
 
+    interface CollectionOptions extends Backbone.CollectionFetchOptions {
+        adapter?: Ribs.Adapter.Adapter
+    }
+
+    interface ModelOptions extends Backbone.ModelFetchOptions {
+        adapter?: Ribs.Adapter.Adapter
+    }
+
     interface ContainerOptions {
         insertMode?: string
     }
@@ -60,7 +68,7 @@ declare module Ribs {
     }
 
     class Model extends Backbone.Model {
-        constructor(attributes, options?);
+        constructor(attributes, options?: ModelOptions);
         protected onInitializeStart(): void;
         protected onInitialize(): void;
         /**
@@ -75,10 +83,12 @@ declare module Ribs {
          * Original Model source
          */
         public modelSource: Ribs.Model;
+
+        public adapter: Ribs.Adapter.Adapter;
     }
 
     class Collection extends Backbone.Collection<Backbone.Model> {
-        constructor(models?, options?);
+        constructor(models?, options?: CollectionOptions);
         onInitialize(options?: any): void;
         batchSave(): void;
         getFilteredCollection(onlyData?: any, notDatas?: any): Collection;
@@ -93,6 +103,7 @@ declare module Ribs {
         _currentRange: number;
         _lengthRange: number;
 
+        public adapter: Ribs.Adapter.Adapter;
         collectionSource: Collection;
     }
 
@@ -135,6 +146,59 @@ declare module Ribs {
         function get(): { [s: string]: Function };
     }
     
+    module Adapter {
+
+        /**
+         * Class of Adapter to allow sync method to connect to different kind of connection.
+         **/
+        class Adapter {
+
+            public constructor(options?: {});
+
+            /**
+             * Apply the Adapter method. Call it before sync call.
+             **/
+            public load();
+            /**
+             * Return the instance of the request adapter
+             * @param Options of the request adapter
+             * @return The Request adapter instance
+             **/
+            protected getRequestInstance(options?: {}): Request;
+        }
+
+        /**
+         * Class of Request Adapter. It will perform the connection.
+         **/
+        class Request {
+            /**
+             * Options of the request.
+             **/
+            public options: {};
+            public constructor(options?: {});
+            /**
+             * Add new header request.
+             * @param headerName Name of the header.
+             * @param headerValue Value of the header. Expect a string, so JSON/Object should be serialized
+             * @return Current instance Request to allow chaining operation.
+             **/
+            public setRequestHeader(headerName: string, headerValue: string): Request;
+        }
+
+        /**
+         * Default Adapter. Based on Backbone implementation.
+         **/
+        class DefaultAdapter extends Adapter {
+            /**
+             * Return the default Backbone implementation.
+             * @param options Options for Backbone request.
+             * @return Default Request Adapter: JQueryXHR.
+             **/
+            protected getRequestInstance(options?: {}): Request;
+        }
+
+    }
+
 }
 
 declare module 'ribsjs' {

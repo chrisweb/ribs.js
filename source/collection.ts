@@ -13,8 +13,16 @@ class Collection extends Backbone.Collection<Backbone.Model> {
     _lengthRange: number = 5;
     isCircularRange: boolean = false;
 
-    constructor(models?, options?) {
+    public adapter: Ribs.Adapter.Adapter;
+
+    constructor(models?, options?: Ribs.CollectionOptions) {
         super(models, options);
+
+        if (options.adapter) {
+            this.adapter = options.adapter;
+        } else {
+            this.adapter = new Ribs.Adapter.DefaultAdapter();
+        }
     }
     
     initialize (models, options) {
@@ -33,6 +41,11 @@ class Collection extends Backbone.Collection<Backbone.Model> {
 
     batchSave () {
         
+    }
+
+    sync(...arg: any[]): JQueryXHR {
+        this.adapter.load();
+        return super.sync.apply(this, arg);
     }
 
     getFilteredCollection (onlyDatas, notDatas) {

@@ -6,8 +6,15 @@ import _ = require('underscore');
 
 class Model extends Backbone.Model {
 
-    constructor(attributes, options?) {
+    public adapter: Ribs.Adapter.Adapter;
+
+    constructor(attributes, options?: Ribs.ModelOptions) {
         super(attributes, options);
+        if (options.adapter) {
+            this.adapter = options.adapter;
+        } else {
+            this.adapter = new Ribs.Adapter.DefaultAdapter();
+        }
     }
 
     initialize (attributes, options) {
@@ -37,6 +44,11 @@ class Model extends Backbone.Model {
 
         }
 
+    }
+
+    sync(...arg: any[]): JQueryXHR {
+        this.adapter.load();
+        return super.sync.apply(this, arg);
     }
 
     get (attribute) {

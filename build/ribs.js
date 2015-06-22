@@ -6,7 +6,8 @@
     else if (typeof define === 'function' && define.amd) {
         define(deps, factory);
     }
-})(["require", "exports", './collection', './container', './controller', './eventsManager', './model', './router', './view', './viewHelper'], function (require, exports) {
+})(["require", "exports", './adapter', './collection', './container', './controller', './eventsManager', './model', './router', './view', './viewHelper'], function (require, exports) {
+    exports.Adapter = require('./adapter');
     exports.Collection = require('./collection');
     exports.Container = require('./container');
     exports.Controller = require('./controller');

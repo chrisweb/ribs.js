@@ -20,6 +20,12 @@ var __extends = (this && this.__extends) || function (d, b) {
         __extends(Model, _super);
         function Model(attributes, options) {
             _super.call(this, attributes, options);
+            if (options.adapter) {
+                this.adapter = options.adapter;
+            }
+            else {
+                this.adapter = new Ribs.Adapter.DefaultAdapter();
+            }
         }
         Model.prototype.initialize = function (attributes, options) {
             var defaultOptions = {
@@ -38,6 +44,14 @@ var __extends = (this && this.__extends) || function (d, b) {
                 // execute it now
                 this.onInitialize();
             }
+        };
+        Model.prototype.sync = function () {
+            var arg = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                arg[_i - 0] = arguments[_i];
+            }
+            this.adapter.load();
+            return _super.prototype.sync.apply(this, arg);
         };
         Model.prototype.get = function (attribute) {
             if (typeof this[attribute] === 'function') {
@@ -69,11 +83,11 @@ var __extends = (this && this.__extends) || function (d, b) {
             return attributes;
         };
         /**
-            * Get a projection of the model. The model return will be sync with this current model.
-            * @param modelClass Class of model projection.
-            * @param keepAlive If true, when this model will be destroy, the projection will not be destroyed.
-            * @param twoWay If true, this model will be sync with its own attribute. So if a projection change one of these attributes, this model will be affected.
-            **/
+         * Get a projection of the model. The model return will be sync with this current model.
+         * @param modelClass Class of model projection.
+         * @param keepAlive If true, when this model will be destroy, the projection will not be destroyed.
+         * @param twoWay If true, this model will be sync with its own attribute. So if a projection change one of these attributes, this model will be affected.
+         **/
         Model.prototype.getModelProjection = function (modelClass, keepAlive, twoWay) {
             var _this = this;
             if (modelClass === void 0) { modelClass = Model; }

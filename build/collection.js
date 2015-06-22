@@ -24,6 +24,12 @@ var __extends = (this && this.__extends) || function (d, b) {
             this._currentRange = 0;
             this._lengthRange = 5;
             this.isCircularRange = false;
+            if (options.adapter) {
+                this.adapter = options.adapter;
+            }
+            else {
+                this.adapter = new Ribs.Adapter.DefaultAdapter();
+            }
         }
         Collection.prototype.initialize = function (models, options) {
             this.options = options || {};
@@ -34,6 +40,14 @@ var __extends = (this && this.__extends) || function (d, b) {
             }
         };
         Collection.prototype.batchSave = function () {
+        };
+        Collection.prototype.sync = function () {
+            var arg = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                arg[_i - 0] = arguments[_i];
+            }
+            this.adapter.load();
+            return _super.prototype.sync.apply(this, arg);
         };
         Collection.prototype.getFilteredCollection = function (onlyDatas, notDatas) {
             var _this = this;

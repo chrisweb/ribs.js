@@ -1,5 +1,6 @@
 ﻿/// <reference path="../scripts/typings/ribs/ribs.d.ts" />
 
+export import Adapter = require('./adapter');
 export import Collection = require('./collection');
 export import Container = require('./container');
 export import Controller = require('./controller');
