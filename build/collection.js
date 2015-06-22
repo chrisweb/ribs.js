@@ -12,9 +12,10 @@ var __extends = (this && this.__extends) || function (d, b) {
     else if (typeof define === 'function' && define.amd) {
         define(deps, factory);
     }
-})(["require", "exports", 'backbone', 'underscore'], function (require, exports) {
+})(["require", "exports", 'backbone', 'underscore', 'ribsjs'], function (require, exports) {
     var Backbone = require('backbone');
     var _ = require('underscore');
+    var Ribs = require('ribsjs');
     var Collection = (function (_super) {
         __extends(Collection, _super);
         function Collection(models, options) {
@@ -24,7 +25,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             this._currentRange = 0;
             this._lengthRange = 5;
             this.isCircularRange = false;
-            if (!!options && options.adapter) {
+            if (this.options.adapter) {
                 this.adapter = options.adapter;
             }
             else {

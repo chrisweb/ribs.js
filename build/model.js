@@ -20,7 +20,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         __extends(Model, _super);
         function Model(attributes, options) {
             _super.call(this, attributes, options);
-            if (options.adapter) {
+            if (this.options.adapter) {
                 this.adapter = options.adapter;
             }
             else {

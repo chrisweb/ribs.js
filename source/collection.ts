@@ -2,6 +2,7 @@
 
 import Backbone = require('backbone');
 import _ = require('underscore');
+import Ribs = require('ribsjs');
 
 class Collection extends Backbone.Collection<Backbone.Model> {
 
