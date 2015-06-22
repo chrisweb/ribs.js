@@ -24,7 +24,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             this._currentRange = 0;
             this._lengthRange = 5;
             this.isCircularRange = false;
-            if (options.adapter) {
+            if (!!options && options.adapter) {
                 this.adapter = options.adapter;
             }
             else {

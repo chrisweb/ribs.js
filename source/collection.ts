@@ -18,7 +18,7 @@ class Collection extends Backbone.Collection<Backbone.Model> {
     constructor(models?, options?: Ribs.CollectionOptions) {
         super(models, options);
 
-        if (options.adapter) {
+        if (!!options && options.adapter) {
             this.adapter = options.adapter;
         } else {
             this.adapter = new Ribs.Adapter.DefaultAdapter();
