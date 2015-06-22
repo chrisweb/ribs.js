@@ -149,14 +149,17 @@ declare module Ribs {
     module Adapter {
 
         interface RequestAdapterOptions {
-            success?: (response: string|JSON) => any;
-            error?: (xhr: Adapter.Request, textStatus: string, errorThrown: string) => any;
+            data: {};
+            success?: (response: string|{}) => any;
+            error?: (xhr: Adapter.Request, textStatus: string|string[], errorThrown: string|Error|(string|Error)[]) => any;
         }
 
         /**
          * Class of Adapter to allow sync method to connect to different kind of connection.
          **/
         class Adapter {
+
+            public options: {};
 
             public constructor(options?: {});
 

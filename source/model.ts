@@ -10,7 +10,7 @@ class Model extends Backbone.Model {
 
     constructor(attributes, options?: Ribs.ModelOptions) {
         super(attributes, options);
-        if (options.adapter) {
+        if (this.options.adapter) {
             this.adapter = options.adapter;
         } else {
             this.adapter = new Ribs.Adapter.DefaultAdapter();

@@ -5,7 +5,7 @@ import _ = require('underscore');
 
 class Collection extends Backbone.Collection<Backbone.Model> {
 
-    options: any;
+    options: Ribs.CollectionOptions;
     onInitialize;
     collectionSource: Collection = null;
     _isRange: boolean = false;
@@ -18,7 +18,7 @@ class Collection extends Backbone.Collection<Backbone.Model> {
     constructor(models?, options?: Ribs.CollectionOptions) {
         super(models, options);
 
-        if (options.adapter) {
+        if (this.options.adapter) {
             this.adapter = options.adapter;
         } else {
             this.adapter = new Ribs.Adapter.DefaultAdapter();
