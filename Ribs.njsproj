@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{00632d84-209a-4854-b240-a0a257f57b47}</ProjectGuid>
     <ProjectHome />
-    <ProjectView>ShowAllFiles</ProjectView>
+    <ProjectView>ProjectFiles</ProjectView>
     <StartupFile>Gruntfile.js</StartupFile>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -24,6 +24,7 @@
     <Content Include=".gitattributes" />
     <Content Include=".gitignore" />
     <Content Include="bower.json" />
+    <Content Include="build\adapter.js.map" />
     <Content Include="build\collection.js.map" />
     <Content Include="build\container.js.map" />
     <Content Include="build\controller.js.map" />
@@ -37,6 +38,7 @@
     <Content Include="package.json" />
     <Content Include="documentation.md" />
     <Content Include="README.md" />
+    <Compile Include="build\adapter.js" />
     <Compile Include="build\collection.js" />
     <Compile Include="build\container.js" />
     <Compile Include="build\controller.js" />
