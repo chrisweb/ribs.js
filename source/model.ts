@@ -3,6 +3,7 @@
 import Backbone = require('backbone');
 import $ = require('jquery');
 import _ = require('underscore');
+import Ribs = require('ribsjs');
 
 class Model extends Backbone.Model {
 

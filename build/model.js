@@ -12,10 +12,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     else if (typeof define === 'function' && define.amd) {
         define(deps, factory);
     }
-})(["require", "exports", 'backbone', 'jquery', 'underscore'], function (require, exports) {
+})(["require", "exports", 'backbone', 'jquery', 'underscore', 'ribsjs'], function (require, exports) {
     var Backbone = require('backbone');
     var $ = require('jquery');
     var _ = require('underscore');
+    var Ribs = require('ribsjs');
     var Model = (function (_super) {
         __extends(Model, _super);
         function Model(attributes, options) {
