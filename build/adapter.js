@@ -18,6 +18,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     var Request = (function () {
         function Request(options) {
             if (options === void 0) { options = {}; }
+            this.options = options;
         }
         Request.prototype.setRequestHeader = function (headerName, headerValue) {
             return this;
