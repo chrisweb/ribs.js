@@ -20,13 +20,16 @@ export class Request {
 export class Adapter {
 
     options: {};
+    private requestBind;
 
     public constructor(options: {} = {}) {
         this.options = options;
+
+        this.requestBind = this.getRequestInstance.bind(this);
     }
 
     public load() {
-        (<any>Backbone).ajax = this.getRequestInstance;
+        (<any>Backbone).ajax = this.requestBind;
     }
 
     protected getRequestInstance(options: Ribs.Adapter.RequestAdapterOptions = { data: null }): Request {

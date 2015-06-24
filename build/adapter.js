@@ -30,9 +30,10 @@ var __extends = (this && this.__extends) || function (d, b) {
         function Adapter(options) {
             if (options === void 0) { options = {}; }
             this.options = options;
+            this.requestBind = this.getRequestInstance.bind(this);
         }
         Adapter.prototype.load = function () {
-            Backbone.ajax = this.getRequestInstance;
+            Backbone.ajax = this.requestBind;
         };
         Adapter.prototype.getRequestInstance = function (options) {
             if (options === void 0) { options = { data: null }; }
