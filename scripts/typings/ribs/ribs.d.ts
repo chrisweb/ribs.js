@@ -150,6 +150,7 @@ declare module Ribs {
 
         interface RequestAdapterOptions {
             data: {};
+            type: string;
             success?: (response: string|{}) => any;
             error?: (xhr: Adapter.Request, textStatus: string|string[], errorThrown: string|Error|(string|Error)[]) => any;
         }
