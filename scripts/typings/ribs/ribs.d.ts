@@ -124,11 +124,13 @@ declare module Ribs {
         function clear(containerSelector: string): void;
     }
 
-    class EventsManager extends Backbone.Events {
+    class CEventsManager extends Backbone.Events {
         
         public constants: { [index: string]: string};
 
     }
+    
+    var EventsManager: CEventsManager;
 
     class Router {
         public initialize: void;
