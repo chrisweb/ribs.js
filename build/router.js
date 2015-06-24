@@ -18,8 +18,8 @@ var __extends = (this && this.__extends) || function (d, b) {
     var _ = require('underscore');
     var Router = (function (_super) {
         __extends(Router, _super);
-        function Router() {
-            _super.call(this);
+        function Router(options) {
+            _super.call(this, options);
         }
         Router.prototype.initialize = function () {
         };

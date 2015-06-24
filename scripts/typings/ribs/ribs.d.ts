@@ -130,11 +130,9 @@ declare module Ribs {
 
     }
 
-    class Router {
-        public initialize: void;
-        public routes: Object;
-        public route: Object;
-        public execute: boolean;
+    class Router extends Backbone.Router {
+        constructor(options?: Backbone.RouterOptions);
+        public execute(callback, routeArguments, routeName, internalCallback): void;
         public getCurrentRoute: string;
     }
 

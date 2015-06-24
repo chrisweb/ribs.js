@@ -6,8 +6,8 @@ import _ = require('underscore');
 
 class Router extends Backbone.Router {
 
-    constructor() {
-        super();
+    constructor(options?: Backbone.RouterOptions) {
+        super(options);
     }
 
     initialize () {
