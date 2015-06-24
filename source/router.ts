@@ -35,7 +35,7 @@ class Router extends Backbone.Router {
                 
             // we use a callback function to allow async calls, the
             // original backbone code uses an if (see below)
-            this.execute(callback, args, name, function (executeRoute) {
+            this.execute(callback, args, name, (executeRoute) => {
 
                 if (executeRoute) {
 
