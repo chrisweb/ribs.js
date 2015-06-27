@@ -16,9 +16,7 @@ This project is not ready for use in production. It's still under heavy developm
 * collections batch save for all models at once
 
 future:
-* use promises
-https://github.com/jakearchibald/es6-promise
-* use shadow dom for views (polymer shadow dom polyfill)
+* (?) use shadow dom for views (polymer shadow dom polyfill)
 https://github.com/polymer/ShadowDOM
 
 --------------------------
