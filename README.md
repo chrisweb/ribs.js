@@ -3,6 +3,10 @@ ribs.js 0.1.0
 
 This project is not ready for use in production. It's still under heavy development. I wrote this for another project I work on right now, but its still far from being stable. Testing are fixes and comments are welcome.
 
+# typescript build command
+ 
+	tsc --target ES5 --module umd --outDir ../build --sourceMap ribs.ts collection.ts container.ts controller.ts eventsManager.ts model.ts router.ts view.ts viewHelper.ts
+
 main goal(s):
 * extend backbone view to automate some tasks
 * a must have is that views code should not contain any html markup, every bit of html should be in the template so that designers only have to touch that file
@@ -18,10 +22,10 @@ https://github.com/jakearchibald/es6-promise
 https://github.com/polymer/ShadowDOM
 
 --------------------------
+ 
+#ribsjs documentation
 
-#ribs documentation
-
-##ribs views
+##ribsjs views
 
 ### onInitialize hook
 * if you want to do stuff during initialization of the view

@@ -39,9 +39,9 @@ var __extends = (this && this.__extends) || function (d, b) {
                 // original backbone code uses an if (see below)
                 _this.execute(callback, args, name, function (executeRoute) {
                     if (executeRoute) {
-                        this.trigger.apply(this, ['route:' + name].concat(args));
-                        this.trigger('route', name, args);
-                        Backbone.history.trigger('route', this, name, args);
+                        _this.trigger.apply(_this, ['route:' + name].concat(args));
+                        _this.trigger('route', name, args);
+                        Backbone.history.trigger('route', _this, name, args);
                     }
                 });
                 /*
