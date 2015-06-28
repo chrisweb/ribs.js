@@ -29,11 +29,10 @@ var __extends = (this && this.__extends) || function (d, b) {
                 ModelView: null,
                 ModelViewOptions: {}
             };
-            this.options = {};
+            this.options = $.extend({}, this.defaultOptions, options || {});
             this.isDispatch = false;
         }
         View.prototype.initialize = function (options) {
-            this.options = $.extend({}, this.defaultOptions, options || {});
             // if oninitialize exists
             if (this.onInitializeStart) {
                 // execute it now
