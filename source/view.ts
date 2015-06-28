@@ -16,7 +16,7 @@ class View extends Backbone.View<Backbone.Model> {
         ModelView: null,
         ModelViewOptions: {}
     };
-    options: any = $.extend({}, this.defaultOptions, options || {});
+    options;
     onInitialize;
     onInitializeStart;
     onRender;
@@ -35,6 +35,8 @@ class View extends Backbone.View<Backbone.Model> {
     }
 
     initialize (options) {
+
+        this.options = $.extend({}, this.defaultOptions, options || {});
 
         // if oninitialize exists
         if (this.onInitializeStart) {
