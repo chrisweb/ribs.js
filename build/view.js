@@ -133,8 +133,9 @@ var __extends = (this && this.__extends) || function (d, b) {
                     // for each model of the collection append a modelView to
                     // collection dom
                     if (_this.collection.models.length > 0) {
+                        var promiseList = [];
                         _this.collection.models.forEach(function (model) {
-                            _this.addModel(model);
+                            promiseList.push(_this.addModel(model));
                         });
                         var $container = $renderedTemplate.find(_this.options.listSelector);
                         if ($container.length === 0) {
@@ -142,7 +143,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                                 $container = $();
                             }
                         }
-                        _this.updateCollection($container);
+                        Promise.all(promiseList).then(function () { _this.updateCollection($container); });
                     }
                 }
                 return $renderedTemplate;
@@ -245,6 +246,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             }).bind(this));
         };
         View.prototype.addModel = function (model) {
+            var _this = this;
             if (model.cid in this.collectionModelViews) {
                 var $element = this.collectionModelViews[model.cid].$el;
                 /*var $container = this.$el.find(this.options.listSelector);
@@ -267,18 +269,25 @@ var __extends = (this && this.__extends) || function (d, b) {
             var ModelView = this.options.ModelView;
             var mergedModelViewOptions = $.extend({}, this.options.ModelViewOptions, { model: model, parentView: this });
             var modelView = new ModelView(mergedModelViewOptions);
-            var $element = modelView.create();
-            this.referenceModelView[model.cid] = {
-                $html: $element,
-                container: modelView
+            var doAddModel = function ($element) {
+                _this.referenceModelView[model.cid] = {
+                    $html: $element,
+                    container: modelView
+                };
+                _this.pendingViewModel.push($element);
+                // TODO: use the container to manage subviews of a list
+                //Container.add(this.options.listSelector, modelView);
+                _this.collectionModelViews[model.cid] = modelView;
+                if (_this.onModelAdded) {
+                    _this.onModelAdded(modelView);
+                }
+                return $element;
             };
-            this.pendingViewModel.push($element);
-            // TODO: use the container to manage subviews of a list
-            //Container.add(this.options.listSelector, modelView);
-            this.collectionModelViews[model.cid] = modelView;
-            if (this.onModelAdded) {
-                this.onModelAdded(modelView);
+            var viewCreate = modelView.create();
+            if (viewCreate instanceof Promise) {
+                return viewCreate.then(doAddModel);
             }
+            return Promise.resolve(doAddModel(viewCreate));
         };
         View.prototype.removeModel = function (model) {
             var view = this.referenceModelView[model.cid];
