@@ -17,9 +17,15 @@ var __extends = (this && this.__extends) || function (d, b) {
     var $ = require('jquery');
     var Request = (function () {
         function Request(options) {
-            if (options === void 0) { options = { data: null }; }
-            this.options = options;
+            if (options === void 0) { options = { data: null, type: 'GET' }; }
+            this.options = this.formatOptions(options);
         }
+        Request.prototype.formatOptions = function (options) {
+            return options;
+        };
+        Request.prototype.formatResponse = function (response) {
+            return response;
+        };
         Request.prototype.setRequestHeader = function (headerName, headerValue) {
             return this;
         };
@@ -29,14 +35,17 @@ var __extends = (this && this.__extends) || function (d, b) {
     var Adapter = (function () {
         function Adapter(options) {
             if (options === void 0) { options = {}; }
-            this.options = options;
+            this.options = this.formatOptions(options);
             this.requestBind = this.getRequestInstance.bind(this);
         }
+        Adapter.prototype.formatOptions = function (options) {
+            return options;
+        };
         Adapter.prototype.load = function () {
             Backbone.ajax = this.requestBind;
         };
         Adapter.prototype.getRequestInstance = function (options) {
-            if (options === void 0) { options = { data: null }; }
+            if (options === void 0) { options = { data: null, type: 'GET' }; }
             return new Request(options);
         };
         return Adapter;
@@ -48,11 +57,71 @@ var __extends = (this && this.__extends) || function (d, b) {
             _super.apply(this, arguments);
         }
         DefaultAdapter.prototype.getRequestInstance = function (options) {
-            if (options === void 0) { options = { data: null }; }
-            return $.ajax(options);
+            if (options === void 0) { options = { data: null, type: 'GET' }; }
+            //return (<any>$).ajax(options);
+            return new DefaultRequest(options);
         };
         return DefaultAdapter;
     })(Adapter);
     exports.DefaultAdapter = DefaultAdapter;
+    ;
+    ;
+    var DefaultRequest = (function (_super) {
+        __extends(DefaultRequest, _super);
+        function DefaultRequest(options) {
+            var _this = this;
+            _super.call(this, options);
+            this.requestList = [];
+            var errorList = [];
+            var responseList = [];
+            var successCallback = null;
+            var errorCallback = null;
+            // override success and error and call them after all request
+            if (options.success) {
+                successCallback = options.success;
+                options.success = function (response, textStatus, jqXHR) {
+                    responseList.push({ response: response, position: _this.requestList.indexOf(jqXHR) });
+                    _this.dispatchResult(errorList, responseList, successCallback, errorCallback);
+                };
+            }
+            if (options.error) {
+                var errorCallback_1 = options.error;
+                options.error = function (xhr, textStatus, errorThrown) {
+                    errorList.push({ errorThrown: errorThrown, position: _this.requestList.indexOf(xhr) });
+                    _this.dispatchResult(errorList, responseList, successCallback, errorCallback_1);
+                };
+            }
+            if (options.data instanceof Array) {
+                var requestOptions = $.extend({}, options);
+                options.data.forEach(function (data) {
+                    requestOptions.data = data;
+                    _this.requestList.push($.ajax(requestOptions));
+                });
+            }
+            else {
+                this.requestList.push($.ajax(options));
+            }
+        }
+        DefaultRequest.prototype.setRequestHeader = function (headerName, headerValue) {
+            this.requestList.forEach(function (jqXhr) {
+                jqXhr.setRequestHeader(headerName, headerValue);
+            });
+            return this;
+        };
+        DefaultRequest.prototype.dispatchResult = function (errorList, responseList, successCallback, errorCallback) {
+            if (errorList.length + responseList.length >= this.requestList.length) {
+                if (errorList.length) {
+                    errorList.sort(function (a, b) { return a.position - b.position; });
+                    errorCallback(this, '', errorList.map(function (value) { return value.errorThrown; }));
+                }
+                else {
+                    responseList.sort(function (a, b) { return a.position - b.position; });
+                    successCallback(responseList.map(function (value) { return value.response; }));
+                }
+            }
+        };
+        return DefaultRequest;
+    })(Request);
+    exports.DefaultRequest = DefaultRequest;
 });
 //# sourceMappingURL=adapter.js.map

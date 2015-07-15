@@ -163,7 +163,12 @@ declare module Ribs {
             public options: {};
 
             public constructor(options?: {});
-
+            /**
+             * Format options and convert data
+             * @param options List of options for the Adapter object.
+             * @return Modified options.
+             **/
+            protected formatOptions(options: {}): {};
             /**
              * Apply the Adapter method. Call it before sync call.
              **/
@@ -185,6 +190,18 @@ declare module Ribs {
              **/
             public options: {};
             public constructor(options?: {});
+            /**
+             * Format options and convert data
+             * @param options List of options for the Request object.
+             * @return Modified options.
+             **/
+            protected formatOptions(options: Ribs.Adapter.RequestAdapterOptions): Ribs.Adapter.RequestAdapterOptions;
+            /**
+             * Format response and convert data
+             * @param response Response for the Request object.
+             * @return Modified response.
+             **/
+            protected formatResponse(response: any): any;
             /**
              * Add new header request.
              * @param headerName Name of the header.
