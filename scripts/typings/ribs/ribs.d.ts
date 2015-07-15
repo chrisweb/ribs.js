@@ -111,7 +111,7 @@ declare module Ribs {
         public constructor(options: any, configuration: any, router: any);
         extend(): void;
         initialize(): void;
-        create(path?: string): void;
+        create(skeleton): void;
         clear(): void;
         off;
         promise;

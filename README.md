@@ -1,4 +1,4 @@
-ribs.js 2.0.0
+ribs.js 2.0.8
 =============
 
 This project is not ready for use in production. It's still under heavy development. I wrote this for another project I work on right now, but its still far from being stable. Testing are fixes and comments are welcome.
@@ -16,9 +16,7 @@ This project is not ready for use in production. It's still under heavy developm
 * collections batch save for all models at once
 
 future:
-* use promises
-https://github.com/jakearchibald/es6-promise
-* use shadow dom for views (polymer shadow dom polyfill)
+* (?) use shadow dom for views (polymer shadow dom polyfill)
 https://github.com/polymer/ShadowDOM
 
 --------------------------

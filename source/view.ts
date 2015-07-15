@@ -209,9 +209,11 @@ class View extends Backbone.View<Backbone.Model> {
 
                 if (this.collection.models.length > 0) {
 
+                    let promiseList: Promise<JQuery>[] = [];
+
                     this.collection.models.forEach((model) => {
 
-                        this.addModel(model);
+                        promiseList.push(this.addModel(model));
 
                     });
 
@@ -227,7 +229,7 @@ class View extends Backbone.View<Backbone.Model> {
 
                     }
 
-                    this.updateCollection($container);
+                    Promise.all(promiseList).then(() => { this.updateCollection($container) });
 
                 }
 
@@ -422,7 +424,7 @@ class View extends Backbone.View<Backbone.Model> {
 
     }
 
-    private addModel (model) {
+    private addModel(model): Promise<JQuery> {
 
         if (model.cid in this.collectionModelViews) {
 
@@ -458,23 +460,35 @@ class View extends Backbone.View<Backbone.Model> {
 
         var modelView = new ModelView(mergedModelViewOptions);
 
-        var $element = modelView.create();
+        let doAddModel = ($element: JQuery): JQuery | Promise<JQuery> => {
 
-        this.referenceModelView[model.cid] = {
-            $html: $element,
-            container: modelView
-        };
+            this.referenceModelView[model.cid] = {
+                $html: $element,
+                container: modelView
+            };
 
-        this.pendingViewModel.push($element);
+            this.pendingViewModel.push($element);
 
-        // TODO: use the container to manage subviews of a list
-        //Container.add(this.options.listSelector, modelView);
+            // TODO: use the container to manage subviews of a list
+            //Container.add(this.options.listSelector, modelView);
             
-        this.collectionModelViews[model.cid] = modelView;
+            this.collectionModelViews[model.cid] = modelView;
 
-        if (this.onModelAdded) {
-            this.onModelAdded(modelView);
+            if (this.onModelAdded) {
+                this.onModelAdded(modelView);
+            }
+
+            return $element;
         }
+
+        let viewCreate = modelView.create();
+
+        if (viewCreate instanceof Promise) {
+            return viewCreate.then(doAddModel);
+        }
+
+        return Promise.resolve(doAddModel(viewCreate));
+
     }
 
     private removeModel (model) {
