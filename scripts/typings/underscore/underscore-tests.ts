@@ -1,6 +1,7 @@
 /// <reference path="underscore.d.ts" />
+/// <reference path="../jquery/jquery.d.ts" />
 
-declare var $: any;
+declare var $: JQueryStatic;
 
 _.each([1, 2, 3], (num) => alert(num.toString()));
 _.each({ one: 1, two: 2, three: 3 }, (value, key) => alert(value.toString()));
@@ -143,11 +144,11 @@ _.defer(function () { alert('deferred'); });
 
 var updatePosition = (param:string) => alert('updating position... Param: ' + param);
 var throttled = _.throttle(updatePosition, 100);
-$(window).scroll(throttled);
+$(window).scroll((<any>throttled));
 
 var calculateLayout = (param:string) => alert('calculating layout... Param: ' + param);
 var lazyLayout = _.debounce(calculateLayout, 300);
-$(window).resize(lazyLayout);
+$(window).resize((<any>lazyLayout));
 
 var createApplication = (param:string) => alert('creating application... Param: ' + param);
 var initialize = _.once(createApplication);
@@ -181,6 +182,10 @@ _.pick({ name: 'moe', age: 50, userid: 'moe1' }, 'name', 'age');
 _.omit({ name: 'moe', age: 50, userid: 'moe1' }, 'name');
 _.omit({ name: 'moe', age: 50, userid: 'moe1' }, 'name', 'age');
 _.omit({ name: 'moe', age: 50, userid: 'moe1' }, ['name', 'age']);
+
+_.mapObject({ a: 1, b: 2 }, val => val * 2) === _.mapObject({ a: 2, b: 4 }, _.identity);
+_.mapObject({ a: 1, b: 2 }, (val, key, o) => o[key] * 2) === _.mapObject({ a: 2, b: 4}, _.identity);
+_.mapObject({ x: "string 1", y: "string 2" }, 'length') === _.mapObject({ x: "string 1", y: "string 2"}, _.property('length'));
 
 var iceCream = { flavor: "chocolate" };
 _.defaults(iceCream, { flavor: "vanilla", sprinkles: "lots" });
