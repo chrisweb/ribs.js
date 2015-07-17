@@ -108,6 +108,46 @@ var __extends = (this && this.__extends) || function (d, b) {
             });
             return this;
         };
+        DefaultRequest.prototype.formatOptions = function (options) {
+            options = _super.prototype.formatOptions.call(this, options);
+            // convert data for API Jamendo
+            if (options.data instanceof Array) {
+                this.originalData = options.data;
+                var paramList = [];
+                var uniqueKeyParam = {};
+                options.data.forEach(function (value) {
+                    var keys = Object.keys(value);
+                    if (keys.length > 1) {
+                        // Multi-parameters have individual request because they can't be combined with others simple request
+                        paramList.push(_.extend({}, value));
+                    }
+                    else {
+                        // Group by single attribute 
+                        var attribute = keys[0];
+                        if (!(attribute in uniqueKeyParam)) {
+                            uniqueKeyParam[attribute] = [];
+                        }
+                        var dataValue = value[attribute];
+                        if (dataValue instanceof Array) {
+                            uniqueKeyParam[attribute].splice.apply(uniqueKeyParam[attribute], [uniqueKeyParam[attribute].length, 0].concat(dataValue));
+                        }
+                        else {
+                            uniqueKeyParam[attribute].push(dataValue);
+                        }
+                    }
+                });
+                for (var attribute in uniqueKeyParam) {
+                    var dataAttribute = {};
+                    dataAttribute[attribute] = _.uniq(uniqueKeyParam[attribute].sort(), true).join(' ');
+                    paramList.push(dataAttribute);
+                }
+                options.data = paramList;
+            }
+            else {
+                this.originalData = _.extend({}, options.data);
+            }
+            return options;
+        };
         DefaultRequest.prototype.dispatchResult = function (errorList, responseList, successCallback, errorCallback) {
             if (errorList.length + responseList.length >= this.requestList.length) {
                 if (errorList.length) {

@@ -73,6 +73,7 @@ interface DefaultRequestError {
 export class DefaultRequest extends Request {
 
     private requestList: JQueryXHR[];
+    private originalData: {}|{}[];
 
     public constructor(options: Ribs.Adapter.RequestAdapterOptions) {
         super(options);
@@ -144,6 +145,60 @@ export class DefaultRequest extends Request {
         return this;
     }
 
+    protected formatOptions(options: Ribs.Adapter.RequestAdapterOptions): Ribs.Adapter.RequestAdapterOptions {
+
+        options = super.formatOptions(options);
+
+        // convert data for API Jamendo
+        if (options.data instanceof Array) {
+
+            this.originalData = options.data;
+
+            let paramList = [];
+            let uniqueKeyParam: { [attribute: string]: any[] } = {};
+
+            (<{}[]>options.data).forEach((value: {}) => {
+
+                let keys: string[] = Object.keys(value);
+
+                if (keys.length > 1) {
+                    // Multi-parameters have individual request because they can't be combined with others simple request
+                    paramList.push(_.extend({}, value));
+                } else {
+                    // Group by single attribute 
+                    let attribute = keys[0];
+                    if (!(attribute in uniqueKeyParam)) {
+                        uniqueKeyParam[attribute] = [];
+                    }
+                    let dataValue = value[attribute];
+
+                    if (dataValue instanceof Array) {
+                        uniqueKeyParam[attribute].splice.apply(uniqueKeyParam[attribute], [uniqueKeyParam[attribute].length, 0].concat(dataValue));
+                    } else {
+                        uniqueKeyParam[attribute].push(dataValue);
+                    }
+                }
+
+            });
+
+            for (let attribute in uniqueKeyParam) {
+
+                let dataAttribute = {};
+                dataAttribute[attribute] = _.uniq(uniqueKeyParam[attribute].sort(), true).join(' ');
+                paramList.push(dataAttribute);
+
+            }
+
+            options.data = paramList;
+
+        } else {
+            this.originalData = _.extend({}, options.data);
+        }
+
+        return options;
+
+    }
+
     private dispatchResult(errorList: DefaultRequestError[], responseList: DefaultRequestResponse[], successCallback: (response: string|{}) => any, errorCallback: (xhr: Ribs.Adapter.Request, textStatus: string|string[], errorThrown: string|Error|(string|Error)[]) => any) {
 
         if (errorList.length + responseList.length >= this.requestList.length) {
@@ -155,7 +210,6 @@ export class DefaultRequest extends Request {
 
                 responseList.sort((a, b) => { return a.position - b.position });
                 successCallback(responseList.map((value) => { return value.response }));
-
 
             }
 
