@@ -45,6 +45,7 @@ declare module Ribs {
         protected onInitializeStart(): void;
         protected onInitialize(): void;
         public create(): JQuery|Promise<JQuery>;
+        public render(): any;
         protected onRenderStart(): void;
         protected onRender(): void;
         protected reRenderModelView(): void;
@@ -87,7 +88,7 @@ declare module Ribs {
         public adapter: Ribs.Adapter.Adapter;
     }
 
-    class Collection extends Backbone.Collection<Backbone.Model> {
+    class Collection extends Backbone.Collection<Ribs.Model> {
         constructor(models?, options?: CollectionOptions);
         onInitialize(options?: any): void;
         batchSave(): void;
@@ -111,7 +112,7 @@ declare module Ribs {
         public constructor(options: any, configuration: any, router: any);
         extend(): void;
         initialize(): void;
-        create(skeleton): void;
+        create(skeleton: any): void;
         clear(): void;
         off;
         promise;
