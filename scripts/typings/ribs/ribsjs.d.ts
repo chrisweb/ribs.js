@@ -105,7 +105,7 @@ declare module Ribs {
         _lengthRange: number;
 
         public adapter: Ribs.Adapter.Adapter;
-        collectionSource: Collection;
+        collectionSource: Ribs.Collection;
     }
 
     class Controller {

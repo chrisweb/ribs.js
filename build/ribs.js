@@ -1,4 +1,4 @@
-/// <reference path="../scripts/typings/ribs/ribs.d.ts" />
+/// <reference path="../scripts/typings/ribs/ribsjs.d.ts" />
 (function (deps, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;

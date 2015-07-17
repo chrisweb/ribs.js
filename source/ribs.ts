@@ -1,4 +1,4 @@
-﻿/// <reference path="../scripts/typings/ribs/ribs.d.ts" />
+﻿/// <reference path="../scripts/typings/ribs/ribsjs.d.ts" />
 
 export import Adapter = require('./adapter');
 export import Collection = require('./collection');

@@ -12,9 +12,10 @@ var __extends = (this && this.__extends) || function (d, b) {
     else if (typeof define === 'function' && define.amd) {
         define(deps, factory);
     }
-})(["require", "exports", 'backbone', 'jquery'], function (require, exports) {
+})(["require", "exports", 'backbone', 'jquery', 'underscore'], function (require, exports) {
     var Backbone = require('backbone');
     var $ = require('jquery');
+    var _ = require('underscore');
     var Request = (function () {
         function Request(options) {
             if (options === void 0) { options = { data: null, type: 'GET' }; }
@@ -138,7 +139,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                 });
                 for (var attribute in uniqueKeyParam) {
                     var dataAttribute = {};
-                    dataAttribute[attribute] = _.uniq(uniqueKeyParam[attribute].sort(), true).join(' ');
+                    dataAttribute[attribute] = _.uniq(uniqueKeyParam[attribute].sort(), true);
                     paramList.push(dataAttribute);
                 }
                 options.data = paramList;
@@ -156,7 +157,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                 }
                 else {
                     responseList.sort(function (a, b) { return a.position - b.position; });
-                    successCallback(responseList.map(function (value) { return value.response; }));
+                    successCallback(_.flatten(responseList.map(function (value) { return value.response; })));
                 }
             }
         };
