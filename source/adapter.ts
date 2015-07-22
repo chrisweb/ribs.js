@@ -2,6 +2,7 @@
 
 import Backbone = require('backbone');
 import $ = require('jquery');
+import _ = require('underscore');
 
 export class Request {
 
@@ -184,7 +185,7 @@ export class DefaultRequest extends Request {
             for (let attribute in uniqueKeyParam) {
 
                 let dataAttribute = {};
-                dataAttribute[attribute] = _.uniq(uniqueKeyParam[attribute].sort(), true).join(' ');
+                dataAttribute[attribute] = _.uniq(uniqueKeyParam[attribute].sort(), true);
                 paramList.push(dataAttribute);
 
             }
@@ -209,7 +210,7 @@ export class DefaultRequest extends Request {
             } else {
 
                 responseList.sort((a, b) => { return a.position - b.position });
-                successCallback(responseList.map((value) => { return value.response }));
+                successCallback(_.flatten(responseList.map((value) => { return value.response })));
 
             }
 

@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{00632d84-209a-4854-b240-a0a257f57b47}</ProjectGuid>
     <ProjectHome />
-    <ProjectView>ProjectFiles</ProjectView>
+    <ProjectView>ShowAllFiles</ProjectView>
     <StartupFile>Gruntfile.js</StartupFile>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -58,7 +58,7 @@
     <TypeScriptCompile Include="scripts\typings\es6-promise\es6-promise.d.ts" />
     <TypeScriptCompile Include="scripts\typings\jquery\jquery-tests.ts" />
     <TypeScriptCompile Include="scripts\typings\jquery\jquery.d.ts" />
-    <TypeScriptCompile Include="scripts\typings\ribs\ribs.d.ts" />
+    <TypeScriptCompile Include="scripts\typings\ribs\ribsjs.d.ts" />
     <TypeScriptCompile Include="scripts\typings\underscore\underscore-tests.ts" />
     <TypeScriptCompile Include="scripts\typings\underscore\underscore.d.ts" />
     <TypeScriptCompile Include="source\adapter.ts" />
