@@ -48,7 +48,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                 arg[_i - 0] = arguments[_i];
             }
             this.adapter.load();
-            return _super.prototype.sync.apply(this, arg);
+            return _super.sync.apply(this, arg);
         };
         Collection.prototype.getFilteredCollection = function (onlyDatas, notDatas) {
             var _this = this;

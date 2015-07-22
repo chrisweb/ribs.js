@@ -12,9 +12,8 @@ var __extends = (this && this.__extends) || function (d, b) {
     else if (typeof define === 'function' && define.amd) {
         define(deps, factory);
     }
-})(["require", "exports", './viewHelper', 'backbone', 'jquery', 'underscore', 'es6-promise'], function (require, exports) {
+})(["require", "exports", './viewHelper', 'jquery', 'underscore', 'es6-promise'], function (require, exports) {
     var ViewHelper = require('./viewHelper');
-    var Backbone = require('backbone');
     var $ = require('jquery');
     var _ = require('underscore');
     var ES6Promise = require('es6-promise');
@@ -143,7 +142,10 @@ var __extends = (this && this.__extends) || function (d, b) {
                                 $container = $();
                             }
                         }
-                        Promise.all(promiseList).then(function () { _this.updateCollection($container); });
+                        Promise.all(promiseList).then(function () {
+                            _this.updateCollection($container);
+                            return $renderedTemplate;
+                        });
                     }
                 }
                 return $renderedTemplate;
@@ -336,7 +338,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         };
         View.prototype.updateCollection = function ($container) {
             if ($container === void 0) { $container = null; }
-            if (!($container instanceof jQuery) || $container === null) {
+            if ($container === null) {
                 $container = this.$el.find(this.options.listSelector);
                 if ($container.length === 0) {
                     if (($container = this.$el.filter(this.options.listSelector)).length === 0) {

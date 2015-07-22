@@ -229,7 +229,10 @@ class View extends Backbone.View<Backbone.Model> {
 
                     }
 
-                    Promise.all(promiseList).then(() => { this.updateCollection($container) });
+                    Promise.all(promiseList).then(() => {
+                        this.updateCollection($container);
+                        return $renderedTemplate;
+                    });
 
                 }
 
@@ -572,7 +575,7 @@ class View extends Backbone.View<Backbone.Model> {
 
     private updateCollection($container: JQuery = null) {
 
-        if (!($container instanceof jQuery) || $container === null) {
+        if ($container === null) {
 
             $container = this.$el.find(this.options.listSelector);
 
