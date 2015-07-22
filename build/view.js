@@ -12,8 +12,9 @@ var __extends = (this && this.__extends) || function (d, b) {
     else if (typeof define === 'function' && define.amd) {
         define(deps, factory);
     }
-})(["require", "exports", './viewHelper', 'jquery', 'underscore', 'es6-promise'], function (require, exports) {
+})(["require", "exports", './viewHelper', 'backbone', 'jquery', 'underscore', 'es6-promise'], function (require, exports) {
     var ViewHelper = require('./viewHelper');
+    var Backbone = require('backbone');
     var $ = require('jquery');
     var _ = require('underscore');
     var ES6Promise = require('es6-promise');

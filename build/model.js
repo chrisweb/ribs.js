@@ -52,7 +52,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                 arg[_i - 0] = arguments[_i];
             }
             this.adapter.load();
-            return _super.sync.apply(this, arg);
+            return _super.prototype.sync.apply(this, arg);
         };
         Model.prototype.get = function (attribute) {
             if (typeof this[attribute] === 'function') {
