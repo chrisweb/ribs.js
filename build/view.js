@@ -143,7 +143,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                                 $container = $();
                             }
                         }
-                        Promise.all(promiseList).then(function () {
+                        return Promise.all(promiseList).then(function () {
                             _this.updateCollection($container);
                             return $renderedTemplate;
                         });

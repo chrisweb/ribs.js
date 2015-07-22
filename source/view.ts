@@ -229,7 +229,7 @@ class View extends Backbone.View<Backbone.Model> {
 
                     }
 
-                    Promise.all(promiseList).then(() => {
+                    return Promise.all(promiseList).then(() => {
                         this.updateCollection($container);
                         return $renderedTemplate;
                     });
