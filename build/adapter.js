@@ -18,7 +18,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     var _ = require('underscore');
     var Request = (function () {
         function Request(options) {
-            if (options === void 0) { options = { data: null, type: 'GET' }; }
+            if (options === void 0) { options = { data: null, type: 'GET', url: '' }; }
             this.options = this.formatOptions(options);
         }
         Request.prototype.formatOptions = function (options) {
@@ -46,7 +46,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             Backbone.ajax = this.requestBind;
         };
         Adapter.prototype.getRequestInstance = function (options) {
-            if (options === void 0) { options = { data: null, type: 'GET' }; }
+            if (options === void 0) { options = { data: null, type: 'GET', url: '' }; }
             return new Request(options);
         };
         return Adapter;
@@ -58,7 +58,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             _super.apply(this, arguments);
         }
         DefaultAdapter.prototype.getRequestInstance = function (options) {
-            if (options === void 0) { options = { data: null, type: 'GET' }; }
+            if (options === void 0) { options = { data: null, type: 'GET', url: '' }; }
             //return (<any>$).ajax(options);
             return new DefaultRequest(options);
         };
@@ -145,7 +145,12 @@ var __extends = (this && this.__extends) || function (d, b) {
                 options.data = paramList;
             }
             else {
-                this.originalData = _.extend({}, options.data);
+                if (typeof options.data === 'string') {
+                    this.originalData = options.data.substr(0);
+                }
+                else {
+                    this.originalData = _.extend({}, options.data);
+                }
             }
             return options;
         };
@@ -156,8 +161,13 @@ var __extends = (this && this.__extends) || function (d, b) {
                     errorCallback(this, '', errorList.map(function (value) { return value.errorThrown; }));
                 }
                 else {
-                    responseList.sort(function (a, b) { return a.position - b.position; });
-                    successCallback(_.flatten(responseList.map(function (value) { return value.response; })));
+                    if (this.options.data instanceof Array) {
+                        responseList.sort(function (a, b) { return a.position - b.position; });
+                        successCallback(_.flatten(responseList.map(function (value) { return value.response; })));
+                    }
+                    else {
+                        successCallback(responseList[0].response);
+                    }
                 }
             }
         };

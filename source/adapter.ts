@@ -8,7 +8,7 @@ export class Request {
 
     public options: Ribs.Adapter.RequestAdapterOptions;
 
-    public constructor(options: Ribs.Adapter.RequestAdapterOptions = { data: null, type: 'GET' }) {
+    public constructor(options: Ribs.Adapter.RequestAdapterOptions = { data: null, type: 'GET', url:'' }) {
         this.options = this.formatOptions(options);
     }
 
@@ -45,7 +45,7 @@ export class Adapter {
         (<any>Backbone).ajax = this.requestBind;
     }
 
-    protected getRequestInstance(options: Ribs.Adapter.RequestAdapterOptions = { data: null, type:'GET' }): Request {
+    protected getRequestInstance(options: Ribs.Adapter.RequestAdapterOptions = { data: null, type: 'GET', url: '' }): Request {
 
         return new Request(options);
 
@@ -54,7 +54,7 @@ export class Adapter {
 }
 
 export class DefaultAdapter extends Adapter {
-    protected getRequestInstance(options: Ribs.Adapter.RequestAdapterOptions = { data: null, type: 'GET' }): Request {
+    protected getRequestInstance(options: Ribs.Adapter.RequestAdapterOptions = { data: null, type: 'GET', url: '' }): Request {
 
         //return (<any>$).ajax(options);
         return new DefaultRequest(options);
@@ -193,7 +193,11 @@ export class DefaultRequest extends Request {
             options.data = paramList;
 
         } else {
-            this.originalData = _.extend({}, options.data);
+            if (typeof options.data === 'string') {
+                this.originalData = (<string>options.data).substr(0);
+            } else {
+                this.originalData = _.extend({}, options.data);
+            }
         }
 
         return options;
@@ -209,9 +213,12 @@ export class DefaultRequest extends Request {
                 errorCallback(<any>this, '', <any>errorList.map((value) => { return value.errorThrown }));
             } else {
 
-                responseList.sort((a, b) => { return a.position - b.position });
-                successCallback(_.flatten(responseList.map((value) => { return value.response })));
-
+                if (this.options.data instanceof Array) {
+                    responseList.sort((a, b) => { return a.position - b.position });
+                    successCallback(_.flatten(responseList.map((value) => { return value.response })));
+                } else {
+                    successCallback(responseList[0].response);
+                }
             }
 
         }
