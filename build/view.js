@@ -143,7 +143,10 @@ var __extends = (this && this.__extends) || function (d, b) {
                                 $container = $();
                             }
                         }
-                        Promise.all(promiseList).then(function () { _this.updateCollection($container); });
+                        return Promise.all(promiseList).then(function () {
+                            _this.updateCollection($container);
+                            return $renderedTemplate;
+                        });
                     }
                 }
                 return $renderedTemplate;
@@ -336,7 +339,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         };
         View.prototype.updateCollection = function ($container) {
             if ($container === void 0) { $container = null; }
-            if (!($container instanceof jQuery) || $container === null) {
+            if ($container === null) {
                 $container = this.$el.find(this.options.listSelector);
                 if ($container.length === 0) {
                     if (($container = this.$el.filter(this.options.listSelector)).length === 0) {
