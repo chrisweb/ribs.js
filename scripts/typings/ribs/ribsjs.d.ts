@@ -86,6 +86,8 @@ declare module Ribs {
         public modelSource: Ribs.Model;
 
         public adapter: Ribs.Adapter.Adapter;
+
+        public options: Ribs.ModelOptions;
     }
 
     class Collection extends Backbone.Collection<Ribs.Model> {
