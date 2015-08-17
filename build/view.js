@@ -2,7 +2,8 @@
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    __.prototype = b.prototype;
+    d.prototype = new __();
 };
 (function (deps, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
@@ -390,6 +391,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                 this._addView(selector, view);
             }
             this.$el.css('display', displayMode);
+            return this;
         };
         View.prototype._addView = function (selector, view, $el) {
             var _this = this;
