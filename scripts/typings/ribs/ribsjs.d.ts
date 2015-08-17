@@ -63,8 +63,8 @@ declare module Ribs {
         protected onModelAdded(modelView: View): void;
         protected onModelRemoved(modelView: View): void;
 
-        public addView(viewList: { [selector: string]: Ribs.View|Ribs.View[] });
-        public addView(selector: string, view: Ribs.View|Ribs.View[]);
+        public addView(viewList: { [selector: string]: Ribs.View|Ribs.View[] }): Ribs.View;
+        public addView(selector: string, view: Ribs.View|Ribs.View[]): Ribs.View;
 
         public isDispatch: boolean;
         //protected template: Function;

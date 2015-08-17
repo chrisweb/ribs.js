@@ -655,6 +655,8 @@ class View extends Backbone.View<Backbone.Model> {
 
         this.$el.css('display', displayMode);
 
+        return this;
+
     }
 
     private _addView(selector: string, view: Ribs.View|Ribs.View[], $el: JQuery = this.$el) {
