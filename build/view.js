@@ -2,8 +2,7 @@
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 (function (deps, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
@@ -36,10 +35,8 @@ var __extends = (this && this.__extends) || function (d, b) {
             }
             // collection children views, usefull when collection view gets
             // destroyed and we want to take some action on sub views
-            this.collectionModelViews = {};
-            // list of reference view by model. Usefull to delete all view
-            // reference when a model is remove from the collection
             this.referenceModelView = {};
+            this.referenceModelView[this.options.listSelector] = {};
             if (this.collection !== undefined) {
                 this.listenTo(this.collection, 'add', this.addModel);
                 this.listenTo(this.collection, 'remove', this.removeModel);
@@ -151,10 +148,36 @@ var __extends = (this && this.__extends) || function (d, b) {
                 }
                 return $renderedTemplate;
             };
+            var doSubView = function ($renderedTemplate) {
+                var promiseList = [];
+                _.each(_this.referenceModelView, function (modelViewList, selector) {
+                    if (selector === _this.options.listSelector) {
+                        return;
+                    }
+                    _.each(modelViewList, function (modelView) {
+                        promiseList.push(modelView.create());
+                    });
+                });
+                if (promiseList.length) {
+                    return Promise.all(promiseList).then(function () {
+                        _.each(_this.referenceModelView, function (modelViewList, selector) {
+                            if (selector !== _this.options.listSelector) {
+                                _this._addView(selector, Object.keys(modelViewList).map(function (cid) { return modelViewList[cid]; }), $renderedTemplate);
+                            }
+                        });
+                        return $renderedTemplate;
+                    });
+                }
+                return $renderedTemplate;
+            };
             if (viewHtml instanceof Promise) {
-                return viewHtml.then(doCollection);
+                return viewHtml.then(doCollection).then(doSubView);
             }
-            return doCollection(viewHtml);
+            var doCollectionView = doCollection(viewHtml);
+            if (doCollectionView instanceof Promise) {
+                return doCollectionView.then(doSubView);
+            }
+            return doSubView(doCollectionView);
         };
         View.prototype.getModelAsJson = function () {
             var data;
@@ -171,17 +194,20 @@ var __extends = (this && this.__extends) || function (d, b) {
             return data;
         };
         View.prototype.close = function () {
+            var _this = this;
             if (this.onCloseStart) {
                 this.onCloseStart();
             }
-            if (this.collectionModelViews !== null) {
-                _.each(this.collectionModelViews, (function closeModelViews(modelView) {
-                    if (this.onModelRemoved) {
-                        this.onModelRemoved(modelView);
-                    }
-                    modelView.close();
-                }).bind(this));
-                this.collectionModelViews = {};
+            if (this.referenceModelView !== null) {
+                _.each(this.referenceModelView, function (modelViewCollection, selector) {
+                    _.each(modelViewCollection, function (modelView) {
+                        if (_this.onModelRemoved) {
+                            _this.onModelRemoved(modelView);
+                        }
+                        modelView.close();
+                    });
+                });
+                this.referenceModelView = {};
             }
             // remove the view from dom and stop listening to events that were
             // added with listenTo or that were added to the events declaration
@@ -216,20 +242,24 @@ var __extends = (this && this.__extends) || function (d, b) {
         };
         View.prototype.clear = function () {
             Ribs.Container.clear(this.options.listSelector);
-            this.referenceModelView = {};
         };
         View.prototype.empty = function () {
             //Container.clear(this.options.listSelector);
-            if (this.collectionModelViews !== null) {
-                _.each(this.collectionModelViews, (function closeModelViews(modelView) {
-                    if (this.onModelRemoved) {
-                        this.onModelRemoved(modelView);
-                    }
-                    modelView.close();
-                }).bind(this));
-                this.collectionModelViews = {};
+            var _this = this;
+            if (this.referenceModelView !== null) {
+                _.each(this.referenceModelView, function (modelViewList, selector) {
+                    _.each(modelViewList, function (modelView) {
+                        if (_this.onModelRemoved) {
+                            _this.onModelRemoved(modelView);
+                        }
+                        modelView.close();
+                    });
+                });
+                this.referenceModelView = {};
+                if ('listSelector' in this.options) {
+                    this.referenceModelView[this.options.listSelector] = {};
+                }
             }
-            this.referenceModelView = {};
         };
         View.prototype.reset = function (collection) {
             this.removeUnusedModelView(collection);
@@ -240,29 +270,21 @@ var __extends = (this && this.__extends) || function (d, b) {
         };
         View.prototype.removeUnusedModelView = function (collection) {
             collection = collection || this.collection;
-            _.each(this.collectionModelViews, (function (viewModel, cid) {
+            var collectionModelView = this.referenceModelView[this.options.listSelector];
+            if (!collectionModelView) {
+                return;
+            }
+            _.each(collectionModelView, function (viewModel, cid) {
                 if (!collection.get(cid)) {
                     viewModel.close();
-                    delete this.collectionModelViews[cid];
-                    delete this.referenceModelView[cid];
+                    delete collectionModelView[cid];
                 }
-            }).bind(this));
+            });
         };
         View.prototype.addModel = function (model) {
             var _this = this;
-            if (model.cid in this.collectionModelViews) {
-                var $element = this.collectionModelViews[model.cid].$el;
-                /*var $container = this.$el.find(this.options.listSelector);
-    
-                if ($container.length > 0) {
-    
-                    $container.append($element);
-    
-                } else if (($container = this.$el.filter(this.options.listSelector)).length) {
-    
-                    $container.append($element);
-    
-                }*/
+            if (model.cid in this.referenceModelView[this.options.listSelector]) {
+                var $element = this.referenceModelView[this.options.listSelector][model.cid].$el;
                 this.pendingViewModel.push($element);
                 return;
             }
@@ -273,14 +295,10 @@ var __extends = (this && this.__extends) || function (d, b) {
             var mergedModelViewOptions = $.extend({}, this.options.ModelViewOptions, { model: model, parentView: this });
             var modelView = new ModelView(mergedModelViewOptions);
             var doAddModel = function ($element) {
-                _this.referenceModelView[model.cid] = {
-                    $html: $element,
-                    container: modelView
-                };
                 _this.pendingViewModel.push($element);
                 // TODO: use the container to manage subviews of a list
                 //Container.add(this.options.listSelector, modelView);
-                _this.collectionModelViews[model.cid] = modelView;
+                _this.referenceModelView[_this.options.listSelector][model.cid] = modelView;
                 if (_this.onModelAdded) {
                     _this.onModelAdded(modelView);
                 }
@@ -293,20 +311,20 @@ var __extends = (this && this.__extends) || function (d, b) {
             return Promise.resolve(doAddModel(viewCreate));
         };
         View.prototype.removeModel = function (model) {
-            var view = this.referenceModelView[model.cid];
+            var view = this.referenceModelView[this.options.listSelector][model.cid];
             if (view === undefined) {
                 return view;
             }
-            if (view.container !== undefined) {
-                // TODO: use the container to manage subviews of a list
-                //Container.remove(this.options.listSelector, view.container);
-                view.container.close();
-            }
-            if (view.$html !== undefined) {
-                view.$html.remove();
-            }
-            delete this.referenceModelView[model.cid];
-            delete this.collectionModelViews[model.cid];
+            // TODO: use the container to manage subviews of a list
+            //Container.remove(this.options.listSelector, view.container);
+            view.close();
+            /* No need anymore?
+            if (view.$el !== undefined) {
+    
+                view.$el.detach();
+    
+            }*/
+            delete this.referenceModelView[this.options.listSelector][model.cid];
             if (this.onModelRemoved) {
                 this.onModelRemoved(view);
             }
@@ -332,7 +350,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             var displayCss = $container.css('display');
             $container.css('display', 'none');
             _.each(this.collection.models, function (model) {
-                var modelView = _this.collectionModelViews[model.cid];
+                var modelView = _this.referenceModelView[_this.options.listSelector][model.cid];
                 $container.append(modelView.$el);
             });
             $container.css('display', displayCss);
@@ -357,6 +375,58 @@ var __extends = (this && this.__extends) || function (d, b) {
                 this.waitingForSort = false;
             }
             $container.css('display', displayCss);
+        };
+        View.prototype.addView = function (selector, view) {
+            var _this = this;
+            var displayMode = this.$el.css('display'); // Use css because some time show/hide use not expected display value
+            this.$el.css('display', 'none'); // Don't display to avoid reflow
+            if (typeof selector !== 'string') {
+                _.each(selector, function (viewList, selectorPath) {
+                    _this._addView(selectorPath, viewList);
+                });
+                return;
+            }
+            else {
+                this._addView(selector, view);
+            }
+            this.$el.css('display', displayMode);
+        };
+        View.prototype._addView = function (selector, view, $el) {
+            var _this = this;
+            if ($el === void 0) { $el = this.$el; }
+            if (!(selector in this.referenceModelView)) {
+                this.referenceModelView[selector] = {};
+            }
+            var doAddView = function (viewToAdd) {
+                _this.referenceModelView[selector][viewToAdd.cid] = viewToAdd;
+                if (_this.isDispatch !== true && $el === _this.$el) {
+                    return;
+                }
+                var $container = $el.find(selector);
+                if ($container.length === 0) {
+                    if (($container = $el.filter(selector)).length === 0) {
+                        $container = $();
+                    }
+                }
+                $container.append(viewToAdd.$el);
+                // Try to find another way to optimize reflow here... Pass addModel to Promise system?
+                if (viewToAdd.isDispatch !== false) {
+                    var $oldEl = viewToAdd.$el;
+                    var newCreateView = viewToAdd.create();
+                    if (newCreateView instanceof Promise) {
+                        newCreateView.then(function ($renderNewCreate) {
+                            $oldEl.replaceWith($renderNewCreate);
+                        });
+                    }
+                    else {
+                        $oldEl.replaceWith(newCreateView);
+                    }
+                }
+            };
+            if (view instanceof Array) {
+                return view.forEach(doAddView);
+            }
+            doAddView(view);
         };
         View.defaultOptions = {
             removeModelOnClose: true,

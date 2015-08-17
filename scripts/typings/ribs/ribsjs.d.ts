@@ -18,7 +18,7 @@ declare module Ribs {
         reRenderOnChange?: boolean;
         listSelector?: string;
         templateVariables?: Object;
-        ModelView?: View|any;//hack...
+        ModelView?: typeof View;
         ModelViewOptions?: ViewOptions;
     }
 
@@ -63,9 +63,14 @@ declare module Ribs {
         protected onModelAdded(modelView: View): void;
         protected onModelRemoved(modelView: View): void;
 
+        public addView(viewList: { [selector: string]: Ribs.View|Ribs.View[] });
+        public addView(selector: string, view: Ribs.View|Ribs.View[]);
+
         public isDispatch: boolean;
         //protected template: Function;
-        protected referenceModelView: { [cid: string]: ViewReference };
+        protected referenceModelView: { [selector: string]: { [cid: string]: ViewReference } };
+
+        protected options: Ribs.ViewOptions;
     }
 
     class Model extends Backbone.Model {
@@ -108,6 +113,8 @@ declare module Ribs {
 
         public adapter: Ribs.Adapter.Adapter;
         collectionSource: Ribs.Collection;
+
+        protected options: Ribs.CollectionOptions;
     }
 
     class Controller {
@@ -118,6 +125,8 @@ declare module Ribs {
         clear(): void;
         off;
         promise;
+        protected options;
+        protected router: Backbone.Router;
     }
 
     module Container {
