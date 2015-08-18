@@ -23,7 +23,12 @@ class Controller {
 
     constructor(options, configuration, router) {
 
+        this.options = options || {};
+        this.router = router || new Backbone.Router();
+        this.configuration = configuration || {};
+
         this.initialize(options, configuration, router);
+        
         _.extend(this, Backbone.Events);
 
     }
