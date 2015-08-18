@@ -127,6 +127,7 @@ declare module Ribs {
         promise;
         protected options;
         protected router: Backbone.Router;
+		protected configuration;
     }
 
     module Container {

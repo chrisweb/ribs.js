@@ -11,6 +11,9 @@
     var _ = require('underscore');
     var Controller = (function () {
         function Controller(options, configuration, router) {
+            this.options = options || {};
+            this.router = router || new Backbone.Router();
+            this.configuration = configuration || {};
             this.initialize(options, configuration, router);
             _.extend(this, Backbone.Events);
         }
@@ -26,8 +29,6 @@
         });
         Controller.prototype.clear = function () { };
         Controller.prototype.initialize = function (options, configuration, router) {
-            this.options = options || {};
-            this.router = router;
             // if oninitialize exists
             if (this.onInitialize) {
                 // execute it now
