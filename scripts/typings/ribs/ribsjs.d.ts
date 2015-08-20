@@ -121,12 +121,13 @@ declare module Ribs {
         public constructor(options: any, configuration: any, router: any);
         extend(): void;
         initialize(): void;
-        create(skeleton: any): void;
+        create(skeleton: any): Promise<any>;
         clear(): void;
         off;
         promise;
         protected options;
         protected router: Backbone.Router;
+		protected configuration;
     }
 
     module Container {
