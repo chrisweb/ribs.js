@@ -32,6 +32,7 @@ class View extends Backbone.View<Backbone.Model> {
     template;
 
     private pendingViewModel: JQuery[];
+    private pendingViewModelPromise: Promise<JQuery>[];
     private waitingForSort: boolean;
 
     constructor(options?) {
@@ -42,6 +43,7 @@ class View extends Backbone.View<Backbone.Model> {
 
         this.pendingViewModel = [];
         this.waitingForSort = false;
+        this.pendingViewModelPromise = [];
 
         this.options = $.extend({}, View.defaultOptions, options || {});
 
@@ -501,6 +503,8 @@ class View extends Backbone.View<Backbone.Model> {
 
         var modelView = new ModelView(mergedModelViewOptions);
 
+        let viewCreate = modelView.create();
+
         let doAddModel = ($element: JQuery): JQuery | Promise<JQuery> => {
 
             this.pendingViewModel.push($element);
@@ -517,9 +521,8 @@ class View extends Backbone.View<Backbone.Model> {
             return $element;
         }
 
-        let viewCreate = modelView.create();
-
         if (viewCreate instanceof Promise) {
+            this.pendingViewModelPromise.push(viewCreate);
             return viewCreate.then(doAddModel);
         }
 
@@ -561,12 +564,12 @@ class View extends Backbone.View<Backbone.Model> {
 
     private sortModel($container: JQuery = null) {
 
-        if (this.pendingViewModel.length) {
+        if (this.pendingViewModel.length || this.pendingViewModelPromise.length) {
             this.waitingForSort = true;
             return;
         }
 
-        if (!($container instanceof jQuery) || $container === null) {
+        if (!($container instanceof $) || $container === null) {
             $container = this.$el.find(this.options.listSelector);
 
             if ($container.length === 0) {
@@ -600,8 +603,16 @@ class View extends Backbone.View<Backbone.Model> {
     }
 
     private updateCollection($container: JQuery = null) {
+        if (this.pendingViewModelPromise.length) {
+            Promise.all(this.pendingViewModelPromise).then(() => { this._updateCollection($container) });
+            this.pendingViewModelPromise = [];
+        } else {
+            this._updateCollection($container);
+        }
+    }
 
-        if ($container === null) {
+    private _updateCollection($container: JQuery = null) {
+        if ($container === null || !($container instanceof $)) {
 
             $container = this.$el.find(this.options.listSelector);
 

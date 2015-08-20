@@ -28,6 +28,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         View.prototype.initialize = function (options) {
             this.pendingViewModel = [];
             this.waitingForSort = false;
+            this.pendingViewModelPromise = [];
             this.options = $.extend({}, View.defaultOptions, options || {});
             // if oninitialize exists
             if (this.onInitializeStart) {
@@ -295,6 +296,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             var ModelView = this.options.ModelView;
             var mergedModelViewOptions = $.extend({}, this.options.ModelViewOptions, { model: model, parentView: this });
             var modelView = new ModelView(mergedModelViewOptions);
+            var viewCreate = modelView.create();
             var doAddModel = function ($element) {
                 _this.pendingViewModel.push($element);
                 // TODO: use the container to manage subviews of a list
@@ -305,8 +307,8 @@ var __extends = (this && this.__extends) || function (d, b) {
                 }
                 return $element;
             };
-            var viewCreate = modelView.create();
             if (viewCreate instanceof Promise) {
+                this.pendingViewModelPromise.push(viewCreate);
                 return viewCreate.then(doAddModel);
             }
             return Promise.resolve(doAddModel(viewCreate));
@@ -334,11 +336,11 @@ var __extends = (this && this.__extends) || function (d, b) {
         View.prototype.sortModel = function ($container) {
             var _this = this;
             if ($container === void 0) { $container = null; }
-            if (this.pendingViewModel.length) {
+            if (this.pendingViewModel.length || this.pendingViewModelPromise.length) {
                 this.waitingForSort = true;
                 return;
             }
-            if (!($container instanceof jQuery) || $container === null) {
+            if (!($container instanceof $) || $container === null) {
                 $container = this.$el.find(this.options.listSelector);
                 if ($container.length === 0) {
                     $container = this.$el.filter(this.options.listSelector);
@@ -357,8 +359,19 @@ var __extends = (this && this.__extends) || function (d, b) {
             $container.css('display', displayCss);
         };
         View.prototype.updateCollection = function ($container) {
+            var _this = this;
             if ($container === void 0) { $container = null; }
-            if ($container === null) {
+            if (this.pendingViewModelPromise.length) {
+                Promise.all(this.pendingViewModelPromise).then(function () { _this._updateCollection($container); });
+                this.pendingViewModelPromise = [];
+            }
+            else {
+                this._updateCollection($container);
+            }
+        };
+        View.prototype._updateCollection = function ($container) {
+            if ($container === void 0) { $container = null; }
+            if ($container === null || !($container instanceof $)) {
                 $container = this.$el.find(this.options.listSelector);
                 if ($container.length === 0) {
                     if (($container = this.$el.filter(this.options.listSelector)).length === 0) {
