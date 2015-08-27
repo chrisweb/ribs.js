@@ -32,7 +32,9 @@ class View extends Backbone.View<Backbone.Model> {
     template;
 
     private pendingViewModel: JQuery[];
+    private pendingViewModelPromise: Promise<JQuery>[];
     private waitingForSort: boolean;
+    private waitingForUpdateCollection: boolean;
 
     constructor(options?) {
         super(options);
@@ -42,6 +44,8 @@ class View extends Backbone.View<Backbone.Model> {
 
         this.pendingViewModel = [];
         this.waitingForSort = false;
+        this.waitingForUpdateCollection = false;
+        this.pendingViewModelPromise = [];
 
         this.options = $.extend({}, View.defaultOptions, options || {});
 
@@ -102,7 +106,7 @@ class View extends Backbone.View<Backbone.Model> {
 
         let htmlizeObject = this.htmlize();
 
-        let doRender = ($renderedTemplate: JQuery) => {
+        let doRender = ($renderedTemplate: JQuery): View|Promise<View> => {
 
             this.setElement($renderedTemplate);
 
@@ -115,6 +119,17 @@ class View extends Backbone.View<Backbone.Model> {
             }
 
             this.isDispatch = true;
+
+            if (this.pendingViewModelPromise.length) {
+                return Promise.all(this.pendingViewModelPromise).then(() => {
+                    return this;
+                });
+            }
+
+            if (this.waitingForUpdateCollection) {
+                this._updateCollection();
+                this.waitingForUpdateCollection = false;
+            }
 
             return this;
         }
@@ -258,13 +273,21 @@ class View extends Backbone.View<Backbone.Model> {
             if (promiseList.length) {
                 return Promise.all(promiseList).then(() => {
 
+                    let promiseAddView = [];
+
                     _.each(this.referenceModelView, (modelViewList, selector) => {
                         if (selector !== this.options.listSelector) {
 
-                            this._addView(selector, Object.keys(modelViewList).map((cid) => { return modelViewList[cid] }), $renderedTemplate);
+                            promiseAddView.push(this._addView(selector, Object.keys(modelViewList).map((cid) => { return modelViewList[cid] }), $renderedTemplate));
 
                         }
                     })
+
+                    if (promiseAddView.length) {
+                        return Promise.all(promiseAddView).then(() => {
+                            return $renderedTemplate;
+                        });
+                    }
 
                     return $renderedTemplate;
                 });
@@ -501,6 +524,8 @@ class View extends Backbone.View<Backbone.Model> {
 
         var modelView = new ModelView(mergedModelViewOptions);
 
+        let viewCreate = modelView.create();
+
         let doAddModel = ($element: JQuery): JQuery | Promise<JQuery> => {
 
             this.pendingViewModel.push($element);
@@ -517,9 +542,8 @@ class View extends Backbone.View<Backbone.Model> {
             return $element;
         }
 
-        let viewCreate = modelView.create();
-
         if (viewCreate instanceof Promise) {
+            this.pendingViewModelPromise.push(viewCreate);
             return viewCreate.then(doAddModel);
         }
 
@@ -561,12 +585,12 @@ class View extends Backbone.View<Backbone.Model> {
 
     private sortModel($container: JQuery = null) {
 
-        if (this.pendingViewModel.length) {
+        if (this.pendingViewModel.length || this.pendingViewModelPromise.length) {
             this.waitingForSort = true;
             return;
         }
 
-        if (!($container instanceof jQuery) || $container === null) {
+        if (!($container instanceof $) || $container === null) {
             $container = this.$el.find(this.options.listSelector);
 
             if ($container.length === 0) {
@@ -600,8 +624,24 @@ class View extends Backbone.View<Backbone.Model> {
     }
 
     private updateCollection($container: JQuery = null) {
+        if (this.pendingViewModelPromise.length) {
+            Promise.all(this.pendingViewModelPromise).then(() => {
+                this.pendingViewModelPromise = [];
+                this._updateCollection($container)
+            });
+        } else {
+            this._updateCollection($container);
+        }
+    }
 
-        if ($container === null) {
+    private _updateCollection($container: JQuery = null) {
+
+        if (this.isDispatch === false) {
+            this.waitingForUpdateCollection = true;
+            return;
+        }
+
+        if ($container === null || !($container instanceof $)) {
 
             $container = this.$el.find(this.options.listSelector);
 
@@ -640,32 +680,33 @@ class View extends Backbone.View<Backbone.Model> {
         let displayMode = this.$el.css('display');// Use css because some time show/hide use not expected display value
         this.$el.css('display', 'none');// Don't display to avoid reflow
 
-        if (typeof selector !== 'string') {
+        let returnView;
 
+        if (typeof selector !== 'string') {
+            returnView = {};
             _.each(selector, (viewList, selectorPath) => {
-                this._addView(selectorPath, viewList);
+                returnView[selectorPath] = this._addView(selectorPath, viewList);
             });
 
-            return;
         } else {
 
-            this._addView(<string>selector, view);
+            returnView = this._addView(<string>selector, view);
 
         }
 
         this.$el.css('display', displayMode);
 
-        return this;
+        return returnView;
 
     }
 
-    private _addView(selector: string, view: Ribs.View|Ribs.View[], $el: JQuery = this.$el) {
+    private _addView(selector: string, view: Ribs.View|Ribs.View[], $el: JQuery = this.$el): JQuery|Promise<JQuery>|(JQuery|Promise<JQuery>)[] {
 
         if (!(selector in this.referenceModelView)) {
             this.referenceModelView[selector] = {};
         }
 
-        let doAddView = (viewToAdd: Ribs.View) => {
+        let doAddView = (viewToAdd: Ribs.View): JQuery|Promise<JQuery> => {
 
             this.referenceModelView[selector][viewToAdd.cid] = viewToAdd;
 
@@ -687,31 +728,37 @@ class View extends Backbone.View<Backbone.Model> {
 
             $container.append(viewToAdd.$el);
 
-            // Try to find another way to optimize reflow here... Pass addModel to Promise system?
-            if (viewToAdd.isDispatch !== false) {
+            console.log(viewToAdd.$el[0]);
+            console.log(viewToAdd.isDispatch);
+            if (viewToAdd.isDispatch === false) {
                 let $oldEl = viewToAdd.$el;
 
                 let newCreateView = viewToAdd.create();
 
                 if (newCreateView instanceof Promise) {
-                    newCreateView.then(($renderNewCreate) => {
+                    return newCreateView.then(($renderNewCreate) => {
                         $oldEl.replaceWith($renderNewCreate);
+
+                        return $renderNewCreate;
                     });
                 } else {
 
                     $oldEl.replaceWith(<JQuery>newCreateView);
 
+                    return <JQuery>newCreateView;
                 }
 
             }
 
+            return viewToAdd.$el;
+
         };
 
         if (view instanceof Array) {
-            return view.forEach(doAddView);
+            return view.map(doAddView);
         }
 
-        doAddView(<Ribs.View>view);
+        return doAddView(<Ribs.View>view);
     }
 }
 

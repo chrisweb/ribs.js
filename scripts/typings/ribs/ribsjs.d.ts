@@ -63,9 +63,11 @@ declare module Ribs {
         protected onModelAdded(modelView: View): void;
         protected onModelRemoved(modelView: View): void;
 
-        public addView(viewList: { [selector: string]: Ribs.View|Ribs.View[] }): Ribs.View;
-        public addView(selector: string, view: Ribs.View|Ribs.View[]): Ribs.View;
-
+        public addView(viewList: { [selector: string]: Ribs.View }): { [selector: string]: JQuery|Promise<JQuery> };
+        public addView(viewList: { [selector: string]: Ribs.View[] }): { [selector: string]: (JQuery|Promise<JQuery>)[]};
+        public addView(selector: string, view: Ribs.View): JQuery|Promise<JQuery>;
+        public addView(selector: string, view: Ribs.View[]): (JQuery|Promise<JQuery>)[];
+        
         public isDispatch: boolean;
         //protected template: Function;
         protected referenceModelView: { [selector: string]: { [cid: string]: ViewReference } };
@@ -236,7 +238,10 @@ declare module Ribs {
              **/
             protected getRequestInstance(options?: RequestAdapterOptions): Request;
         }
-
+        /**
+         * Default Request. Based on Backbone implementation.
+         **/
+        class DefaultRequest extends Request { }
     }
 
 }
