@@ -729,8 +729,6 @@ class View extends Backbone.View<Backbone.Model> {
 
             $container.append(viewToAdd.$el);
 
-            console.log(viewToAdd.$el[0]);
-            console.log(viewToAdd.isDispatch);
             if (viewToAdd.isDispatch === false) {
                 let $oldEl = viewToAdd.$el;
 
