@@ -236,13 +236,19 @@ declare module Ribs {
              * @param options Options for Backbone request.
              * @return Default Request Adapter: JQueryXHR.
              **/
-            protected getRequestInstance(options?: RequestAdapterOptions): Request;
+            protected getRequestInstance(options?: RequestAdapterOptions): DefaultRequest;
         }
         /**
          * Default Request. Based on Backbone implementation.
          **/
+<<<<<<< HEAD
         class DefaultRequest extends Request { }
     }
+=======
+        class DefaultRequest extends Request {
+
+    	}
+>>>>>>> origin/2.0.0
 
 }
 

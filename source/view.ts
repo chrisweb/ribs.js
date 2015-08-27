@@ -44,7 +44,10 @@ class View extends Backbone.View<Backbone.Model> {
 
         this.pendingViewModel = [];
         this.waitingForSort = false;
+<<<<<<< HEAD
         this.waitingForUpdateCollection = false;
+=======
+>>>>>>> origin/2.0.0
         this.pendingViewModelPromise = [];
 
         this.options = $.extend({}, View.defaultOptions, options || {});
@@ -625,14 +628,20 @@ class View extends Backbone.View<Backbone.Model> {
 
     private updateCollection($container: JQuery = null) {
         if (this.pendingViewModelPromise.length) {
+<<<<<<< HEAD
             Promise.all(this.pendingViewModelPromise).then(() => {
                 this.pendingViewModelPromise = [];
                 this._updateCollection($container)
             });
+=======
+            Promise.all(this.pendingViewModelPromise).then(() => { this._updateCollection($container) });
+            this.pendingViewModelPromise = [];
+>>>>>>> origin/2.0.0
         } else {
             this._updateCollection($container);
         }
     }
+<<<<<<< HEAD
 
     private _updateCollection($container: JQuery = null) {
 
@@ -641,6 +650,10 @@ class View extends Backbone.View<Backbone.Model> {
             return;
         }
 
+=======
+
+    private _updateCollection($container: JQuery = null) {
+>>>>>>> origin/2.0.0
         if ($container === null || !($container instanceof $)) {
 
             $container = this.$el.find(this.options.listSelector);
