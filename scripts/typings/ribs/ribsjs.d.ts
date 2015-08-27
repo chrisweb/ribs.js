@@ -241,15 +241,10 @@ declare module Ribs {
         /**
          * Default Request. Based on Backbone implementation.
          **/
-<<<<<<< HEAD
-        class DefaultRequest extends Request { }
-    }
-=======
         class DefaultRequest extends Request {
 
-    	}
->>>>>>> origin/2.0.0
-
+        }
+    }
 }
 
 declare module 'ribsjs' {

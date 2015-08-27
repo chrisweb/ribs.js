@@ -2,8 +2,7 @@
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 (function (deps, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
@@ -28,10 +27,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         View.prototype.initialize = function (options) {
             this.pendingViewModel = [];
             this.waitingForSort = false;
-<<<<<<< HEAD
             this.waitingForUpdateCollection = false;
-=======
->>>>>>> origin/2.0.0
             this.pendingViewModelPromise = [];
             this.options = $.extend({}, View.defaultOptions, options || {});
             // if oninitialize exists
@@ -381,15 +377,10 @@ var __extends = (this && this.__extends) || function (d, b) {
             var _this = this;
             if ($container === void 0) { $container = null; }
             if (this.pendingViewModelPromise.length) {
-<<<<<<< HEAD
                 Promise.all(this.pendingViewModelPromise).then(function () {
                     _this.pendingViewModelPromise = [];
                     _this._updateCollection($container);
                 });
-=======
-                Promise.all(this.pendingViewModelPromise).then(function () { _this._updateCollection($container); });
-                this.pendingViewModelPromise = [];
->>>>>>> origin/2.0.0
             }
             else {
                 this._updateCollection($container);
@@ -397,13 +388,10 @@ var __extends = (this && this.__extends) || function (d, b) {
         };
         View.prototype._updateCollection = function ($container) {
             if ($container === void 0) { $container = null; }
-<<<<<<< HEAD
             if (this.isDispatch === false) {
                 this.waitingForUpdateCollection = true;
                 return;
             }
-=======
->>>>>>> origin/2.0.0
             if ($container === null || !($container instanceof $)) {
                 $container = this.$el.find(this.options.listSelector);
                 if ($container.length === 0) {
@@ -465,7 +453,11 @@ var __extends = (this && this.__extends) || function (d, b) {
                     var newCreateView = viewToAdd.create();
                     if (newCreateView instanceof Promise) {
                         return newCreateView.then(function ($renderNewCreate) {
-                            $oldEl.replaceWith($renderNewCreate);
+                            // Replace node only if previous element has parent
+                            // Avoid some conflict with render override in class which extend Ribs.View
+                            if ($oldEl.parent().length > 0) {
+                                $oldEl.replaceWith($renderNewCreate);
+                            }
                             return $renderNewCreate;
                         });
                     }
