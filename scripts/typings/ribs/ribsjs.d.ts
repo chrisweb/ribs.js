@@ -171,6 +171,9 @@ declare module Ribs {
             data: {};
             type: string;
             url: string;
+            limit?: number;
+            order?: string;
+            offset?: number;
             success?: (response: string|{}) => any;
             error?: (xhr: Adapter.Request, textStatus: string|string[], errorThrown: string|Error|(string|Error)[]) => any;
         }
