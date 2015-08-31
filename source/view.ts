@@ -32,7 +32,7 @@ class View extends Backbone.View<Backbone.Model> {
     template;
 
     private pendingViewModel: JQuery[];
-    private pendingViewModelPromise: Promise<JQuery>[];
+    public pendingViewModelPromise: Promise<JQuery>[];//readonly
     private waitingForSort: boolean;
     private waitingForUpdateCollection: boolean;
 

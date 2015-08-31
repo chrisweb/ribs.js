@@ -8,8 +8,6 @@ class Controller {
     options: any;
     router: Backbone.Router;
 	configuration: any;
-    onInitialize;
-    create;
     _promise;
 
     get promise() {
@@ -36,15 +34,19 @@ class Controller {
 
     initialize(options, configuration, router) {
 
-        // if oninitialize exists
-        if (this.onInitialize) {
-
-            // execute it now
-            this.onInitialize(this.options, configuration, this.router);
-
-        }
+        // execute it now
+        this.onInitialize(this.options, configuration, this.router);
 
     }
+
+    protected onInitialize(options, configuration, router) {
+
+    }
+
+    protected create(skeleton: any): Promise<any> {
+        return null;
+    }
+
 
     static extend() {
         return (<any>Backbone.Model).extend.apply(this, arguments);

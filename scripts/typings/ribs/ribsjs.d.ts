@@ -73,6 +73,8 @@ declare module Ribs {
         protected referenceModelView: { [selector: string]: { [cid: string]: ViewReference } };
 
         protected options: Ribs.ViewOptions;
+        public pendingViewModelPromise: Promise<JQuery>[];//readonly
+
     }
 
     class Model extends Backbone.Model {
@@ -120,7 +122,9 @@ declare module Ribs {
     }
 
     class Controller {
-        public constructor(options: any, configuration: any, router: any);
+        public constructor(options: any, configuration: any, router: Ribs.Router);
+
+        protected onInitialize(options: any, configuration: any, router: Ribs.Router);
         extend(): void;
         initialize(): void;
         create(skeleton: any): Promise<any>;
@@ -128,7 +132,7 @@ declare module Ribs {
         off;
         promise;
         protected options;
-        protected router: Backbone.Router;
+        protected router: Ribs.Router;
 		protected configuration;
     }
 
@@ -150,7 +154,7 @@ declare module Ribs {
     class Router extends Backbone.Router {
         constructor(options?: Backbone.RouterOptions);
         public execute(callback, routeArguments, routeName, internalCallback): void;
-        public getCurrentRoute: string;
+        public getCurrentRoute(): string;
     }
 
     function ViewsLoader(views: string, callback: Function);

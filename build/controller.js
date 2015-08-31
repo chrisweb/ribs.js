@@ -29,11 +29,13 @@
         });
         Controller.prototype.clear = function () { };
         Controller.prototype.initialize = function (options, configuration, router) {
-            // if oninitialize exists
-            if (this.onInitialize) {
-                // execute it now
-                this.onInitialize(this.options, configuration, this.router);
-            }
+            // execute it now
+            this.onInitialize(this.options, configuration, this.router);
+        };
+        Controller.prototype.onInitialize = function (options, configuration, router) {
+        };
+        Controller.prototype.create = function (skeleton) {
+            return null;
         };
         Controller.extend = function () {
             return Backbone.Model.extend.apply(this, arguments);

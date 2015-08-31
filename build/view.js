@@ -446,8 +446,6 @@ var __extends = (this && this.__extends) || function (d, b) {
                     }
                 }
                 $container.append(viewToAdd.$el);
-                console.log(viewToAdd.$el[0]);
-                console.log(viewToAdd.isDispatch);
                 if (viewToAdd.isDispatch === false) {
                     var $oldEl = viewToAdd.$el;
                     var newCreateView = viewToAdd.create();
