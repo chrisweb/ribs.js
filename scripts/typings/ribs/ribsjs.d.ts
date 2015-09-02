@@ -72,7 +72,7 @@ declare module Ribs {
         //protected template: Function;
         protected referenceModelView: { [selector: string]: { [cid: string]: ViewReference } };
 
-        protected options: Ribs.ViewOptions;
+        public options: Ribs.ViewOptions;
         public pendingViewModelPromise: Promise<JQuery>[];//readonly
 
     }
