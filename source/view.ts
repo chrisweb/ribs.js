@@ -19,14 +19,7 @@ class View extends Backbone.View<Backbone.Model> {
         ModelViewOptions: {}
     };
     options: Ribs.ViewOptions;
-    onInitialize;
-    onInitializeStart;
-    onRender;
-    onRenderStart;
-    onModelAdded;
-    onModelRemoved;
-    onClose;
-    onCloseStart;
+    
     referenceModelView: { [selector: string]: { [cid: string]: Ribs.View } };
     isDispatch: boolean = false;
     template;
@@ -50,13 +43,7 @@ class View extends Backbone.View<Backbone.Model> {
 
         this.options = $.extend({}, View.defaultOptions, options || {});
 
-        // if oninitialize exists
-        if (this.onInitializeStart) {
-                
-            // execute it now
-            this.onInitializeStart();
-
-        }
+        this.onInitializeStart();
             
         // collection children views, usefull when collection view gets
         // destroyed and we want to take some action on sub views
@@ -85,25 +72,13 @@ class View extends Backbone.View<Backbone.Model> {
 
         }
             
-        // if oninitialize exists
-        if (this.onInitialize) {
-                
-            // execute it now
-            this.onInitialize();
-
-        }
+        this.onInitialize();
 
     }
 
     render() {
 
-        // if onRender exists
-        if (this.onRenderStart) {
-                
-            // execute it now
-            this.onRenderStart();
-
-        }
+        this.onRenderStart();
 
         let htmlizeObject = this.htmlize();
 
@@ -111,13 +86,7 @@ class View extends Backbone.View<Backbone.Model> {
 
             this.setElement($renderedTemplate);
 
-            // if onRender exists
-            if (this.onRender) {
-                
-                // execute it now
-                this.onRender();
-
-            }
+            this.onRender();
 
             this.isDispatch = true;
 
@@ -342,11 +311,7 @@ class View extends Backbone.View<Backbone.Model> {
 
     close() {
 
-        if (this.onCloseStart) {
-
-            this.onCloseStart();
-
-        }
+        this.onCloseStart();
 
         if (this.referenceModelView !== null) {
 
@@ -354,11 +319,7 @@ class View extends Backbone.View<Backbone.Model> {
 
                 _.each(modelViewCollection, (modelView) => {
 
-                    if (this.onModelRemoved) {
-
-                        this.onModelRemoved(modelView);
-
-                    }
+                    this.onModelRemoved(modelView);
 
                     modelView.close();
 
@@ -396,13 +357,7 @@ class View extends Backbone.View<Backbone.Model> {
                 
         }
             
-        // if there is a onClose function ...
-        if (this.onClose) {
-                
-            // execute it now
-            this.onClose();
-
-        }
+        this.onClose();
 
     }
 
@@ -443,11 +398,7 @@ class View extends Backbone.View<Backbone.Model> {
             _.each(this.referenceModelView, (modelViewList: { [cid: string]: Ribs.View }, selector) => {
                 _.each(modelViewList, (modelView) => {
 
-                    if (this.onModelRemoved) {
-
-                        this.onModelRemoved(modelView);
-
-                    }
+                    this.onModelRemoved(modelView);
 
                     modelView.close();
 
@@ -536,9 +487,7 @@ class View extends Backbone.View<Backbone.Model> {
             
             this.referenceModelView[this.options.listSelector][model.cid] = modelView;
 
-            if (this.onModelAdded) {
-                this.onModelAdded(modelView);
-            }
+            this.onModelAdded(modelView);
 
             return $element;
         }
@@ -574,11 +523,7 @@ class View extends Backbone.View<Backbone.Model> {
 
         delete this.referenceModelView[this.options.listSelector][model.cid];
 
-        if (this.onModelRemoved) {
-
-            this.onModelRemoved(view);
-
-        }
+        this.onModelRemoved(view);
 
         return view;
 
@@ -764,6 +709,16 @@ class View extends Backbone.View<Backbone.Model> {
 
         return doAddView(<Ribs.View>view);
     }
+
+    protected onInitialize() { }
+    protected onInitializeStart() { }
+    protected onRender() { }
+    protected onRenderStart() { }
+    protected onModelAdded(modelViewAdded: Ribs.View) { }
+    protected onModelRemoved(modelViewRemoved: Ribs.View) { }
+    protected onClose() { }
+    protected onCloseStart() { }
+
 }
 
 export = View;

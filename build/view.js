@@ -30,11 +30,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             this.waitingForUpdateCollection = false;
             this.pendingViewModelPromise = [];
             this.options = $.extend({}, View.defaultOptions, options || {});
-            // if oninitialize exists
-            if (this.onInitializeStart) {
-                // execute it now
-                this.onInitializeStart();
-            }
+            this.onInitializeStart();
             // collection children views, usefull when collection view gets
             // destroyed and we want to take some action on sub views
             this.referenceModelView = {};
@@ -52,27 +48,15 @@ var __extends = (this && this.__extends) || function (d, b) {
                     this.listenTo(this.model, 'change', this.reRenderModelView);
                 }
             }
-            // if oninitialize exists
-            if (this.onInitialize) {
-                // execute it now
-                this.onInitialize();
-            }
+            this.onInitialize();
         };
         View.prototype.render = function () {
             var _this = this;
-            // if onRender exists
-            if (this.onRenderStart) {
-                // execute it now
-                this.onRenderStart();
-            }
+            this.onRenderStart();
             var htmlizeObject = this.htmlize();
             var doRender = function ($renderedTemplate) {
                 _this.setElement($renderedTemplate);
-                // if onRender exists
-                if (_this.onRender) {
-                    // execute it now
-                    _this.onRender();
-                }
+                _this.onRender();
                 _this.isDispatch = true;
                 if (_this.pendingViewModelPromise.length) {
                     return Promise.all(_this.pendingViewModelPromise).then(function () {
@@ -212,15 +196,11 @@ var __extends = (this && this.__extends) || function (d, b) {
         };
         View.prototype.close = function () {
             var _this = this;
-            if (this.onCloseStart) {
-                this.onCloseStart();
-            }
+            this.onCloseStart();
             if (this.referenceModelView !== null) {
                 _.each(this.referenceModelView, function (modelViewCollection, selector) {
                     _.each(modelViewCollection, function (modelView) {
-                        if (_this.onModelRemoved) {
-                            _this.onModelRemoved(modelView);
-                        }
+                        _this.onModelRemoved(modelView);
                         modelView.close();
                     });
                 });
@@ -238,11 +218,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             }
             if (this.collection !== null) {
             }
-            // if there is a onClose function ...
-            if (this.onClose) {
-                // execute it now
-                this.onClose();
-            }
+            this.onClose();
         };
         View.prototype.create = function () {
             var _this = this;
@@ -266,9 +242,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             if (this.referenceModelView !== null) {
                 _.each(this.referenceModelView, function (modelViewList, selector) {
                     _.each(modelViewList, function (modelView) {
-                        if (_this.onModelRemoved) {
-                            _this.onModelRemoved(modelView);
-                        }
+                        _this.onModelRemoved(modelView);
                         modelView.close();
                     });
                 });
@@ -317,9 +291,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                 // TODO: use the container to manage subviews of a list
                 //Container.add(this.options.listSelector, modelView);
                 _this.referenceModelView[_this.options.listSelector][model.cid] = modelView;
-                if (_this.onModelAdded) {
-                    _this.onModelAdded(modelView);
-                }
+                _this.onModelAdded(modelView);
                 return $element;
             };
             if (viewCreate instanceof Promise) {
@@ -343,9 +315,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     
             }*/
             delete this.referenceModelView[this.options.listSelector][model.cid];
-            if (this.onModelRemoved) {
-                this.onModelRemoved(view);
-            }
+            this.onModelRemoved(view);
             return view;
         };
         View.prototype.sortModel = function ($container) {
@@ -471,6 +441,14 @@ var __extends = (this && this.__extends) || function (d, b) {
             }
             return doAddView(view);
         };
+        View.prototype.onInitialize = function () { };
+        View.prototype.onInitializeStart = function () { };
+        View.prototype.onRender = function () { };
+        View.prototype.onRenderStart = function () { };
+        View.prototype.onModelAdded = function (modelViewAdded) { };
+        View.prototype.onModelRemoved = function (modelViewRemoved) { };
+        View.prototype.onClose = function () { };
+        View.prototype.onCloseStart = function () { };
         View.defaultOptions = {
             removeModelOnClose: true,
             reRenderOnChange: false,
