@@ -466,7 +466,7 @@ class View extends Backbone.View<Backbone.Model> {
 
         if (this.options.ModelView === null) {
 
-            throw 'a collection view needs a ModelView passed on instantiation through the options';
+            throw new Error('a collection view needs a ModelView passed on instantiation through the options');
 
         }
 

@@ -280,7 +280,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                 return;
             }
             if (this.options.ModelView === null) {
-                throw 'a collection view needs a ModelView passed on instantiation through the options';
+                throw new Error('a collection view needs a ModelView passed on instantiation through the options');
             }
             var ModelView = this.options.ModelView;
             var mergedModelViewOptions = $.extend({}, this.options.ModelViewOptions, { model: model, parentView: this });
