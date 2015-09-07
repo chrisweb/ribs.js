@@ -137,7 +137,8 @@ class View extends Backbone.View<Backbone.Model> {
 
         let templateKeyValues;
 
-        let templateData = { _view: this };
+        let templateData = {  };
+        let postTemplateData = { _view: this };
 
         if (this.model !== undefined) {
             
@@ -145,11 +146,11 @@ class View extends Backbone.View<Backbone.Model> {
             // are there also templateVariables
             if (_.keys(this.options.templateVariables).length > 0) {
 
-                templateKeyValues = $.extend(templateData, ViewHelper.get(), this.options.templateVariables, this.getModelAsJson());
+                templateKeyValues = $.extend(templateData, ViewHelper.get(), this.options.templateVariables, this.getModelAsJson(), postTemplateData);
 
             } else {
 
-                templateKeyValues = $.extend(templateData, ViewHelper.get(), this.getModelAsJson());
+                templateKeyValues = $.extend(templateData, ViewHelper.get(), this.getModelAsJson(), postTemplateData);
 
             }
 
@@ -157,12 +158,12 @@ class View extends Backbone.View<Backbone.Model> {
         } else if (_.keys(this.options.templateVariables).length > 0) {
 
             // templateVariables view
-            templateKeyValues = $.extend(templateData, ViewHelper.get(), this.options.templateVariables);
+            templateKeyValues = $.extend(templateData, ViewHelper.get(), this.options.templateVariables, postTemplateData);
 
         } else {
                 
             // basic view
-            templateKeyValues = $.extend(templateData, ViewHelper.get());
+            templateKeyValues = $.extend(templateData, ViewHelper.get(), postTemplateData);
 
         }
 

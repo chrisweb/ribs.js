@@ -90,24 +90,25 @@ var __extends = (this && this.__extends) || function (d, b) {
         };
         View.prototype.htmlizeView = function () {
             var templateKeyValues;
-            var templateData = { _view: this };
+            var templateData = {};
+            var postTemplateData = { _view: this };
             if (this.model !== undefined) {
                 // model view
                 // are there also templateVariables
                 if (_.keys(this.options.templateVariables).length > 0) {
-                    templateKeyValues = $.extend(templateData, ViewHelper.get(), this.options.templateVariables, this.getModelAsJson());
+                    templateKeyValues = $.extend(templateData, ViewHelper.get(), this.options.templateVariables, this.getModelAsJson(), postTemplateData);
                 }
                 else {
-                    templateKeyValues = $.extend(templateData, ViewHelper.get(), this.getModelAsJson());
+                    templateKeyValues = $.extend(templateData, ViewHelper.get(), this.getModelAsJson(), postTemplateData);
                 }
             }
             else if (_.keys(this.options.templateVariables).length > 0) {
                 // templateVariables view
-                templateKeyValues = $.extend(templateData, ViewHelper.get(), this.options.templateVariables);
+                templateKeyValues = $.extend(templateData, ViewHelper.get(), this.options.templateVariables, postTemplateData);
             }
             else {
                 // basic view
-                templateKeyValues = $.extend(templateData, ViewHelper.get());
+                templateKeyValues = $.extend(templateData, ViewHelper.get(), postTemplateData);
             }
             var templateResult = this.template(templateKeyValues);
             if (templateResult instanceof Promise) {
