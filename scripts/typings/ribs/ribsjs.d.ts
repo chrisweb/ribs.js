@@ -20,6 +20,7 @@ declare module Ribs {
         templateVariables?: Object;
         ModelView?: typeof View;
         ModelViewOptions?: ViewOptions;
+        collection?: Ribs.Collection;
     }
 
     interface ViewReference {
