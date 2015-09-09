@@ -28,6 +28,8 @@ var __extends = (this && this.__extends) || function (d, b) {
             this.pendingViewModel = [];
             this.waitingForSort = false;
             this.waitingForUpdateCollection = false;
+            this.isCollectionRendered = false;
+            this.isSubviewRendered = false;
             this.pendingViewModelPromise = [];
             this.options = $.extend({}, View.defaultOptions, options || {});
             this.onInitializeStart();
@@ -53,6 +55,8 @@ var __extends = (this && this.__extends) || function (d, b) {
         View.prototype.render = function () {
             var _this = this;
             this.onRenderStart();
+            this.isCollectionRendered = false;
+            this.isSubviewRendered = false;
             var htmlizeObject = this.htmlize();
             var doRender = function ($renderedTemplate) {
                 _this.setElement($renderedTemplate);
@@ -122,6 +126,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             var viewHtml = this.htmlizeView();
             var doCollection = function ($renderedTemplate) {
                 // and also a collection?
+                _this.isCollectionRendered = true;
                 if (_this.collection !== undefined) {
                     // for each model of the collection append a modelView to
                     // collection dom
@@ -145,6 +150,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                 return $renderedTemplate;
             };
             var doSubView = function ($renderedTemplate) {
+                _this.isSubviewRendered = true;
                 var promiseList = [];
                 _.each(_this.referenceModelView, function (modelViewList, selector) {
                     if (selector === _this.options.listSelector) {
@@ -275,6 +281,9 @@ var __extends = (this && this.__extends) || function (d, b) {
         };
         View.prototype.addModel = function (model) {
             var _this = this;
+            if (this.isCollectionRendered === false) {
+                return;
+            }
             if (model.cid in this.referenceModelView[this.options.listSelector]) {
                 var $element = this.referenceModelView[this.options.listSelector][model.cid].$el;
                 this.pendingViewModel.push($element);

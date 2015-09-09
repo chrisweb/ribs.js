@@ -28,6 +28,8 @@ class View extends Backbone.View<Backbone.Model> {
     public pendingViewModelPromise: Promise<JQuery>[];//readonly
     private waitingForSort: boolean;
     private waitingForUpdateCollection: boolean;
+    private isCollectionRendered: boolean;
+    private isSubviewRendered: boolean;
 
     constructor(options?) {
         super(options);
@@ -38,6 +40,8 @@ class View extends Backbone.View<Backbone.Model> {
         this.pendingViewModel = [];
         this.waitingForSort = false;
         this.waitingForUpdateCollection = false;
+        this.isCollectionRendered = false;
+        this.isSubviewRendered = false;
 
         this.pendingViewModelPromise = [];
 
@@ -79,6 +83,9 @@ class View extends Backbone.View<Backbone.Model> {
     render() {
 
         this.onRenderStart();
+
+        this.isCollectionRendered = false;
+        this.isSubviewRendered = false;
 
         let htmlizeObject = this.htmlize();
 
@@ -184,6 +191,7 @@ class View extends Backbone.View<Backbone.Model> {
 
         let doCollection = ($renderedTemplate: JQuery): JQuery|Promise<JQuery> => {
             // and also a collection?
+            this.isCollectionRendered = true;
             if (this.collection !== undefined) {
             
                 // for each model of the collection append a modelView to
@@ -219,12 +227,13 @@ class View extends Backbone.View<Backbone.Model> {
                 }
 
             }
-
+            
             return $renderedTemplate;
         };
 
         let doSubView = ($renderedTemplate: JQuery): JQuery|Promise<JQuery> => {
 
+            this.isSubviewRendered = true;
 
             let promiseList = [];
 
@@ -240,6 +249,7 @@ class View extends Backbone.View<Backbone.Model> {
                 });
 
             });
+
 
             if (promiseList.length) {
                 return Promise.all(promiseList).then(() => {
@@ -454,6 +464,10 @@ class View extends Backbone.View<Backbone.Model> {
     }
 
     private addModel(model): Promise<JQuery> {
+
+        if (this.isCollectionRendered === false) {
+            return;
+        }
 
         if (model.cid in this.referenceModelView[this.options.listSelector]) {
 
