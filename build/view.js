@@ -157,6 +157,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                         return;
                     }
                     _.each(modelViewList, function (modelView) {
+                        _this.prepareAddedView(modelView);
                         promiseList.push(modelView.create());
                     });
                 });
@@ -284,6 +285,9 @@ var __extends = (this && this.__extends) || function (d, b) {
             if (this.isCollectionRendered === false) {
                 return;
             }
+            if (!(this.options.listSelector in this.referenceModelView)) {
+                this.referenceModelView[this.options.listSelector] = {};
+            }
             if (model.cid in this.referenceModelView[this.options.listSelector]) {
                 var $element = this.referenceModelView[this.options.listSelector][model.cid].$el;
                 this.pendingViewModel.push($element);
@@ -293,7 +297,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                 throw new Error('a collection view needs a ModelView passed on instantiation through the options');
             }
             var ModelView = this.options.ModelView;
-            var mergedModelViewOptions = $.extend({}, this.options.ModelViewOptions, { model: model, parentView: this });
+            var mergedModelViewOptions = this.formatModelViewOptions($.extend({}, this.options.ModelViewOptions, { model: model, parentView: this }));
             var modelView = new ModelView(mergedModelViewOptions);
             var viewCreate = modelView.create();
             var doAddModel = function ($element) {
@@ -309,6 +313,9 @@ var __extends = (this && this.__extends) || function (d, b) {
                 return viewCreate.then(doAddModel);
             }
             return Promise.resolve(doAddModel(viewCreate));
+        };
+        View.prototype.formatModelViewOptions = function (modelViewOptions) {
+            return modelViewOptions;
         };
         View.prototype.removeModel = function (model) {
             var view = this.referenceModelView[this.options.listSelector][model.cid];
@@ -450,6 +457,9 @@ var __extends = (this && this.__extends) || function (d, b) {
                 return view.map(doAddView);
             }
             return doAddView(view);
+        };
+        View.prototype.prepareAddedView = function (modelView) {
+            return modelView;
         };
         View.prototype.onInitialize = function () { };
         View.prototype.onInitializeStart = function () { };

@@ -244,6 +244,7 @@ class View extends Backbone.View<Backbone.Model> {
 
                 _.each(modelViewList, (modelView) => {
 
+                    this.prepareAddedView(modelView);
                     promiseList.push(modelView.create());
 
                 });
@@ -469,6 +470,11 @@ class View extends Backbone.View<Backbone.Model> {
             return;
         }
 
+        if (!(this.options.listSelector in this.referenceModelView)) {
+            this.referenceModelView[this.options.listSelector] = {};
+        }
+
+
         if (model.cid in this.referenceModelView[this.options.listSelector]) {
 
             var $element = this.referenceModelView[this.options.listSelector][model.cid].$el;
@@ -487,7 +493,7 @@ class View extends Backbone.View<Backbone.Model> {
 
         let ModelView = this.options.ModelView;
 
-        var mergedModelViewOptions = $.extend({}, this.options.ModelViewOptions, { model: model, parentView: this });
+        var mergedModelViewOptions = this.formatModelViewOptions($.extend({}, this.options.ModelViewOptions, { model: model, parentView: this }));
 
         var modelView = new ModelView(mergedModelViewOptions);
 
@@ -514,6 +520,10 @@ class View extends Backbone.View<Backbone.Model> {
 
         return Promise.resolve(doAddModel(<JQuery>viewCreate));
 
+    }
+
+    protected formatModelViewOptions(modelViewOptions): Ribs.ViewOptions {
+        return modelViewOptions;
     }
 
     private removeModel(model) {
@@ -723,6 +733,10 @@ class View extends Backbone.View<Backbone.Model> {
         }
 
         return doAddView(<Ribs.View>view);
+    }
+
+    protected prepareAddedView(modelView: Ribs.View): Ribs.View {
+        return modelView;
     }
 
     protected onInitialize() { }

@@ -63,6 +63,9 @@ declare module Ribs {
         protected removeModel(model: Backbone.Model): void;
         protected onModelAdded(modelView: View): void;
         protected onModelRemoved(modelView: View): void;
+        protected formatModelViewOptions(modelViewOptions: Ribs.ViewOptions): Ribs.ViewOptions;
+        protected prepareAddedView(modelView: Ribs.View): Ribs.View;
+
 
         public addView(viewList: { [selector: string]: Ribs.View }): { [selector: string]: JQuery|Promise<JQuery> };
         public addView(viewList: { [selector: string]: Ribs.View[] }): { [selector: string]: (JQuery|Promise<JQuery>)[]};
