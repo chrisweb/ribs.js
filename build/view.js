@@ -11,13 +11,13 @@ var __extends = (this && this.__extends) || function (d, b) {
     else if (typeof define === 'function' && define.amd) {
         define(deps, factory);
     }
-})(["require", "exports", './viewHelper', 'backbone', 'jquery', 'underscore', 'es6-promise'], function (require, exports) {
+})(["require", "exports", './viewHelper', 'backbone', 'jquery', 'underscore', 'FSPromise'], function (require, exports) {
     var ViewHelper = require('./viewHelper');
     var Backbone = require('backbone');
     var $ = require('jquery');
     var _ = require('underscore');
-    var ES6Promise = require('es6-promise');
-    var Promise = ES6Promise.Promise;
+    var FSPromise = require('FSPromise');
+    var Promise = FSPromise.FSPromise;
     var View = (function (_super) {
         __extends(View, _super);
         function View(options) {
@@ -62,6 +62,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                 _this.setElement($renderedTemplate);
                 _this.onRender();
                 _this.isDispatch = true;
+                _this.lastRenderPromise = null;
                 if (_this.pendingViewModelPromise.length) {
                     return Promise.all(_this.pendingViewModelPromise).then(function () {
                         return _this;
@@ -74,6 +75,10 @@ var __extends = (this && this.__extends) || function (d, b) {
                 return _this;
             };
             if (htmlizeObject instanceof Promise) {
+                if (!!this.lastRenderPromise) {
+                    this.lastRenderPromise.abort();
+                }
+                this.lastRenderPromise = htmlizeObject;
                 return htmlizeObject.then(doRender);
             }
             return doRender(htmlizeObject);
@@ -304,6 +309,9 @@ var __extends = (this && this.__extends) || function (d, b) {
                 _this.pendingViewModel.push($element);
                 // TODO: use the container to manage subviews of a list
                 //Container.add(this.options.listSelector, modelView);
+                if (!(_this.options.listSelector in _this.referenceModelView)) {
+                    _this.referenceModelView[_this.options.listSelector] = {};
+                }
                 _this.referenceModelView[_this.options.listSelector][model.cid] = modelView;
                 _this.onModelAdded(modelView);
                 return $element;

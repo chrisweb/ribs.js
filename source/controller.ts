@@ -43,7 +43,7 @@ class Controller {
 
     }
 
-    protected create(skeleton: any): Promise<any> {
+    protected create(skeleton: any): Thenable<any> {
         return null;
     }
 

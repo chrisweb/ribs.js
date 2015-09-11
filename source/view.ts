@@ -5,8 +5,8 @@ import Container = require('./container');
 import Backbone = require('backbone');
 import $ = require('jquery');
 import _ = require('underscore');
-import ES6Promise = require('es6-promise');
-import Promise = ES6Promise.Promise;
+import FSPromise = require('FSPromise');
+import Promise = FSPromise.FSPromise;
 
 class View extends Backbone.View<Backbone.Model> {
 
@@ -25,11 +25,13 @@ class View extends Backbone.View<Backbone.Model> {
     template;
 
     private pendingViewModel: JQuery[];
-    public pendingViewModelPromise: Promise<JQuery>[];//readonly
+    public pendingViewModelPromise: Thenable<JQuery>[];//readonly
     private waitingForSort: boolean;
     private waitingForUpdateCollection: boolean;
     private isCollectionRendered: boolean;
     private isSubviewRendered: boolean;
+
+    private lastRenderPromise: FSPromise<JQuery>;
 
     constructor(options?) {
         super(options);
@@ -89,13 +91,14 @@ class View extends Backbone.View<Backbone.Model> {
 
         let htmlizeObject = this.htmlize();
 
-        let doRender = ($renderedTemplate: JQuery): View|Promise<View> => {
+        let doRender = ($renderedTemplate: JQuery): View|Thenable<View> => {
 
             this.setElement($renderedTemplate);
 
             this.onRender();
 
             this.isDispatch = true;
+            this.lastRenderPromise = null;
 
             if (this.pendingViewModelPromise.length) {
                 return Promise.all(this.pendingViewModelPromise).then(() => {
@@ -112,6 +115,12 @@ class View extends Backbone.View<Backbone.Model> {
         }
 
         if (htmlizeObject instanceof Promise) {
+
+            if (!!this.lastRenderPromise) {
+                this.lastRenderPromise.abort();
+            }
+
+            this.lastRenderPromise = htmlizeObject;
 
             return <any>htmlizeObject.then(doRender);
 
@@ -140,7 +149,7 @@ class View extends Backbone.View<Backbone.Model> {
 
     }
 
-    private htmlizeView(): JQuery|Promise<JQuery> {
+    private htmlizeView(): JQuery|Thenable<JQuery> {
 
         let templateKeyValues;
 
@@ -184,12 +193,12 @@ class View extends Backbone.View<Backbone.Model> {
 
     }
 
-    htmlize(): JQuery|Promise<JQuery> {
+    htmlize(): JQuery|Thenable<JQuery> {
 
         // is there a model or templateVariables or nothing?
-        let viewHtml: JQuery|Promise<JQuery> = this.htmlizeView();
+        let viewHtml: JQuery|Thenable<JQuery> = this.htmlizeView();
 
-        let doCollection = ($renderedTemplate: JQuery): JQuery|Promise<JQuery> => {
+        let doCollection = ($renderedTemplate: JQuery): JQuery|Thenable<JQuery> => {
             // and also a collection?
             this.isCollectionRendered = true;
             if (this.collection !== undefined) {
@@ -199,7 +208,7 @@ class View extends Backbone.View<Backbone.Model> {
 
                 if (this.collection.models.length > 0) {
 
-                    let promiseList: Promise<JQuery>[] = [];
+                    let promiseList: Thenable<JQuery>[] = [];
 
                     this.collection.models.forEach((model) => {
 
@@ -231,7 +240,7 @@ class View extends Backbone.View<Backbone.Model> {
             return $renderedTemplate;
         };
 
-        let doSubView = ($renderedTemplate: JQuery): JQuery|Promise<JQuery> => {
+        let doSubView = ($renderedTemplate: JQuery): JQuery|Thenable<JQuery> => {
 
             this.isSubviewRendered = true;
 
@@ -280,7 +289,7 @@ class View extends Backbone.View<Backbone.Model> {
         };
 
         if (viewHtml instanceof Promise) {
-            return (<Promise<JQuery>>viewHtml).then(doCollection).then(doSubView);
+            return (<Thenable<JQuery>>viewHtml).then(doCollection).then(doSubView);
         }
 
         let doCollectionView = doCollection(<JQuery>viewHtml);
@@ -373,7 +382,7 @@ class View extends Backbone.View<Backbone.Model> {
 
     }
 
-    create(): JQuery|Promise<JQuery> {
+    create(): JQuery|Thenable<JQuery> {
 
         if (this.isDispatch === true) {
 
@@ -385,7 +394,7 @@ class View extends Backbone.View<Backbone.Model> {
 
         if (renderObject instanceof Promise) {
 
-            return (<Promise<View>>renderObject).then((view: View) => {
+            return (<Thenable<View>>renderObject).then((view: View) => {
                 return this.$el;
             });
 
@@ -464,7 +473,7 @@ class View extends Backbone.View<Backbone.Model> {
 
     }
 
-    private addModel(model): Promise<JQuery> {
+    private addModel(model): Thenable<JQuery> {
 
         if (this.isCollectionRendered === false) {
             return;
@@ -499,12 +508,16 @@ class View extends Backbone.View<Backbone.Model> {
 
         let viewCreate = modelView.create();
 
-        let doAddModel = ($element: JQuery): JQuery | Promise<JQuery> => {
+        let doAddModel = ($element: JQuery): JQuery | Thenable<JQuery> => {
 
             this.pendingViewModel.push($element);
 
             // TODO: use the container to manage subviews of a list
             //Container.add(this.options.listSelector, modelView);
+
+            if (!(this.options.listSelector in this.referenceModelView)) {
+                this.referenceModelView[this.options.listSelector] = {};
+            }
             
             this.referenceModelView[this.options.listSelector][model.cid] = modelView;
 
@@ -671,13 +684,13 @@ class View extends Backbone.View<Backbone.Model> {
 
     }
 
-    private _addView(selector: string, view: Ribs.View|Ribs.View[], $el: JQuery = this.$el): JQuery|Promise<JQuery>|(JQuery|Promise<JQuery>)[] {
+    private _addView(selector: string, view: Ribs.View|Ribs.View[], $el: JQuery = this.$el): JQuery|Thenable<JQuery>|(JQuery|Thenable<JQuery>)[] {
 
         if (!(selector in this.referenceModelView)) {
             this.referenceModelView[selector] = {};
         }
 
-        let doAddView = (viewToAdd: Ribs.View): JQuery|Promise<JQuery> => {
+        let doAddView = (viewToAdd: Ribs.View): JQuery|Thenable<JQuery> => {
 
             this.referenceModelView[selector][viewToAdd.cid] = viewToAdd;
 

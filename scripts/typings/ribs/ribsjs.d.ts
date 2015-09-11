@@ -6,7 +6,7 @@
 // Library documentation : https://github.com/chrisweb/ribs.js/blob/master/README.md
 
 /// <reference path="../backbone/backbone.d.ts" />
-/// <reference path="../es6-promise/es6-promise.d.ts" />
+/// <reference path="../fspromise/fspromise.d.ts" />
 
 declare module Ribs {
 
@@ -45,12 +45,12 @@ declare module Ribs {
         public constructor(options?: ViewOptions);
         protected onInitializeStart(): void;
         protected onInitialize(): void;
-        public create(): JQuery|Promise<JQuery>;
+        public create(): JQuery|Thenable<JQuery>;
         public render(): any;
         protected onRenderStart(): void;
         protected onRender(): void;
         protected reRenderModelView(): void;
-        public htmlize(): JQuery|Promise<JQuery>;
+        public htmlize(): JQuery|Thenable<JQuery>;
         protected getModelAsJson(): JSON;
         protected getCollectionAsJson(): JSON;
         public clear(): void;
@@ -67,17 +67,17 @@ declare module Ribs {
         protected prepareAddedView(modelView: Ribs.View): Ribs.View;
 
 
-        public addView(viewList: { [selector: string]: Ribs.View }): { [selector: string]: JQuery|Promise<JQuery> };
-        public addView(viewList: { [selector: string]: Ribs.View[] }): { [selector: string]: (JQuery|Promise<JQuery>)[]};
-        public addView(selector: string, view: Ribs.View): JQuery|Promise<JQuery>;
-        public addView(selector: string, view: Ribs.View[]): (JQuery|Promise<JQuery>)[];
+        public addView(viewList: { [selector: string]: Ribs.View }): { [selector: string]: JQuery|Thenable<JQuery> };
+        public addView(viewList: { [selector: string]: Ribs.View[] }): { [selector: string]: (JQuery|Thenable<JQuery>)[]};
+        public addView(selector: string, view: Ribs.View): JQuery|Thenable<JQuery>;
+        public addView(selector: string, view: Ribs.View[]): (JQuery|Thenable<JQuery>)[];
         
         public isDispatch: boolean;
         //protected template: Function;
         protected referenceModelView: { [selector: string]: { [cid: string]: ViewReference } };
 
         public options: Ribs.ViewOptions;
-        public pendingViewModelPromise: Promise<JQuery>[];//readonly
+        public pendingViewModelPromise: Thenable<JQuery>[];//readonly
 
     }
 
@@ -131,7 +131,7 @@ declare module Ribs {
         protected onInitialize(options: any, configuration: any, router: Ribs.Router);
         extend(): void;
         initialize(): void;
-        create(skeleton: any): Promise<any>;
+        create(skeleton: any): Thenable<any>;
         clear(): void;
         off;
         promise;
@@ -141,7 +141,7 @@ declare module Ribs {
     }
 
     module Container {
-        function dispatch(containerSelector?: string, options?: Ribs.ContainerOptions): Promise<any>|void;
+        function dispatch(containerSelector?: string, options?: Ribs.ContainerOptions): Thenable<any>|void;
         function add(containerSelector: string, view: any): void;
         function remove(containerSelector: string, view: any): void;
         function clear(containerSelector: string): void;

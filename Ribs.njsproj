@@ -56,6 +56,7 @@
     <TypeScriptCompile Include="scripts\typings\es6-promise\es6-promise-commonjs-tests.ts" />
     <TypeScriptCompile Include="scripts\typings\es6-promise\es6-promise-tests.ts" />
     <TypeScriptCompile Include="scripts\typings\es6-promise\es6-promise.d.ts" />
+    <TypeScriptCompile Include="scripts\typings\fspromise\fspromise.d.ts" />
     <TypeScriptCompile Include="scripts\typings\jquery\jquery-tests.ts" />
     <TypeScriptCompile Include="scripts\typings\jquery\jquery.d.ts" />
     <TypeScriptCompile Include="scripts\typings\ribs\ribsjs.d.ts" />
@@ -77,6 +78,7 @@
     <Folder Include="scripts\typings\" />
     <Folder Include="scripts\typings\backbone\" />
     <Folder Include="scripts\typings\es6-promise\" />
+    <Folder Include="scripts\typings\fspromise\" />
     <Folder Include="scripts\typings\jquery\" />
     <Folder Include="scripts\typings\ribs\" />
     <Folder Include="scripts\typings\underscore\" />
