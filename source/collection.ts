@@ -129,7 +129,7 @@ module Ribs {
             rangeCollection._lengthRange = length;
             rangeCollection.set(this.getRangeOfCollection(this, start, length));
 
-            this.on('add remove sync reset sort', (function () {
+            this.on('update sync reset sort', (function () {
                 rangeCollection.set(this.getRangeOfCollection(this, start, length));
             }).bind(this));
 
