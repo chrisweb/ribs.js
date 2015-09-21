@@ -120,7 +120,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                     model.destroy();
                 });
             }
-            if (this.modelSource === null) {
+            if (!this.modelSource) {
                 model.modelSource = this;
             }
             else {

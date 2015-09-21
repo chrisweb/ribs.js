@@ -105,8 +105,12 @@ export class DefaultRequest extends Request {
 
             let errorCallback: (xhr: Ribs.Adapter.Request, textStatus: string|string[], errorThrown: string|Error|(string|Error)[]) => any = options.error;
             options.error = (xhr: Ribs.Adapter.Request, textStatus: string|string[], errorThrown: string|Error|(string|Error)[]) => {
-
-                errorList.push({ errorThrown: errorThrown, position: this.requestList.indexOf(<any>xhr) });
+                
+                if ('responseJSON' in xhr) {
+                    errorList.push({ errorThrown: (<any>xhr).responseJSON, position: this.requestList.indexOf(<any>xhr) });
+                } else {
+                    errorList.push({ errorThrown: errorThrown, position: this.requestList.indexOf(<any>xhr) });
+                }
 
                 this.dispatchResult(errorList, responseList, successCallback, errorCallback);
 

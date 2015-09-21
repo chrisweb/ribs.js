@@ -87,7 +87,12 @@ var __extends = (this && this.__extends) || function (d, b) {
             if (options.error) {
                 var errorCallback_1 = options.error;
                 options.error = function (xhr, textStatus, errorThrown) {
-                    errorList.push({ errorThrown: errorThrown, position: _this.requestList.indexOf(xhr) });
+                    if ('responseJSON' in xhr) {
+                        errorList.push({ errorThrown: xhr.responseJSON, position: _this.requestList.indexOf(xhr) });
+                    }
+                    else {
+                        errorList.push({ errorThrown: errorThrown, position: _this.requestList.indexOf(xhr) });
+                    }
                     _this.dispatchResult(errorList, responseList, successCallback, errorCallback_1);
                 };
             }
