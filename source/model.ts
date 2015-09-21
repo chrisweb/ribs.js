@@ -161,7 +161,7 @@ class Model extends Backbone.Model {
 
         }
 
-        if (this.modelSource === null) {
+        if (!this.modelSource) {
 
             model.modelSource = this;
 
