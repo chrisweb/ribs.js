@@ -2,7 +2,8 @@
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    __.prototype = b.prototype;
+    d.prototype = new __();
 };
 (function (deps, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
@@ -85,12 +86,22 @@ var __extends = (this && this.__extends) || function (d, b) {
         };
         View.prototype.reRenderModelView = function () {
             var _this = this;
+            this.onRenderStart();
+            this.$previousEl = this.$el;
             var htmlizeObject = this.htmlize();
             var doRerender = function ($renderedTemplate) {
-                $(_this.el).replaceWith($renderedTemplate);
+                _this.$previousEl.replaceWith($renderedTemplate);
+                _this.$previousEl = null;
                 _this.setElement($renderedTemplate);
+                _this.onRender();
+                _this.lastRenderPromise = null;
+                return _this;
             };
             if (htmlizeObject instanceof Promise) {
+                if (!!this.lastRenderPromise) {
+                    this.lastRenderPromise.abort();
+                }
+                this.lastRenderPromise = htmlizeObject;
                 htmlizeObject.then(doRerender);
             }
             else {

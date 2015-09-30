@@ -19,7 +19,7 @@ class View extends Backbone.View<Backbone.Model> {
         ModelViewOptions: {}
     };
     options: Ribs.ViewOptions;
-    
+
     referenceModelView: { [selector: string]: { [cid: string]: Ribs.View } };
     isDispatch: boolean = false;
     template;
@@ -30,7 +30,7 @@ class View extends Backbone.View<Backbone.Model> {
     private waitingForUpdateCollection: boolean;
     private isCollectionRendered: boolean;
     private isSubviewRendered: boolean;
-
+    private $previousEl: JQuery;
     private lastRenderPromise: FSPromise<JQuery>;
 
     constructor(options?) {
@@ -77,7 +77,7 @@ class View extends Backbone.View<Backbone.Model> {
             }
 
         }
-            
+
         this.onInitialize();
 
     }
@@ -132,16 +132,29 @@ class View extends Backbone.View<Backbone.Model> {
 
     reRenderModelView() {
 
+        this.onRenderStart();
+
+        this.$previousEl = this.$el;
         let htmlizeObject = this.htmlize();
 
-        let doRerender = ($renderedTemplate: JQuery) => {
+        let doRerender = ($renderedTemplate: JQuery): View|Thenable<View> => {
 
-            $(this.el).replaceWith($renderedTemplate);
-
+            this.$previousEl.replaceWith($renderedTemplate);
+            this.$previousEl = null;
             this.setElement($renderedTemplate);
+
+            this.onRender();
+            this.lastRenderPromise = null;
+
+            return this;
         }
 
         if (htmlizeObject instanceof Promise) {
+
+            if (!!this.lastRenderPromise) {
+                this.lastRenderPromise.abort();
+            }
+            this.lastRenderPromise = htmlizeObject;
             htmlizeObject.then(doRerender);
         } else {
             doRerender(<JQuery>htmlizeObject);
@@ -153,7 +166,7 @@ class View extends Backbone.View<Backbone.Model> {
 
         let templateKeyValues;
 
-        let templateData = {  };
+        let templateData = {};
         let postTemplateData = { _view: this };
 
         if (this.model !== undefined) {
@@ -236,7 +249,7 @@ class View extends Backbone.View<Backbone.Model> {
                 }
 
             }
-            
+
             return $renderedTemplate;
         };
 
@@ -377,7 +390,7 @@ class View extends Backbone.View<Backbone.Model> {
                 
                 
         }
-            
+
         this.onClose();
 
     }
@@ -518,7 +531,7 @@ class View extends Backbone.View<Backbone.Model> {
             if (!(this.options.listSelector in this.referenceModelView)) {
                 this.referenceModelView[this.options.listSelector] = {};
             }
-            
+
             this.referenceModelView[this.options.listSelector][model.cid] = modelView;
 
             this.onModelAdded(modelView);
