@@ -1,12 +1,12 @@
 'use strict';
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", 'underscore', 'jquery', 'es6-promise'], factory);
     }
-})(["require", "exports", 'underscore', 'jquery', 'es6-promise'], function (require, exports) {
+})(function (require, exports) {
     var _ = require('underscore');
     var $ = require('jquery');
     var ES6Promise = require('es6-promise');

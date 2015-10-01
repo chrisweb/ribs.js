@@ -1,12 +1,12 @@
 /// <reference path="../scripts/typings/ribs/ribsjs.d.ts" />
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", './adapter', './collection', './container', './controller', './eventsManager', './model', './router', './view', './viewHelper'], factory);
     }
-})(["require", "exports", './adapter', './collection', './container', './controller', './eventsManager', './model', './router', './view', './viewHelper'], function (require, exports) {
+})(function (require, exports) {
     exports.Adapter = require('./adapter');
     exports.Collection = require('./collection');
     exports.Container = require('./container');

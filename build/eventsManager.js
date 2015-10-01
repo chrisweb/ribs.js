@@ -1,12 +1,12 @@
 'use strict';
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", 'backbone', 'underscore'], factory);
     }
-})(["require", "exports", 'backbone', 'underscore'], function (require, exports) {
+})(function (require, exports) {
     var Backbone = require('backbone');
     var _ = require('underscore');
     var EventsManager = (function () {
