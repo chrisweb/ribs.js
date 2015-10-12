@@ -16,7 +16,8 @@ class View extends Backbone.View<Backbone.Model> {
         listSelector: '.list',
         templateVariables: {},
         ModelView: null,
-        ModelViewOptions: {}
+        ModelViewOptions: {},
+        subviewAsyncRender: false
     };
     options: Ribs.ViewOptions;
 
@@ -32,6 +33,8 @@ class View extends Backbone.View<Backbone.Model> {
     private isSubviewRendered: boolean;
     private $previousEl: JQuery;
     private lastRenderPromise: FSPromise<JQuery>;
+    private isCreating: boolean;
+    private createPromise: Thenable<JQuery>;
 
     constructor(options?) {
         super(options);
@@ -44,6 +47,8 @@ class View extends Backbone.View<Backbone.Model> {
         this.waitingForUpdateCollection = false;
         this.isCollectionRendered = false;
         this.isSubviewRendered = false;
+        this.isCreating = false;
+        this.createPromise = null;
 
         this.pendingViewModelPromise = [];
 
@@ -273,28 +278,44 @@ class View extends Backbone.View<Backbone.Model> {
 
             });
 
-
+            let allPromisesSubView = null;
             if (promiseList.length) {
-                return Promise.all(promiseList).then(() => {
 
-                    let promiseAddView = [];
-
+                if (this.options.subviewAsyncRender) {
                     _.each(this.referenceModelView, (modelViewList, selector) => {
                         if (selector !== this.options.listSelector) {
 
-                            promiseAddView.push(this._addView(selector, Object.keys(modelViewList).map((cid) => { return modelViewList[cid] }), $renderedTemplate));
+                            this._addView(selector, Object.keys(modelViewList).map((cid) => { return modelViewList[cid] }), $renderedTemplate);
 
                         }
                     })
+                } else {
 
-                    if (promiseAddView.length) {
-                        return Promise.all(promiseAddView).then(() => {
-                            return $renderedTemplate;
-                        });
-                    }
+                    allPromisesSubView = Promise.all(promiseList).then(() => {
 
-                    return $renderedTemplate;
-                });
+                        let promiseAddView = [];
+
+                        _.each(this.referenceModelView, (modelViewList, selector) => {
+                            if (selector !== this.options.listSelector) {
+
+                                promiseAddView.push(this._addView(selector, Object.keys(modelViewList).map((cid) => { return modelViewList[cid] }), $renderedTemplate));
+
+                            }
+                        })
+
+                        if (promiseAddView.length) {
+                            return Promise.all(promiseAddView).then(() => {
+                                return $renderedTemplate;
+                            });
+                        }
+
+                        return $renderedTemplate;
+                    });
+                }
+            }
+
+            if (allPromisesSubView !== null) {
+                return allPromisesSubView;
             }
 
             return $renderedTemplate;
@@ -403,11 +424,20 @@ class View extends Backbone.View<Backbone.Model> {
 
         }
 
+        if (this.isCreating === true) {
+
+            return this.createPromise;
+
+        }
+
         let renderObject = this.render();
 
         if (renderObject instanceof Promise) {
 
-            return (<Thenable<View>>renderObject).then((view: View) => {
+            this.isCreating = true;
+
+            return this.createPromise = (<Thenable<View>>renderObject).then((view: View) => {
+                this.isCreating = false;
                 return this.$el;
             });
 

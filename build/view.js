@@ -2,8 +2,7 @@
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 (function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
@@ -31,6 +30,8 @@ var __extends = (this && this.__extends) || function (d, b) {
             this.waitingForUpdateCollection = false;
             this.isCollectionRendered = false;
             this.isSubviewRendered = false;
+            this.isCreating = false;
+            this.createPromise = null;
             this.pendingViewModelPromise = [];
             this.options = $.extend({}, View.defaultOptions, options || {});
             this.onInitializeStart();
@@ -177,21 +178,34 @@ var __extends = (this && this.__extends) || function (d, b) {
                         promiseList.push(modelView.create());
                     });
                 });
+                var allPromisesSubView = null;
                 if (promiseList.length) {
-                    return Promise.all(promiseList).then(function () {
-                        var promiseAddView = [];
+                    if (_this.options.subviewAsyncRender) {
                         _.each(_this.referenceModelView, function (modelViewList, selector) {
                             if (selector !== _this.options.listSelector) {
-                                promiseAddView.push(_this._addView(selector, Object.keys(modelViewList).map(function (cid) { return modelViewList[cid]; }), $renderedTemplate));
+                                _this._addView(selector, Object.keys(modelViewList).map(function (cid) { return modelViewList[cid]; }), $renderedTemplate);
                             }
                         });
-                        if (promiseAddView.length) {
-                            return Promise.all(promiseAddView).then(function () {
-                                return $renderedTemplate;
+                    }
+                    else {
+                        allPromisesSubView = Promise.all(promiseList).then(function () {
+                            var promiseAddView = [];
+                            _.each(_this.referenceModelView, function (modelViewList, selector) {
+                                if (selector !== _this.options.listSelector) {
+                                    promiseAddView.push(_this._addView(selector, Object.keys(modelViewList).map(function (cid) { return modelViewList[cid]; }), $renderedTemplate));
+                                }
                             });
-                        }
-                        return $renderedTemplate;
-                    });
+                            if (promiseAddView.length) {
+                                return Promise.all(promiseAddView).then(function () {
+                                    return $renderedTemplate;
+                                });
+                            }
+                            return $renderedTemplate;
+                        });
+                    }
+                }
+                if (allPromisesSubView !== null) {
+                    return allPromisesSubView;
                 }
                 return $renderedTemplate;
             };
@@ -249,9 +263,14 @@ var __extends = (this && this.__extends) || function (d, b) {
             if (this.isDispatch === true) {
                 return this.$el;
             }
+            if (this.isCreating === true) {
+                return this.createPromise;
+            }
             var renderObject = this.render();
             if (renderObject instanceof Promise) {
-                return renderObject.then(function (view) {
+                this.isCreating = true;
+                return this.createPromise = renderObject.then(function (view) {
+                    _this.isCreating = false;
                     return _this.$el;
                 });
             }
@@ -494,7 +513,8 @@ var __extends = (this && this.__extends) || function (d, b) {
             listSelector: '.list',
             templateVariables: {},
             ModelView: null,
-            ModelViewOptions: {}
+            ModelViewOptions: {},
+            subviewAsyncRender: false
         };
         return View;
     })(Backbone.View);

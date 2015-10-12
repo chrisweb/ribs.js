@@ -21,6 +21,7 @@ declare module Ribs {
         ModelView?: typeof View;
         ModelViewOptions?: ViewOptions;
         collection?: Ribs.Collection;
+        subviewAsyncRender?: boolean;
     }
 
     interface ViewReference {
