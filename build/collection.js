@@ -92,7 +92,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                 return filteredCollection;
             };
             Collection.prototype.getRange = function (start, length) {
-                var rangeCollection = new Collection();
+                var rangeCollection = new Collection([], this.options);
                 if (this.collectionSource === null) {
                     rangeCollection.collectionSource = this;
                 }

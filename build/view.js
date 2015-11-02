@@ -376,7 +376,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         View.prototype.sortModel = function ($container) {
             var _this = this;
             if ($container === void 0) { $container = null; }
-            if (this.pendingViewModel.length || this.pendingViewModelPromise.length) {
+            if (this.pendingViewModel.length || this.pendingViewModelPromise.length || this.isDispatch === false) {
                 this.waitingForSort = true;
                 return;
             }

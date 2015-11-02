@@ -612,7 +612,7 @@ class View extends Backbone.View<Backbone.Model> {
 
     private sortModel($container: JQuery = null) {
 
-        if (this.pendingViewModel.length || this.pendingViewModelPromise.length) {
+        if (this.pendingViewModel.length || this.pendingViewModelPromise.length || this.isDispatch === false) {
             this.waitingForSort = true;
             return;
         }

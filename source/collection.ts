@@ -111,7 +111,7 @@ module Ribs {
 
         getRange(start, length) {
 
-            var rangeCollection = new Collection();
+            var rangeCollection = new Collection([], this.options);
 
             if (this.collectionSource === null) {
 
