@@ -2,8 +2,8 @@
 
 import _ = require('underscore');
 import $ = require('jquery');
-import ES6Promise = require('es6-promise');
-import Promise = ES6Promise.Promise;
+import FSPromise = require('FSPromise');
+import Promise = FSPromise.FSPromise;
 
 module Container {
 

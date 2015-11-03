@@ -4,13 +4,13 @@
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", 'underscore', 'jquery', 'es6-promise'], factory);
+        define(["require", "exports", 'underscore', 'jquery', 'FSPromise'], factory);
     }
 })(function (require, exports) {
     var _ = require('underscore');
     var $ = require('jquery');
-    var ES6Promise = require('es6-promise');
-    var Promise = ES6Promise.Promise;
+    var FSPromise = require('FSPromise');
+    var Promise = FSPromise.FSPromise;
     var Container;
     (function (Container) {
         var containers = {};
