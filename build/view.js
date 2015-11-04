@@ -402,7 +402,12 @@ var __extends = (this && this.__extends) || function (d, b) {
             var _this = this;
             if ($container === void 0) { $container = null; }
             if (this.pendingViewModelPromise.length) {
-                Promise.all(this.pendingViewModelPromise).then(function () {
+                if (this.updatePromise) {
+                    this.updatePromise.abort();
+                    this.updatePromise = null;
+                }
+                this.updatePromise = Promise.all(this.pendingViewModelPromise).then(function () {
+                    _this.updatePromise = null;
                     _this.pendingViewModelPromise = [];
                     _this._updateCollection($container);
                 });

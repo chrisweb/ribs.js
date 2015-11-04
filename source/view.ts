@@ -29,6 +29,7 @@ class View extends Backbone.View<Backbone.Model> {
     public pendingViewModelPromise: Thenable<JQuery>[];//readonly
     private waitingForSort: boolean;
     private waitingForUpdateCollection: boolean;
+    private updatePromise: Thenable<any>;
     private isCollectionRendered: boolean;
     private isSubviewRendered: boolean;
     private $previousEl: JQuery;
@@ -652,7 +653,12 @@ class View extends Backbone.View<Backbone.Model> {
 
     private updateCollection($container: JQuery = null) {
         if (this.pendingViewModelPromise.length) {
-            Promise.all(this.pendingViewModelPromise).then(() => {
+            if (this.updatePromise) {
+                (<any>this.updatePromise).abort();
+                this.updatePromise = null;
+            }
+            this.updatePromise = Promise.all(this.pendingViewModelPromise).then(() => {
+                this.updatePromise = null;
                 this.pendingViewModelPromise = [];
                 this._updateCollection($container)
             });
