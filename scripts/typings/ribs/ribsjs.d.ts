@@ -50,6 +50,7 @@ declare module Ribs {
         public render(): any;
         protected onRenderStart(): void;
         protected onRender(): void;
+        protected onRenderAll(): void;
         protected reRenderModelView(): void;
         public htmlize(): JQuery|Thenable<JQuery>;
         protected getModelAsJson(): JSON;

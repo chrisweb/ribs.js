@@ -67,6 +67,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                 _this.lastRenderPromise = null;
                 if (_this.pendingViewModelPromise.length) {
                     return Promise.all(_this.pendingViewModelPromise).then(function () {
+                        _this.onRenderAll();
                         return _this;
                     });
                 }
@@ -74,6 +75,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                     _this._updateCollection();
                     _this.waitingForUpdateCollection = false;
                 }
+                _this.onRenderAll();
                 return _this;
             };
             if (htmlizeObject instanceof Promise) {
@@ -96,6 +98,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                 _this.setElement($renderedTemplate);
                 _this.onRender();
                 _this.lastRenderPromise = null;
+                _this.onRenderAll();
                 return _this;
             };
             if (htmlizeObject instanceof Promise) {
@@ -508,6 +511,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         View.prototype.onInitializeStart = function () { };
         View.prototype.onRender = function () { };
         View.prototype.onRenderStart = function () { };
+        View.prototype.onRenderAll = function () { };
         View.prototype.onModelAdded = function (modelViewAdded) { };
         View.prototype.onModelRemoved = function (modelViewRemoved) { };
         View.prototype.onClose = function () { };

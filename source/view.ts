@@ -108,6 +108,8 @@ class View extends Backbone.View<Backbone.Model> {
 
             if (this.pendingViewModelPromise.length) {
                 return Promise.all(this.pendingViewModelPromise).then(() => {
+
+                    this.onRenderAll();
                     return this;
                 });
             }
@@ -116,7 +118,7 @@ class View extends Backbone.View<Backbone.Model> {
                 this._updateCollection();
                 this.waitingForUpdateCollection = false;
             }
-
+            this.onRenderAll();
             return this;
         }
 
@@ -151,7 +153,7 @@ class View extends Backbone.View<Backbone.Model> {
 
             this.onRender();
             this.lastRenderPromise = null;
-
+            this.onRenderAll();
             return this;
         }
 
@@ -805,6 +807,7 @@ class View extends Backbone.View<Backbone.Model> {
     protected onInitializeStart() { }
     protected onRender() { }
     protected onRenderStart() { }
+    protected onRenderAll() { }
     protected onModelAdded(modelViewAdded: Ribs.View) { }
     protected onModelRemoved(modelViewRemoved: Ribs.View) { }
     protected onClose() { }
