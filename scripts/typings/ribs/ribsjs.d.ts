@@ -66,6 +66,7 @@ declare module Ribs {
         protected onModelRemoved(modelView: View): void;
         protected formatModelViewOptions(modelViewOptions: Ribs.ViewOptions): Ribs.ViewOptions;
         protected prepareAddedView(modelView: Ribs.View): Ribs.View;
+        protected updatePromise: Thenable<any>;
 
 
         public addView(viewList: { [selector: string]: Ribs.View }): { [selector: string]: JQuery|Thenable<JQuery> };
