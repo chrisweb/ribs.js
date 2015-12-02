@@ -37,6 +37,8 @@ class View extends Backbone.View<Backbone.Model> {
     private isCreating: boolean;
     private createPromise: Thenable<JQuery>;
 
+    protected isClose: Boolean;
+
     constructor(options?) {
         super(options);
     }
@@ -50,6 +52,7 @@ class View extends Backbone.View<Backbone.Model> {
         this.isSubviewRendered = false;
         this.isCreating = false;
         this.createPromise = null;
+        this.isClose = false;
 
         this.pendingViewModelPromise = [];
 
@@ -369,7 +372,14 @@ class View extends Backbone.View<Backbone.Model> {
 
     close() {
 
+        this.isClose = true;
+
         this.onCloseStart();
+
+        if (this.lastRenderPromise) {
+            this.lastRenderPromise.abort();
+            this.lastRenderPromise = null;
+        }
 
         if (this.referenceModelView !== null) {
 
@@ -386,8 +396,38 @@ class View extends Backbone.View<Backbone.Model> {
             });
 
 
-            this.referenceModelView = {};
+            this.referenceModelView = null;
 
+        }
+
+        if (this.pendingViewModel.length) {
+            this.pendingViewModel.splice(0, this.pendingViewModel.length);
+            this.pendingViewModel = null;
+        }
+        if (this.pendingViewModelPromise.length) {
+            while (this.pendingViewModelPromise.length) {
+                let promise = this.pendingViewModelPromise.pop();
+                if ('abort' in promise) {
+                    (<any>promise).abort();
+                }
+            }
+            this.pendingViewModelPromise = null;
+        }
+
+
+        if (this.updatePromise) {
+            if ('abort' in this.updatePromise) {
+                (<any>this.updatePromise).abort();
+            }
+            this.updatePromise = null;
+        }
+
+        this.$previousEl = null;
+        if (this.createPromise) {
+            if ('abort' in this.createPromise) {
+                (<any>this.createPromise).abort();
+            }
+            this.createPromise = null;
         }
 
         // remove the view from dom and stop listening to events that were
@@ -406,13 +446,16 @@ class View extends Backbone.View<Backbone.Model> {
 				
             }
 
+            this.model = null;
+
         }
 
         if (this.collection !== null) {
                 
             // TODO: ...
-                
-                
+
+            this.collection = null;
+                   
         }
 
         this.onClose();

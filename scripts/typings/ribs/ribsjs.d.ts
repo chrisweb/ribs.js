@@ -22,6 +22,7 @@ declare module Ribs {
         ModelViewOptions?: ViewOptions;
         collection?: Ribs.Collection;
         subviewAsyncRender?: boolean;
+        [extra: string]: any;
     }
 
     interface ViewReference {
@@ -30,7 +31,9 @@ declare module Ribs {
     }
 
     interface CollectionOptions extends Backbone.CollectionFetchOptions {
-        adapter?: Ribs.Adapter.Adapter
+        adapter?: Ribs.Adapter.Adapter;
+        comparator?: string | Function;
+        reset?: boolean;
     }
 
     interface ModelOptions extends Backbone.ModelFetchOptions {
@@ -68,6 +71,7 @@ declare module Ribs {
         protected formatModelViewOptions(modelViewOptions: Ribs.ViewOptions): Ribs.ViewOptions;
         protected prepareAddedView(modelView: Ribs.View): Ribs.View;
         protected updatePromise: Thenable<any>;
+        protected isClose: Boolean;
 
 
         public addView(viewList: { [selector: string]: Ribs.View }): { [selector: string]: JQuery|Thenable<JQuery> };

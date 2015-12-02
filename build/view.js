@@ -32,6 +32,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             this.isSubviewRendered = false;
             this.isCreating = false;
             this.createPromise = null;
+            this.isClose = false;
             this.pendingViewModelPromise = [];
             this.options = $.extend({}, View.defaultOptions, options || {});
             this.onInitializeStart();
@@ -237,7 +238,12 @@ var __extends = (this && this.__extends) || function (d, b) {
         };
         View.prototype.close = function () {
             var _this = this;
+            this.isClose = true;
             this.onCloseStart();
+            if (this.lastRenderPromise) {
+                this.lastRenderPromise.abort();
+                this.lastRenderPromise = null;
+            }
             if (this.referenceModelView !== null) {
                 _.each(this.referenceModelView, function (modelViewCollection, selector) {
                     _.each(modelViewCollection, function (modelView) {
@@ -245,7 +251,33 @@ var __extends = (this && this.__extends) || function (d, b) {
                         modelView.close();
                     });
                 });
-                this.referenceModelView = {};
+                this.referenceModelView = null;
+            }
+            if (this.pendingViewModel.length) {
+                this.pendingViewModel.splice(0, this.pendingViewModel.length);
+                this.pendingViewModel = null;
+            }
+            if (this.pendingViewModelPromise.length) {
+                while (this.pendingViewModelPromise.length) {
+                    var promise = this.pendingViewModelPromise.pop();
+                    if ('abort' in promise) {
+                        promise.abort();
+                    }
+                }
+                this.pendingViewModelPromise = null;
+            }
+            if (this.updatePromise) {
+                if ('abort' in this.updatePromise) {
+                    this.updatePromise.abort();
+                }
+                this.updatePromise = null;
+            }
+            this.$previousEl = null;
+            if (this.createPromise) {
+                if ('abort' in this.createPromise) {
+                    this.createPromise.abort();
+                }
+                this.createPromise = null;
             }
             // remove the view from dom and stop listening to events that were
             // added with listenTo or that were added to the events declaration
@@ -256,8 +288,11 @@ var __extends = (this && this.__extends) || function (d, b) {
                 if (this.options.removeModelOnClose === true && !!this.collection === true) {
                     this.collection.remove(this.model);
                 }
+                this.model = null;
             }
             if (this.collection !== null) {
+                // TODO: ...
+                this.collection = null;
             }
             this.onClose();
         };
