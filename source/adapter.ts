@@ -73,7 +73,7 @@ interface DefaultRequestError {
 
 export class DefaultRequest extends Request {
 
-    private requestList: JQueryXHR[];
+    public requestList: JQueryXHR[];
     private originalData: {}|{}[];
 
     public constructor(options: Ribs.Adapter.RequestAdapterOptions) {

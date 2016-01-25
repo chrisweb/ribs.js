@@ -260,7 +260,7 @@ declare module Ribs {
          * Default Request. Based on Backbone implementation.
          **/
         class DefaultRequest extends Request {
-
+            public requestList: JQueryXHR[];
         }
     }
 }
