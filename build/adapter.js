@@ -98,15 +98,18 @@ var __extends = (this && this.__extends) || function (d, b) {
             }
             if (options.data instanceof Array) {
                 var requestOptions = $.extend({}, options);
-                options.data.forEach(function (data) {
-                    requestOptions.data = data;
-                    _this.requestList.push($.ajax(requestOptions));
+                options.data.forEach(function (dataParameters) {
+                    requestOptions.data = dataParameters;
+                    _this.doRequest(requestOptions);
                 });
             }
             else {
-                this.requestList.push($.ajax(options));
+                this.doRequest(options);
             }
         }
+        DefaultRequest.prototype.doRequest = function (options) {
+            this.requestList.push($.ajax(options));
+        };
         DefaultRequest.prototype.setRequestHeader = function (headerName, headerValue) {
             this.requestList.forEach(function (jqXhr) {
                 jqXhr.setRequestHeader(headerName, headerValue);
