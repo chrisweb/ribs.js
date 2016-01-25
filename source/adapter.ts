@@ -120,24 +120,19 @@ export class DefaultRequest extends Request {
 
 
         if (options.data instanceof Array) {
-
             let requestOptions: Ribs.Adapter.RequestAdapterOptions = $.extend({}, options);
-
-            (<{}[]>options.data).forEach((data) => {
-
-                requestOptions.data = data;
-
-                this.requestList.push($.ajax(<any>requestOptions));
-
+            (<{}[]>options.data).forEach((dataParameters) => {
+                requestOptions.data = dataParameters;
+                this.doRequest(requestOptions);
             });
-
         } else {
-
-            this.requestList.push($.ajax(<any>options));
-
+            this.doRequest(options);
         }
-        
 
+    }
+
+    protected doRequest(options: Ribs.Adapter.RequestAdapterOptions) {
+        this.requestList.push($.ajax(<any>options));
     }
 
     public setRequestHeader(headerName: string, headerValue: string): Request {
