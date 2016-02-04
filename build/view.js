@@ -298,7 +298,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                 }
                 this.model = null;
             }
-            if (this.collection !== null) {
+            if (!!this.collection) {
                 // TODO: ...
                 if ('close' in this.collection && (!this.options || this.options.closeCollectionOnClose !== false)) {
                     this.collection.close();
