@@ -383,25 +383,6 @@ class View extends Backbone.View<Backbone.Model> {
             this.lastRenderPromise = null;
         }
 
-        if (this.referenceModelView !== null) {
-
-            _.each(this.referenceModelView, (modelViewCollection: { [cid: string]: Ribs.View }, selector) => {
-
-                _.each(modelViewCollection, (modelView) => {
-
-                    this.onModelRemoved(modelView);
-
-                    modelView.close();
-
-                });
-
-            });
-
-
-            this.referenceModelView = null;
-
-        }
-
         if (this.pendingViewModel.length) {
             this.pendingViewModel.splice(0, this.pendingViewModel.length);
             this.pendingViewModel = null;
@@ -439,6 +420,37 @@ class View extends Backbone.View<Backbone.Model> {
         // unbind events triggered from within views using backbone events
         this.unbind();
 
+        if (!!this.collection) {
+                
+            // TODO: ...
+
+            if ('close' in this.collection && (!this.options || this.options.closeCollectionOnClose !== false)) {
+                (<Ribs.Collection>this.collection).close();
+            }
+
+            this.collection = null;
+
+        }
+
+        if (this.referenceModelView !== null) {
+
+            _.each(this.referenceModelView, (modelViewCollection: { [cid: string]: Ribs.View }, selector) => {
+
+                _.each(modelViewCollection, (modelView) => {
+
+                    this.onModelRemoved(modelView);
+
+                    modelView.close();
+
+                });
+
+            });
+
+
+            this.referenceModelView = null;
+
+        }
+
         if (!!this.model) {
 
             if (this.options) {
@@ -461,18 +473,6 @@ class View extends Backbone.View<Backbone.Model> {
 
             this.model = null;
 
-        }
-
-        if (!!this.collection) {
-                
-            // TODO: ...
-
-            if ('close' in this.collection && (!this.options || this.options.closeCollectionOnClose !== false)) {
-                (<Ribs.Collection>this.collection).close();
-            }
-
-            this.collection = null;
-                   
         }
 
         this.onClose();

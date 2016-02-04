@@ -244,15 +244,6 @@ var __extends = (this && this.__extends) || function (d, b) {
                 this.lastRenderPromise.abort();
                 this.lastRenderPromise = null;
             }
-            if (this.referenceModelView !== null) {
-                _.each(this.referenceModelView, function (modelViewCollection, selector) {
-                    _.each(modelViewCollection, function (modelView) {
-                        _this.onModelRemoved(modelView);
-                        modelView.close();
-                    });
-                });
-                this.referenceModelView = null;
-            }
             if (this.pendingViewModel.length) {
                 this.pendingViewModel.splice(0, this.pendingViewModel.length);
                 this.pendingViewModel = null;
@@ -284,6 +275,22 @@ var __extends = (this && this.__extends) || function (d, b) {
             this.remove();
             // unbind events triggered from within views using backbone events
             this.unbind();
+            if (!!this.collection) {
+                // TODO: ...
+                if ('close' in this.collection && (!this.options || this.options.closeCollectionOnClose !== false)) {
+                    this.collection.close();
+                }
+                this.collection = null;
+            }
+            if (this.referenceModelView !== null) {
+                _.each(this.referenceModelView, function (modelViewCollection, selector) {
+                    _.each(modelViewCollection, function (modelView) {
+                        _this.onModelRemoved(modelView);
+                        modelView.close();
+                    });
+                });
+                this.referenceModelView = null;
+            }
             if (!!this.model) {
                 if (this.options) {
                     if (this.options.removeModelOnClose === true && !!this.collection === true) {
@@ -297,13 +304,6 @@ var __extends = (this && this.__extends) || function (d, b) {
                     this.model.close();
                 }
                 this.model = null;
-            }
-            if (!!this.collection) {
-                // TODO: ...
-                if ('close' in this.collection && (!this.options || this.options.closeCollectionOnClose !== false)) {
-                    this.collection.close();
-                }
-                this.collection = null;
             }
             this.onClose();
         };

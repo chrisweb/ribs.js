@@ -70,27 +70,37 @@ module Ribs {
 
             filteredCollection.add(this.getFilteredModels(this.models, onlyDatas, notDatas));
 
-            this.on('add', (models, collection, options) => {
+            let selfAddCallback = (models, collection, options) => {
 
                 var newItems = this.getFilteredModels(models, onlyDatas, notDatas);
 
                 filteredCollection.add(newItems, options);
 
-            });
+            };
+            this.listenTo(this, 'add', selfAddCallback);
 
-            this.on('remove', (models, collection, options) => {
+            let selfRemoveCallback = (models, collection, options) => {
 
                 filteredCollection.remove(models, options);
 
-            });
+            };
+            this.listenTo(this, 'remove', selfRemoveCallback);
 
-            this.on('reset', (collection, options) => {
+            let selfResetCallback = (collection, options) => {
 
                 var newModels = this.getFilteredModels(collection.models, onlyDatas, notDatas);
 
                 filteredCollection.reset.call(filteredCollection, newModels, options);
 
+            };
+            this.listenTo(this, 'reset', selfResetCallback);
+
+            filteredCollection.listenTo(filteredCollection, 'close', () => {
+                this.stopListening(this, 'add', selfAddCallback);
+                this.stopListening(this, 'remove', selfRemoveCallback);
+                this.stopListening(this, 'reset', selfResetCallback);
             });
+
             /*
             this.on('update', (collection, options) => {
     
@@ -133,9 +143,14 @@ module Ribs {
             rangeCollection._lengthRange = length;
             rangeCollection.set(this.getRangeOfCollection(this, start, length));
 
-            this.on('update sync reset sort', (function () {
+            let selfCallback = (function () {
                 rangeCollection.set(this.getRangeOfCollection(this, start, length));
-            }).bind(this));
+            }).bind(this);
+            this.listenTo(this, 'update sync reset sort', selfCallback);
+
+            rangeCollection.listenTo(rangeCollection, 'close', () => {
+                this.stopListening(this, 'update sync reset sort', selfCallback);
+            });
 
             return rangeCollection;
 
@@ -300,14 +315,16 @@ module Ribs {
         public close() {
             this.isClose = true;
 
+            this.trigger('close', this);
+
             if (this.models) {
                 this.models.forEach((model) => {
-                    if ('close' in model) {
+                    if ('close' in model && model.collection === this) {
                         (<RibsDefinition.Model>model).close();
                     }
                 });
 
-                this.models = null;
+                //this.models = null;
             }
         }
 

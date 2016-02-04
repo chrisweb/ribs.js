@@ -62,16 +62,24 @@ var __extends = (this && this.__extends) || function (d, b) {
                     filteredCollection.collectionSource = this.collectionSource; //Should be the root or the parent ?... that is the question.
                 }
                 filteredCollection.add(this.getFilteredModels(this.models, onlyDatas, notDatas));
-                this.on('add', function (models, collection, options) {
+                var selfAddCallback = function (models, collection, options) {
                     var newItems = _this.getFilteredModels(models, onlyDatas, notDatas);
                     filteredCollection.add(newItems, options);
-                });
-                this.on('remove', function (models, collection, options) {
+                };
+                this.listenTo(this, 'add', selfAddCallback);
+                var selfRemoveCallback = function (models, collection, options) {
                     filteredCollection.remove(models, options);
-                });
-                this.on('reset', function (collection, options) {
+                };
+                this.listenTo(this, 'remove', selfRemoveCallback);
+                var selfResetCallback = function (collection, options) {
                     var newModels = _this.getFilteredModels(collection.models, onlyDatas, notDatas);
                     filteredCollection.reset.call(filteredCollection, newModels, options);
+                };
+                this.listenTo(this, 'reset', selfResetCallback);
+                filteredCollection.listenTo(filteredCollection, 'close', function () {
+                    _this.stopListening(_this, 'add', selfAddCallback);
+                    _this.stopListening(_this, 'remove', selfRemoveCallback);
+                    _this.stopListening(_this, 'reset', selfResetCallback);
                 });
                 /*
                 this.on('update', (collection, options) => {
@@ -93,6 +101,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                 return filteredCollection;
             };
             Collection.prototype.getRange = function (start, length) {
+                var _this = this;
                 var rangeCollection = new Collection([], this.options);
                 if (this.collectionSource === null) {
                     rangeCollection.collectionSource = this;
@@ -105,9 +114,13 @@ var __extends = (this && this.__extends) || function (d, b) {
                 rangeCollection._currentRange = start;
                 rangeCollection._lengthRange = length;
                 rangeCollection.set(this.getRangeOfCollection(this, start, length));
-                this.on('update sync reset sort', (function () {
+                var selfCallback = (function () {
                     rangeCollection.set(this.getRangeOfCollection(this, start, length));
-                }).bind(this));
+                }).bind(this);
+                this.listenTo(this, 'update sync reset sort', selfCallback);
+                rangeCollection.listenTo(rangeCollection, 'close', function () {
+                    _this.stopListening(_this, 'update sync reset sort', selfCallback);
+                });
                 return rangeCollection;
             };
             Collection.prototype.setIsCircularRange = function (isCircularRange) {
@@ -200,14 +213,15 @@ var __extends = (this && this.__extends) || function (d, b) {
                 this.reset(models);
             };
             Collection.prototype.close = function () {
+                var _this = this;
                 this.isClose = true;
+                this.trigger('close', this);
                 if (this.models) {
                     this.models.forEach(function (model) {
-                        if ('close' in model) {
+                        if ('close' in model && model.collection === _this) {
                             model.close();
                         }
                     });
-                    this.models = null;
                 }
             };
             return Collection;
