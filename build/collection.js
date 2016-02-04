@@ -26,6 +26,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                 this._currentRange = 0;
                 this._lengthRange = 5;
                 this.isCircularRange = false;
+                this.isClose = false;
                 if (this.options.adapter) {
                     this.adapter = options.adapter;
                 }
@@ -197,6 +198,17 @@ var __extends = (this && this.__extends) || function (d, b) {
                     models = models.concat(this.getRangeOfCollection(this.collectionSource, 0, this._lengthRange - (this.collectionSource.length - this._currentRange)));
                 }
                 this.reset(models);
+            };
+            Collection.prototype.close = function () {
+                this.isClose = true;
+                if (this.models) {
+                    this.models.forEach(function (model) {
+                        if ('close' in model) {
+                            model.close();
+                        }
+                    });
+                    this.models = null;
+                }
             };
             return Collection;
         })(Backbone.Collection);

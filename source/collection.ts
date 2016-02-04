@@ -16,10 +16,14 @@ module Ribs {
         _lengthRange: number = 5;
         isCircularRange: boolean = false;
 
+        protected isClose: boolean;
+
         public adapter: RibsDefinition.Adapter.Adapter;
 
         constructor(models?, options?: RibsDefinition.CollectionOptions) {
             super(models, options);
+
+            this.isClose = false;
 
             if (this.options.adapter) {
                 this.adapter = options.adapter;
@@ -291,6 +295,20 @@ module Ribs {
             }
 
             this.reset(models);
+        }
+
+        public close() {
+            this.isClose = true;
+
+            if (this.models) {
+                this.models.forEach((model) => {
+                    if ('close' in model) {
+                        (<RibsDefinition.Model>model).close();
+                    }
+                });
+
+                this.models = null;
+            }
         }
 
     }

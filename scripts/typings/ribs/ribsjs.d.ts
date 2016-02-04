@@ -22,6 +22,8 @@ declare module Ribs {
         ModelViewOptions?: ViewOptions;
         collection?: Ribs.Collection;
         subviewAsyncRender?: boolean;
+        closeModelOnClose?: boolean;
+        closeCollectionOnClose?: boolean;
         [extra: string]: any;
     }
 
@@ -100,6 +102,9 @@ declare module Ribs {
             **/
         public getModelProjection(modelClass?: typeof Model, keepAlive?: boolean, twoWay?: boolean): Model;
 
+        public close(): void;
+
+
         /**
          * Original Model source
          */
@@ -108,6 +113,8 @@ declare module Ribs {
         public adapter: Ribs.Adapter.Adapter;
 
         public options: Ribs.ModelOptions;
+
+        protected isClose: boolean;
     }
 
     class Collection extends Backbone.Collection<Ribs.Model> {
@@ -130,6 +137,9 @@ declare module Ribs {
         collectionSource: Ribs.Collection;
 
         protected options: Ribs.CollectionOptions;
+
+        protected isClose: boolean;
+        public close();
     }
 
     class Controller {

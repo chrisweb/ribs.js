@@ -26,6 +26,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             else {
                 this.adapter = new Ribs.Adapter.DefaultAdapter();
             }
+            this.isClose = false;
         }
         Model.prototype.initialize = function (attributes, options) {
             var defaultOptions = {
@@ -34,6 +35,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             this.options = $.extend(defaultOptions, options || {});
             // on projection two way, get model of the action to avoid stackoverflow
             this.lastModelTriggered = null;
+            this.once('destroy', this.close, this);
             // if onInitializeStart exists
             if (this.onInitializeStart) {
                 // execute it now
@@ -44,6 +46,14 @@ var __extends = (this && this.__extends) || function (d, b) {
                 // execute it now
                 this.onInitialize();
             }
+        };
+        Model.prototype.close = function () {
+            this.off('destroy', this.close, this);
+            this.clear();
+            this.isClose = true;
+            this.trigger('close', this);
+            this.stopListening();
+            this.trigger('destroy', this, this.collection, {});
         };
         Model.prototype.sync = function () {
             var arg = [];
@@ -95,15 +105,19 @@ var __extends = (this && this.__extends) || function (d, b) {
             if (twoWay === void 0) { twoWay = false; }
             var model = new modelClass(this.attributes);
             model.id = model.cid; //we do that to avoid same model with same id of the model (as long as Collection doesn't accept two model with same id)
-            this.listenTo(this, 'change', function () {
+            var selfChangeCallback = function () {
                 // No trigger on the model of the action in two way
                 if (_this.lastModelTriggered === model) {
                     return;
                 }
                 model.set(_this.changed);
+            };
+            this.listenTo(this, 'change', selfChangeCallback);
+            model.listenTo(model, 'close', function () {
+                _this.stopListening(_this, 'change', selfChangeCallback);
             });
             if (twoWay === true) {
-                this.listenTo(model, 'change', function () {
+                var remoteChangeCallback = function () {
                     var newValue = {};
                     _.each(model.changed, (function (value, key) {
                         if (key in this.attributes) {
@@ -113,11 +127,19 @@ var __extends = (this && this.__extends) || function (d, b) {
                     _this.lastModelTriggered = model;
                     _this.set(newValue);
                     _this.lastModelTriggered = null;
+                };
+                this.listenTo(model, 'change', remoteChangeCallback);
+                model.listenTo(model, 'close', function () {
+                    _this.stopListening(model, 'change', remoteChangeCallback);
                 });
             }
             if (keepAlive !== true) {
-                this.listenTo(this, 'destroy', function () {
+                var selfDestroyCallback = function () {
                     model.destroy();
+                };
+                this.listenTo(this, 'destroy', selfDestroyCallback);
+                model.listenTo(model, 'close', function () {
+                    _this.stopListening(_this, 'destroy', selfDestroyCallback);
                 });
             }
             if (!this.modelSource) {

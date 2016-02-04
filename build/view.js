@@ -284,14 +284,25 @@ var __extends = (this && this.__extends) || function (d, b) {
             this.remove();
             // unbind events triggered from within views using backbone events
             this.unbind();
-            if (this.model !== undefined && this.options) {
-                if (this.options.removeModelOnClose === true && !!this.collection === true) {
-                    this.collection.remove(this.model);
+            if (!!this.model) {
+                if (this.options) {
+                    if (this.options.removeModelOnClose === true && !!this.collection === true) {
+                        this.collection.remove(this.model);
+                    }
+                    if (this.options.closeModelOnClose !== false && 'close' in this.model) {
+                        this.model.close();
+                    }
+                }
+                else if ('close' in this.model) {
+                    this.model.close();
                 }
                 this.model = null;
             }
             if (this.collection !== null) {
                 // TODO: ...
+                if ('close' in this.collection && (!this.options || this.options.closeCollectionOnClose !== false)) {
+                    this.collection.close();
+                }
                 this.collection = null;
             }
             this.onClose();
@@ -558,6 +569,8 @@ var __extends = (this && this.__extends) || function (d, b) {
             templateVariables: {},
             ModelView: null,
             ModelViewOptions: {},
+            closeModelOnClose: true,
+            closeCollectionOnClose: true,
             subviewAsyncRender: false
         };
         return View;

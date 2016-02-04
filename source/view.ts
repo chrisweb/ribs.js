@@ -17,6 +17,8 @@ class View extends Backbone.View<Backbone.Model> {
         templateVariables: {},
         ModelView: null,
         ModelViewOptions: {},
+        closeModelOnClose: true,
+        closeCollectionOnClose: true,
         subviewAsyncRender: false
     };
     options: Ribs.ViewOptions;
@@ -437,13 +439,24 @@ class View extends Backbone.View<Backbone.Model> {
         // unbind events triggered from within views using backbone events
         this.unbind();
 
-        if (this.model !== undefined && this.options) {
+        if (!!this.model) {
 
-            if (this.options.removeModelOnClose === true && !!this.collection === true) {//!!this.model.collection === true) {
+            if (this.options) {
+                if (this.options.removeModelOnClose === true && !!this.collection === true) {//!!this.model.collection === true) {
 				
-                this.collection.remove(this.model);
-                //this.model.collection.remove(this.model);
+                    this.collection.remove(this.model);
+                    //this.model.collection.remove(this.model);
 				
+                }
+
+                if (this.options.closeModelOnClose !== false && 'close' in this.model) {
+                    (<Ribs.Model>this.model).close();
+                }
+
+            } else if ('close' in this.model) {
+
+                (<Ribs.Model>this.model).close();
+
             }
 
             this.model = null;
@@ -453,6 +466,10 @@ class View extends Backbone.View<Backbone.Model> {
         if (this.collection !== null) {
                 
             // TODO: ...
+
+            if ('close' in this.collection && (!this.options || this.options.closeCollectionOnClose !== false)) {
+                (<Ribs.Collection>this.collection).close();
+            }
 
             this.collection = null;
                    

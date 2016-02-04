@@ -8,6 +8,7 @@ import Ribs = require('ribsjs');
 class Model extends Backbone.Model {
 
     public adapter: Ribs.Adapter.Adapter;
+    protected isClose: Boolean;
 
     constructor(attributes, options?: Ribs.ModelOptions) {
         super(attributes, options);
@@ -16,6 +17,8 @@ class Model extends Backbone.Model {
         } else {
             this.adapter = new Ribs.Adapter.DefaultAdapter();
         }
+
+        this.isClose = false;
     }
 
     initialize (attributes, options) {
@@ -28,6 +31,8 @@ class Model extends Backbone.Model {
 
         // on projection two way, get model of the action to avoid stackoverflow
         this.lastModelTriggered = null;
+
+        this.once('destroy', this.close, this);
 
         // if onInitializeStart exists
         if (this.onInitializeStart) {
@@ -45,6 +50,17 @@ class Model extends Backbone.Model {
 
         }
 
+    }
+
+    close() {
+        this.off('destroy', this.close, this);
+
+        this.clear();
+        this.isClose = true;
+        this.trigger('close', this)
+
+        this.stopListening();
+        this.trigger('destroy', this, this.collection, {});
     }
 
     sync(...arg: any[]): JQueryXHR {
@@ -114,7 +130,7 @@ class Model extends Backbone.Model {
 
         model.id = model.cid;//we do that to avoid same model with same id of the model (as long as Collection doesn't accept two model with same id)
 
-        this.listenTo(this, 'change', () => {
+        let selfChangeCallback = () => {
 
             // No trigger on the model of the action in two way
             if (this.lastModelTriggered === model) {
@@ -123,11 +139,17 @@ class Model extends Backbone.Model {
 
             model.set(this.changed);
 
+        };
+
+        this.listenTo(this, 'change', selfChangeCallback);
+        model.listenTo(model, 'close', () => {
+            this.stopListening(this, 'change', selfChangeCallback);
         });
+
 
         if (twoWay === true) {
 
-            this.listenTo(model, 'change', () => {
+            let remoteChangeCallback = () => {
 
                 var newValue = {};
 
@@ -147,18 +169,26 @@ class Model extends Backbone.Model {
 
                 this.lastModelTriggered = null;
 
-            });
+            };
+
+            this.listenTo(model, 'change', remoteChangeCallback);
+            model.listenTo(model, 'close', () => {
+                this.stopListening(model, 'change', remoteChangeCallback);
+            })
 
         }
 
         if (keepAlive !== true) {
 
-            this.listenTo(this, 'destroy', function () {
+            let selfDestroyCallback = () => {
 
                 model.destroy();
 
+            };
+            this.listenTo(this, 'destroy', selfDestroyCallback);
+            model.listenTo(model, 'close', () => {
+                this.stopListening(this, 'destroy', selfDestroyCallback);
             });
-
         }
 
         if (!this.modelSource) {
