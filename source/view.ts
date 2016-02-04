@@ -463,7 +463,7 @@ class View extends Backbone.View<Backbone.Model> {
 
         }
 
-        if (this.collection !== null) {
+        if (!!this.collection) {
                 
             // TODO: ...
 
