@@ -53,6 +53,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                     this.listenTo(this.model, 'change', this.reRenderModelView);
                 }
             }
+            this.removeModelCallback = this.removeModel.bind(this);
             this.onInitialize();
         };
         View.prototype.render = function () {
@@ -275,6 +276,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             this.remove();
             // unbind events triggered from within views using backbone events
             this.unbind();
+            this.stopListening();
             if (!!this.collection) {
                 // TODO: ...
                 if ('close' in this.collection && (!this.options || this.options.closeCollectionOnClose !== false)) {
@@ -284,7 +286,8 @@ var __extends = (this && this.__extends) || function (d, b) {
             }
             if (this.referenceModelView !== null) {
                 _.each(this.referenceModelView, function (modelViewCollection, selector) {
-                    _.each(modelViewCollection, function (modelView) {
+                    _.each(modelViewCollection, function (modelView, cid) {
+                        delete _this.referenceModelView[selector][cid];
                         _this.onModelRemoved(modelView);
                         modelView.close();
                     });
@@ -333,7 +336,8 @@ var __extends = (this && this.__extends) || function (d, b) {
             var _this = this;
             if (this.referenceModelView !== null) {
                 _.each(this.referenceModelView, function (modelViewList, selector) {
-                    _.each(modelViewList, function (modelView) {
+                    _.each(modelViewList, function (modelView, cid) {
+                        delete _this.referenceModelView[selector][cid];
                         _this.onModelRemoved(modelView);
                         modelView.close();
                     });
@@ -393,6 +397,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                 }
                 _this.referenceModelView[_this.options.listSelector][model.cid] = modelView;
                 _this.onModelAdded(modelView);
+                model.listenToOnce(model, 'close', _this.removeModelCallback);
                 return $element;
             };
             if (viewCreate instanceof Promise) {
@@ -409,17 +414,12 @@ var __extends = (this && this.__extends) || function (d, b) {
             if (view === undefined) {
                 return view;
             }
+            model.stopListening(model, 'close', this.removeModelCallback);
             // TODO: use the container to manage subviews of a list
             //Container.remove(this.options.listSelector, view.container);
-            view.close();
-            /* No need anymore?
-            if (view.$el !== undefined) {
-    
-                view.$el.detach();
-    
-            }*/
             delete this.referenceModelView[this.options.listSelector][model.cid];
             this.onModelRemoved(view);
+            view.close();
             return view;
         };
         View.prototype.sortModel = function ($container) {

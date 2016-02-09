@@ -41,6 +41,8 @@ class View extends Backbone.View<Backbone.Model> {
 
     protected isClose: Boolean;
 
+    private removeModelCallback: (model: Ribs.Model) => any;
+
     constructor(options?) {
         super(options);
     }
@@ -88,6 +90,8 @@ class View extends Backbone.View<Backbone.Model> {
             }
 
         }
+
+        this.removeModelCallback = this.removeModel.bind(this);
 
         this.onInitialize();
 
@@ -237,7 +241,7 @@ class View extends Backbone.View<Backbone.Model> {
 
                     let promiseList: Thenable<JQuery>[] = [];
 
-                    this.collection.models.forEach((model) => {
+                    this.collection.models.forEach((model: Ribs.Model) => {
 
                         promiseList.push(this.addModel(model));
 
@@ -421,6 +425,8 @@ class View extends Backbone.View<Backbone.Model> {
         // unbind events triggered from within views using backbone events
         this.unbind();
 
+        this.stopListening();
+
         if (!!this.collection) {
                 
             // TODO: ...
@@ -437,7 +443,9 @@ class View extends Backbone.View<Backbone.Model> {
 
             _.each(this.referenceModelView, (modelViewCollection: { [cid: string]: Ribs.View }, selector) => {
 
-                _.each(modelViewCollection, (modelView) => {
+                _.each(modelViewCollection, (modelView, cid) => {
+
+                    delete this.referenceModelView[selector][cid];
 
                     this.onModelRemoved(modelView);
 
@@ -524,7 +532,9 @@ class View extends Backbone.View<Backbone.Model> {
         if (this.referenceModelView !== null) {
 
             _.each(this.referenceModelView, (modelViewList: { [cid: string]: Ribs.View }, selector) => {
-                _.each(modelViewList, (modelView) => {
+                _.each(modelViewList, (modelView, cid) => {
+
+                    delete this.referenceModelView[selector][cid];
 
                     this.onModelRemoved(modelView);
 
@@ -580,7 +590,7 @@ class View extends Backbone.View<Backbone.Model> {
 
     }
 
-    private addModel(model): Thenable<JQuery> {
+    private addModel(model: Ribs.Model): Thenable<JQuery> {
 
         if (this.isCollectionRendered === false) {
             return;
@@ -630,6 +640,8 @@ class View extends Backbone.View<Backbone.Model> {
 
             this.onModelAdded(modelView);
 
+            model.listenToOnce(model, 'close', this.removeModelCallback);
+
             return $element;
         }
 
@@ -646,7 +658,7 @@ class View extends Backbone.View<Backbone.Model> {
         return modelViewOptions;
     }
 
-    private removeModel(model) {
+    private removeModel(model: Ribs.Model) {
 
         var view = this.referenceModelView[this.options.listSelector][model.cid];
 
@@ -654,22 +666,17 @@ class View extends Backbone.View<Backbone.Model> {
             return view;
         }
 
+        model.stopListening(model, 'close', this.removeModelCallback);
+
         // TODO: use the container to manage subviews of a list
         //Container.remove(this.options.listSelector, view.container);
                 
-        view.close();
-        
-        /* No need anymore?
-        if (view.$el !== undefined) {
-
-            view.$el.detach();
-
-        }*/
-
         delete this.referenceModelView[this.options.listSelector][model.cid];
 
         this.onModelRemoved(view);
 
+        view.close();
+        
         return view;
 
     }
