@@ -67,7 +67,7 @@ class View extends Backbone.View<Backbone.Model> {
         this.referenceModelView = {};
         this.referenceModelView[this.options.listSelector] = {};
 
-        if (this.collection !== undefined) {
+        if (this.collection) {
 
             this.listenTo(this.collection, 'add', this.addModel);
             this.listenTo(this.collection, 'remove', this.removeModel);
@@ -77,7 +77,7 @@ class View extends Backbone.View<Backbone.Model> {
 
         }
 
-        if (this.model !== undefined) {
+        if (this.model) {
 
             this.listenTo(this.model, 'destroy', this.close);
 
@@ -182,7 +182,7 @@ class View extends Backbone.View<Backbone.Model> {
         let templateData = {};
         let postTemplateData = { _view: this };
 
-        if (this.model !== undefined) {
+        if (this.model) {
             
             // model view
             // are there also templateVariables
@@ -227,7 +227,8 @@ class View extends Backbone.View<Backbone.Model> {
         let doCollection = ($renderedTemplate: JQuery): JQuery|Thenable<JQuery> => {
             // and also a collection?
             this.isCollectionRendered = true;
-            if (this.collection !== undefined) {
+
+            if (this.collection) {
             
                 // for each model of the collection append a modelView to
                 // collection dom

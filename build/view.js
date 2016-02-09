@@ -40,14 +40,14 @@ var __extends = (this && this.__extends) || function (d, b) {
             // destroyed and we want to take some action on sub views
             this.referenceModelView = {};
             this.referenceModelView[this.options.listSelector] = {};
-            if (this.collection !== undefined) {
+            if (this.collection) {
                 this.listenTo(this.collection, 'add', this.addModel);
                 this.listenTo(this.collection, 'remove', this.removeModel);
                 this.listenTo(this.collection, 'reset', this.reset);
                 this.listenTo(this.collection, 'sort', this.sortModel);
                 this.listenTo(this.collection, 'update', this.updateCollection);
             }
-            if (this.model !== undefined) {
+            if (this.model) {
                 this.listenTo(this.model, 'destroy', this.close);
                 if (this.options.reRenderOnChange) {
                     this.listenTo(this.model, 'change', this.reRenderModelView);
@@ -117,7 +117,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             var templateKeyValues;
             var templateData = {};
             var postTemplateData = { _view: this };
-            if (this.model !== undefined) {
+            if (this.model) {
                 // model view
                 // are there also templateVariables
                 if (_.keys(this.options.templateVariables).length > 0) {
@@ -148,7 +148,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             var doCollection = function ($renderedTemplate) {
                 // and also a collection?
                 _this.isCollectionRendered = true;
-                if (_this.collection !== undefined) {
+                if (_this.collection) {
                     // for each model of the collection append a modelView to
                     // collection dom
                     if (_this.collection.models.length > 0) {
