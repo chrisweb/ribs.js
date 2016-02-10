@@ -54,6 +54,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                 }
             }
             this.removeModelCallback = this.removeModel.bind(this);
+            this.destroyViewCallback = this.onDestroySubView.bind(this);
             this.onInitialize();
         };
         View.prototype.render = function () {
@@ -271,6 +272,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                 }
                 this.createPromise = null;
             }
+            this.trigger('close', this);
             // remove the view from dom and stop listening to events that were
             // added with listenTo or that were added to the events declaration
             this.remove();
@@ -289,6 +291,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                     _.each(modelViewCollection, function (modelView, cid) {
                         delete _this.referenceModelView[selector][cid];
                         _this.onModelRemoved(modelView);
+                        modelView.stopListening(modelView, 'close', _this.destroyViewCallback);
                         modelView.close();
                     });
                 });
@@ -339,6 +342,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                     _.each(modelViewList, function (modelView, cid) {
                         delete _this.referenceModelView[selector][cid];
                         _this.onModelRemoved(modelView);
+                        modelView.stopListening(modelView, 'close', _this.destroyViewCallback);
                         modelView.close();
                     });
                 });
@@ -419,6 +423,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             //Container.remove(this.options.listSelector, view.container);
             delete this.referenceModelView[this.options.listSelector][model.cid];
             this.onModelRemoved(view);
+            view.stopListening(view, 'close', this.destroyViewCallback);
             view.close();
             return view;
         };
@@ -525,6 +530,8 @@ var __extends = (this && this.__extends) || function (d, b) {
                     }
                 }
                 $container.append(viewToAdd.$el);
+                viewToAdd.stopListening(viewToAdd, 'close', _this.destroyViewCallback);
+                viewToAdd.listenToOnce(viewToAdd, 'close', _this.destroyViewCallback);
                 if (viewToAdd.isDispatch === false) {
                     var $oldEl = viewToAdd.$el;
                     var newCreateView = viewToAdd.create();
@@ -549,6 +556,17 @@ var __extends = (this && this.__extends) || function (d, b) {
                 return view.map(doAddView);
             }
             return doAddView(view);
+        };
+        View.prototype.onDestroySubView = function (view) {
+            var _this = this;
+            _.each(this.referenceModelView, function (modelViewCollection, selector) {
+                _.each(modelViewCollection, function (modelView, cid) {
+                    if (modelView === view) {
+                        delete _this.referenceModelView[selector][cid];
+                        _this.onModelRemoved(modelView);
+                    }
+                });
+            });
         };
         View.prototype.prepareAddedView = function (modelView) {
             return modelView;

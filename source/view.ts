@@ -42,6 +42,7 @@ class View extends Backbone.View<Backbone.Model> {
     protected isClose: Boolean;
 
     private removeModelCallback: (model: Ribs.Model) => any;
+    private destroyViewCallback: (model: Ribs.Model) => any;
 
     constructor(options?) {
         super(options);
@@ -93,8 +94,10 @@ class View extends Backbone.View<Backbone.Model> {
 
         this.removeModelCallback = this.removeModel.bind(this);
 
-        this.onInitialize();
+        this.destroyViewCallback = this.onDestroySubView.bind(this);
 
+        this.onInitialize();
+        
     }
 
     render() {
@@ -418,13 +421,16 @@ class View extends Backbone.View<Backbone.Model> {
             this.createPromise = null;
         }
 
+
+        this.trigger('close', this);
+
         // remove the view from dom and stop listening to events that were
         // added with listenTo or that were added to the events declaration
         this.remove();
-            
+        
         // unbind events triggered from within views using backbone events
         this.unbind();
-
+        
         this.stopListening();
 
         if (!!this.collection) {
@@ -449,6 +455,8 @@ class View extends Backbone.View<Backbone.Model> {
 
                     this.onModelRemoved(modelView);
 
+                    modelView.stopListening(modelView, 'close', this.destroyViewCallback);
+                    
                     modelView.close();
 
                 });
@@ -538,6 +546,8 @@ class View extends Backbone.View<Backbone.Model> {
 
                     this.onModelRemoved(modelView);
 
+                    modelView.stopListening(modelView, 'close', this.destroyViewCallback);
+                    
                     modelView.close();
 
                 });
@@ -675,6 +685,8 @@ class View extends Backbone.View<Backbone.Model> {
 
         this.onModelRemoved(view);
 
+        view.stopListening(view, 'close', this.destroyViewCallback);
+        
         view.close();
         
         return view;
@@ -831,6 +843,9 @@ class View extends Backbone.View<Backbone.Model> {
 
             $container.append(viewToAdd.$el);
 
+            viewToAdd.stopListening(viewToAdd, 'close', this.destroyViewCallback)
+            viewToAdd.listenToOnce(viewToAdd, 'close', this.destroyViewCallback);
+
             if (viewToAdd.isDispatch === false) {
                 let $oldEl = viewToAdd.$el;
 
@@ -865,6 +880,21 @@ class View extends Backbone.View<Backbone.Model> {
         }
 
         return doAddView(<Ribs.View>view);
+    }
+
+    private onDestroySubView(view: Ribs.View) {
+        _.each(this.referenceModelView, (modelViewCollection: { [cid: string]: Ribs.View }, selector) => {
+
+            _.each(modelViewCollection, (modelView, cid) => {
+
+                if (modelView === view) {
+                    delete this.referenceModelView[selector][cid];
+                    this.onModelRemoved(modelView);
+                }
+
+            });
+
+        });
     }
 
     protected prepareAddedView(modelView: Ribs.View): Ribs.View {
