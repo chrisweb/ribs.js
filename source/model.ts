@@ -52,8 +52,8 @@ class Model extends Backbone.Model {
 
     }
 
-    private onDestroy(model: Ribs.Model, collection: Ribs.Collection, options: Ribs.ModelOptions) {
-        if (options.closeModelOnDestroy === false) {
+    private onDestroy() {
+        if (this.options.closeModelOnDestroy === false) {
             return;
         }
         this.close();

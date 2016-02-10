@@ -47,8 +47,8 @@ var __extends = (this && this.__extends) || function (d, b) {
                 this.onInitialize();
             }
         };
-        Model.prototype.onDestroy = function (model, collection, options) {
-            if (options.closeModelOnDestroy === false) {
+        Model.prototype.onDestroy = function () {
+            if (this.options.closeModelOnDestroy === false) {
                 return;
             }
             this.close();
