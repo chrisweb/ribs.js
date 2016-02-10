@@ -32,7 +32,7 @@ class Model extends Backbone.Model {
         // on projection two way, get model of the action to avoid stackoverflow
         this.lastModelTriggered = null;
 
-        this.once('destroy', this.close, this);
+        this.on('destroy', this.onDestroy, this);
 
         // if onInitializeStart exists
         if (this.onInitializeStart) {
@@ -51,6 +51,13 @@ class Model extends Backbone.Model {
         }
 
     }
+
+    private onDestroy(model: Ribs.Model, collection: Ribs.Collection, options: Ribs.ModelOptions) {
+        if (options.closeModelOnDestroy === false) {
+            return;
+        }
+        this.close();
+    } 
 
     close() {
         this.off('destroy', this.close, this);

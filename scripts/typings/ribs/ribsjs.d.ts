@@ -39,7 +39,8 @@ declare module Ribs {
     }
 
     interface ModelOptions extends Backbone.ModelFetchOptions {
-        adapter?: Ribs.Adapter.Adapter
+        adapter?: Ribs.Adapter.Adapter;
+        closeModelOnDestroy?: boolean;
     }
 
     interface ContainerOptions {

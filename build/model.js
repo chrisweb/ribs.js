@@ -35,7 +35,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             this.options = $.extend(defaultOptions, options || {});
             // on projection two way, get model of the action to avoid stackoverflow
             this.lastModelTriggered = null;
-            this.once('destroy', this.close, this);
+            this.on('destroy', this.onDestroy, this);
             // if onInitializeStart exists
             if (this.onInitializeStart) {
                 // execute it now
@@ -46,6 +46,12 @@ var __extends = (this && this.__extends) || function (d, b) {
                 // execute it now
                 this.onInitialize();
             }
+        };
+        Model.prototype.onDestroy = function (model, collection, options) {
+            if (options.closeModelOnDestroy === false) {
+                return;
+            }
+            this.close();
         };
         Model.prototype.close = function () {
             this.off('destroy', this.close, this);
