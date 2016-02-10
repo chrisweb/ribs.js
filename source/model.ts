@@ -60,7 +60,7 @@ class Model extends Backbone.Model {
     } 
 
     close() {
-        this.off('destroy', this.close, this);
+        this.off('destroy', this.onDestroy, this);
 
         this.clear();
         this.isClose = true;
