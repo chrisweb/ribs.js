@@ -84,12 +84,6 @@ class View extends Backbone.View<Backbone.Model> {
 
             this.listenTo(this.model, 'destroy', this.close);
 
-            if (this.options.reRenderOnChange) {
-
-                this.listenTo(this.model, 'change', this.reRenderModelView);
-
-            }
-
         }
 
         this.removeModelCallback = this.removeModel.bind(this);
@@ -112,6 +106,15 @@ class View extends Backbone.View<Backbone.Model> {
         let doRender = ($renderedTemplate: JQuery): View|Thenable<View> => {
 
             this.setElement($renderedTemplate);
+
+            if (this.model && this.options.reRenderOnChange) {
+
+                this.listenTo(this.model, 'change', this.reRenderModelView);
+
+            }
+
+
+
 
             this.onRender();
 

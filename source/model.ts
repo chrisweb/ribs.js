@@ -62,7 +62,7 @@ class Model extends Backbone.Model {
     close() {
         this.off('destroy', this.onDestroy, this);
 
-        this.clear();
+        this.clear({ silent: true });
         this.isClose = true;
         this.trigger('close:model', this)
         this.trigger('close', this)

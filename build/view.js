@@ -49,9 +49,6 @@ var __extends = (this && this.__extends) || function (d, b) {
             }
             if (this.model) {
                 this.listenTo(this.model, 'destroy', this.close);
-                if (this.options.reRenderOnChange) {
-                    this.listenTo(this.model, 'change', this.reRenderModelView);
-                }
             }
             this.removeModelCallback = this.removeModel.bind(this);
             this.destroyViewCallback = this.onDestroySubView.bind(this);
@@ -65,6 +62,9 @@ var __extends = (this && this.__extends) || function (d, b) {
             var htmlizeObject = this.htmlize();
             var doRender = function ($renderedTemplate) {
                 _this.setElement($renderedTemplate);
+                if (_this.model && _this.options.reRenderOnChange) {
+                    _this.listenTo(_this.model, 'change', _this.reRenderModelView);
+                }
                 _this.onRender();
                 _this.isDispatch = true;
                 _this.lastRenderPromise = null;

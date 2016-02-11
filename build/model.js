@@ -55,7 +55,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         };
         Model.prototype.close = function () {
             this.off('destroy', this.onDestroy, this);
-            this.clear();
+            this.clear({ silent: true });
             this.isClose = true;
             this.trigger('close:model', this);
             this.trigger('close', this);

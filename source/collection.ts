@@ -333,6 +333,35 @@ module Ribs {
             return this.models ? this.models.length : 0;
         }
 
+        // Internal method called by both remove and set.
+        // Override Backbone.Collection._remvoeModels original methods because of fixes not release yet but already in github.
+        protected _removeModels(models, options) {
+            var removed = [];
+            for (var i = 0; i < models.length; i++) {
+                var model = this.get(models[i]);
+                if (!model) continue;
+
+                var index = this.indexOf(model);
+                this.models.splice(index, 1);
+                //this.length--;
+
+                // Remove references before triggering 'remove' event to prevent an
+                // infinite loop. #3693
+                delete (<any>this)._byId[model.cid];
+                var id = (<any>this).modelId(model.attributes);
+                if (id != null) delete (<any>this)._byId[id];
+
+                if (!options.silent) {
+                    options.index = index;
+                    model.trigger('remove', model, this, options);
+                }
+
+                removed.push(model);
+                (<any>this)._removeReference(model, options);
+            }
+            return removed;
+        }
+
     }
 }
 
