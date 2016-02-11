@@ -76,7 +76,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                     filteredCollection.reset.call(filteredCollection, newModels, options);
                 };
                 this.listenTo(this, 'reset', selfResetCallback);
-                filteredCollection.listenTo(filteredCollection, 'close', function () {
+                filteredCollection.listenTo(filteredCollection, 'close:collection', function () {
                     _this.stopListening(_this, 'add', selfAddCallback);
                     _this.stopListening(_this, 'remove', selfRemoveCallback);
                     _this.stopListening(_this, 'reset', selfResetCallback);
@@ -114,11 +114,11 @@ var __extends = (this && this.__extends) || function (d, b) {
                 rangeCollection._currentRange = start;
                 rangeCollection._lengthRange = length;
                 rangeCollection.set(this.getRangeOfCollection(this, start, length));
-                var selfCallback = (function () {
+                var selfCallback = _.debounce((function () {
                     rangeCollection.set(this.getRangeOfCollection(this, start, length));
-                }).bind(this);
+                }).bind(this), 16); // debounce to avoid sort and update trigger on added model.
                 this.listenTo(this, 'update sync reset sort', selfCallback);
-                rangeCollection.listenTo(rangeCollection, 'close', function () {
+                rangeCollection.listenTo(rangeCollection, 'close:collection', function () {
                     _this.stopListening(_this, 'update sync reset sort', selfCallback);
                 });
                 return rangeCollection;
@@ -215,6 +215,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             Collection.prototype.close = function () {
                 var _this = this;
                 this.isClose = true;
+                this.trigger('close:collection', this);
                 this.trigger('close', this);
                 if (this.models) {
                     this.models.forEach(function (model) {
@@ -224,6 +225,13 @@ var __extends = (this && this.__extends) || function (d, b) {
                     });
                 }
             };
+            Object.defineProperty(Collection.prototype, "length", {
+                get: function () {
+                    return this.models ? this.models.length : 0;
+                },
+                enumerable: true,
+                configurable: true
+            });
             return Collection;
         })(Backbone.Collection);
         Ribs.Collection = Collection;

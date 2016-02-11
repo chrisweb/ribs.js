@@ -57,6 +57,7 @@ class Model extends Backbone.Model {
 
         this.clear();
         this.isClose = true;
+        this.trigger('close:model', this)
         this.trigger('close', this)
 
         this.stopListening();
@@ -142,7 +143,7 @@ class Model extends Backbone.Model {
         };
 
         this.listenTo(this, 'change', selfChangeCallback);
-        model.listenTo(model, 'close', () => {
+        model.listenTo(model, 'close:model', () => {
             this.stopListening(this, 'change', selfChangeCallback);
         });
 
@@ -172,7 +173,7 @@ class Model extends Backbone.Model {
             };
 
             this.listenTo(model, 'change', remoteChangeCallback);
-            model.listenTo(model, 'close', () => {
+            model.listenTo(model, 'close:model', () => {
                 this.stopListening(model, 'change', remoteChangeCallback);
             })
 
@@ -186,7 +187,7 @@ class Model extends Backbone.Model {
 
             };
             this.listenTo(this, 'destroy', selfDestroyCallback);
-            model.listenTo(model, 'close', () => {
+            model.listenTo(model, 'close:model', () => {
                 this.stopListening(this, 'destroy', selfDestroyCallback);
             });
         }

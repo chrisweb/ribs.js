@@ -401,7 +401,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                 }
                 _this.referenceModelView[_this.options.listSelector][model.cid] = modelView;
                 _this.onModelAdded(modelView);
-                model.listenToOnce(model, 'close', _this.removeModelCallback);
+                model.listenToOnce(model, 'close:model', _this.removeModelCallback);
                 return $element;
             };
             if (viewCreate instanceof Promise) {
@@ -418,7 +418,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             if (view === undefined) {
                 return view;
             }
-            model.stopListening(model, 'close', this.removeModelCallback);
+            model.stopListening(model, 'close:model', this.removeModelCallback);
             // TODO: use the container to manage subviews of a list
             //Container.remove(this.options.listSelector, view.container);
             delete this.referenceModelView[this.options.listSelector][model.cid];

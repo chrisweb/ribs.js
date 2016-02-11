@@ -95,7 +95,7 @@ module Ribs {
             };
             this.listenTo(this, 'reset', selfResetCallback);
 
-            filteredCollection.listenTo(filteredCollection, 'close', () => {
+            filteredCollection.listenTo(filteredCollection, 'close:collection', () => {
                 this.stopListening(this, 'add', selfAddCallback);
                 this.stopListening(this, 'remove', selfRemoveCallback);
                 this.stopListening(this, 'reset', selfResetCallback);
@@ -143,12 +143,12 @@ module Ribs {
             rangeCollection._lengthRange = length;
             rangeCollection.set(this.getRangeOfCollection(this, start, length));
 
-            let selfCallback = (function () {
+            let selfCallback = _.debounce((function () {
                 rangeCollection.set(this.getRangeOfCollection(this, start, length));
-            }).bind(this);
+            }).bind(this), 16);// debounce to avoid sort and update trigger on added model.
             this.listenTo(this, 'update sync reset sort', selfCallback);
 
-            rangeCollection.listenTo(rangeCollection, 'close', () => {
+            rangeCollection.listenTo(rangeCollection, 'close:collection', () => {
                 this.stopListening(this, 'update sync reset sort', selfCallback);
             });
 
@@ -315,6 +315,7 @@ module Ribs {
         public close() {
             this.isClose = true;
 
+            this.trigger('close:collection', this);
             this.trigger('close', this);
 
             if (this.models) {
@@ -326,6 +327,10 @@ module Ribs {
 
                 //this.models = null;
             }
+        }
+
+        public get length() {
+            return this.models ? this.models.length : 0;
         }
 
     }

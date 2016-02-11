@@ -650,7 +650,7 @@ class View extends Backbone.View<Backbone.Model> {
 
             this.onModelAdded(modelView);
 
-            model.listenToOnce(model, 'close', this.removeModelCallback);
+            model.listenToOnce(model, 'close:model', this.removeModelCallback);
 
             return $element;
         }
@@ -676,7 +676,7 @@ class View extends Backbone.View<Backbone.Model> {
             return view;
         }
 
-        model.stopListening(model, 'close', this.removeModelCallback);
+        model.stopListening(model, 'close:model', this.removeModelCallback);
 
         // TODO: use the container to manage subviews of a list
         //Container.remove(this.options.listSelector, view.container);

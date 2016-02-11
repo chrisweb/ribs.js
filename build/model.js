@@ -51,6 +51,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             this.off('destroy', this.close, this);
             this.clear();
             this.isClose = true;
+            this.trigger('close:model', this);
             this.trigger('close', this);
             this.stopListening();
             this.trigger('destroy', this, this.collection, {});
@@ -113,7 +114,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                 model.set(_this.changed);
             };
             this.listenTo(this, 'change', selfChangeCallback);
-            model.listenTo(model, 'close', function () {
+            model.listenTo(model, 'close:model', function () {
                 _this.stopListening(_this, 'change', selfChangeCallback);
             });
             if (twoWay === true) {
@@ -129,7 +130,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                     _this.lastModelTriggered = null;
                 };
                 this.listenTo(model, 'change', remoteChangeCallback);
-                model.listenTo(model, 'close', function () {
+                model.listenTo(model, 'close:model', function () {
                     _this.stopListening(model, 'change', remoteChangeCallback);
                 });
             }
@@ -138,7 +139,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                     model.destroy();
                 };
                 this.listenTo(this, 'destroy', selfDestroyCallback);
-                model.listenTo(model, 'close', function () {
+                model.listenTo(model, 'close:model', function () {
                     _this.stopListening(_this, 'destroy', selfDestroyCallback);
                 });
             }
