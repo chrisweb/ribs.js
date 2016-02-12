@@ -154,6 +154,18 @@ var __extends = (this && this.__extends) || function (d, b) {
                     // for each model of the collection append a modelView to
                     // collection dom
                     if (_this.collection.models.length > 0) {
+                        if (_this.pendingViewModelPromise) {
+                            while (_this.pendingViewModelPromise.length) {
+                                var promise = _this.pendingViewModelPromise.pop();
+                                if (promise && 'abort' in promise) {
+                                    promise.abort();
+                                }
+                            }
+                        }
+                        if (_this.updatePromise) {
+                            _this.updatePromise.abort();
+                            _this.updatePromise = null;
+                        }
                         var promiseList = [];
                         _this.collection.models.forEach(function (model) {
                             promiseList.push(_this.addModel(model));

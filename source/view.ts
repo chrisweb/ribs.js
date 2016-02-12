@@ -242,6 +242,19 @@ class View extends Backbone.View<Backbone.Model> {
 
                 if (this.collection.models.length > 0) {
 
+                    if (this.pendingViewModelPromise) {
+                        while (this.pendingViewModelPromise.length) {
+                            let promise = this.pendingViewModelPromise.pop();
+                            if (promise && 'abort' in promise) {
+                                (<any>promise).abort();
+                            }
+                        }
+                    }
+                    if (this.updatePromise) {
+                        (<any>this.updatePromise).abort();
+                        this.updatePromise = null;
+                    }
+
                     let promiseList: Thenable<JQuery>[] = [];
 
                     this.collection.models.forEach((model: Ribs.Model) => {
