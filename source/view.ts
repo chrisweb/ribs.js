@@ -113,9 +113,6 @@ class View extends Backbone.View<Backbone.Model> {
 
             }
 
-
-
-
             this.onRender();
 
             this.isDispatch = true;
@@ -265,7 +262,10 @@ class View extends Backbone.View<Backbone.Model> {
 
                     }
 
+                    this.isCollectionRendered = false;
+
                     return Promise.all(promiseList).then(() => {
+                        this.isCollectionRendered = true;
                         this.updateCollection($container);
                         return $renderedTemplate;
                     });

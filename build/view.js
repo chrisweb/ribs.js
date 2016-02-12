@@ -164,7 +164,9 @@ var __extends = (this && this.__extends) || function (d, b) {
                                 $container = $();
                             }
                         }
+                        _this.isCollectionRendered = false;
                         return Promise.all(promiseList).then(function () {
+                            _this.isCollectionRendered = true;
                             _this.updateCollection($container);
                             return $renderedTemplate;
                         });
