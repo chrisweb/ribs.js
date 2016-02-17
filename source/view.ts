@@ -105,6 +105,10 @@ class View extends Backbone.View<Backbone.Model> {
 
         let doRender = ($renderedTemplate: JQuery): View|Thenable<View> => {
 
+            if (this.isClose) {
+                return this;
+            }
+
             this.setElement($renderedTemplate);
 
             if (this.model && this.options.reRenderOnChange) {
@@ -158,6 +162,10 @@ class View extends Backbone.View<Backbone.Model> {
         let htmlizeObject = this.htmlize();
 
         let doRerender = ($renderedTemplate: JQuery): View|Thenable<View> => {
+
+            if (this.isClose) {
+                return this;
+            }
 
             this.$previousEl.replaceWith($renderedTemplate);
             this.$previousEl = null;

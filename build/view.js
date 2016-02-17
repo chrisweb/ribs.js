@@ -61,6 +61,9 @@ var __extends = (this && this.__extends) || function (d, b) {
             this.isSubviewRendered = false;
             var htmlizeObject = this.htmlize();
             var doRender = function ($renderedTemplate) {
+                if (_this.isClose) {
+                    return _this;
+                }
                 _this.setElement($renderedTemplate);
                 if (_this.model && _this.options.reRenderOnChange) {
                     _this.listenTo(_this.model, 'change', _this.reRenderModelView);
@@ -96,6 +99,9 @@ var __extends = (this && this.__extends) || function (d, b) {
             this.$previousEl = this.$el;
             var htmlizeObject = this.htmlize();
             var doRerender = function ($renderedTemplate) {
+                if (_this.isClose) {
+                    return _this;
+                }
                 _this.$previousEl.replaceWith($renderedTemplate);
                 _this.$previousEl = null;
                 _this.setElement($renderedTemplate);
