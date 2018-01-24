@@ -4,13 +4,13 @@ import Backbone = require('backbone');
 import $ = require('jquery');
 import _ = require('underscore');
 
-class Model extends Backbone.Model {
+class Model<TAttr extends {} = {}> extends Backbone.Model {
 
-    constructor(attributes, options?) {
+    constructor(attributes: TAttr, options?) {
         super(attributes, options);
     }
 
-    initialize (attributes, options) {
+    initialize (attributes: TAttr, options) {
 
         var defaultOptions = {
             virtualAttributes: []
@@ -39,11 +39,11 @@ class Model extends Backbone.Model {
 
     }
 
-    get (attribute) {
+    get <K extends keyof TAttr>(attribute: K): TAttr[K] {
 
-        if (typeof this[attribute] === 'function') {
+        if (typeof (<any>this)[attribute] === 'function') {
 
-            return this[attribute]();
+            return (<any>this)[attribute]();
 
         } else {
 
@@ -51,6 +51,10 @@ class Model extends Backbone.Model {
 
         }
 
+    }
+
+    set<K extends keyof TAttr>(attribute: K, value: TAttr[K]) {
+        return super.set(attribute);
     }
 
     toJSON () {
